@@ -1,9 +1,6 @@
 <template>
-    <div class="home">
-        <Header :isLogged="true" :isBorder="true" :isHome="true" title="Sign up"/>
-        <ul class="home__list">
-            <Book v-for="item in list" />
-        </ul>
+    <div class="loading">
+        
     </div>
 </template>
 
@@ -12,20 +9,24 @@ import "../styles/colors.css"
 import "../styles/reset.css"
 
 export default {
-    data() {
-        return {
-            list: ["dkadksa", "dksakdsa", "kdkasdksa", "kdaskda", "kdskdsa"]
+    mounted() {
+        if (this.isLogin()) {
+            this.$router.push("/home");
+            return
         }
-    }    
+
+        this.$router.push("/login");
+    },
+    methods: {
+        isLogin: () => {
+            return localStorage.getItem("user") ? true : false
+        }
+    }
 }
 </script>
 
 <style scoped>
-.home {
+.loading {
 
-}
-
-.home__list {
-    margin-top: 32px;
 }
 </style>
