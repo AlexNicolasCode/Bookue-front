@@ -8,13 +8,20 @@
 </template>
 
 <script>
+import Header from "../components/Header/index.vue"
+import Book from "../components/Book/index.vue"
 import "../styles/colors.css"
 import "../styles/reset.css"
 
 export default {
+    name: 'Home',
+    components: {
+        Book,
+        Header
+    },
     mounted() {
         if (!this.isLogin()) {
-            this.$router.push("/login");
+            router.push("/login");
         }
     },
     methods: {

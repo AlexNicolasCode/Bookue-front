@@ -17,7 +17,14 @@
 </template>
 
 <script>
+import LoginAndRegisterButton from "../LoginAndRegisterButton/index.vue";
+import BrandName from "../BrandName/index.vue";
 export default {
+    name: "Header",
+    components: {
+        LoginAndRegisterButton,
+        BrandName
+    },
     props: ["isBorder", "isLogged", "title", "isHome"]
 }
 </script>

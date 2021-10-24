@@ -1,5 +1,5 @@
 <template>
-    <button :class="Btn">{{ title }}</button>    
+    <button type="submit" :class="Btn">{{ title }}</button>    
 </template>
 
 <style>
@@ -57,8 +57,5 @@ export default {
             }
         }
     },
-    mounted() {
-        console.log(this.title)
-    }
 }
 </script>

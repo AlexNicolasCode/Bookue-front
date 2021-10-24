@@ -4,7 +4,7 @@
         <div v-if="isInvalidForm && isRegisterForm">This account already exist.</div>
         <div v-if="isInvalidForm && !isRegisterForm">Invalid login, check your email and password.</div>
         <form @submit="submitForm" class="form">
-            <input class="form__item" @change="user.name" v-if="isRegister" name="name" placeholder="name" />
+            <input class="form__item" @change="user.name" v-if="isRegisterForm" name="name" placeholder="name" />
             <label v-if="isNameAlert">Name invalid</label>
             <input class="form__item" @change="user.email" name="email" type="email" placeholder="email" />
             <label v-if="isEmailAlert">Email invalid</label>
@@ -16,7 +16,14 @@
 </template>
 
 <script>
+import LoginAndRegisterButton from "../LoginAndRegisterButton/index.vue";
+import BrandName from "../BrandName/index.vue";
 export default {
+    name: 'UserForm',
+    components: {
+        LoginAndRegisterButton,
+        BrandName
+    },
     props: ["isRegisterForm", "title"],
     data() {
         return {
@@ -34,7 +41,7 @@ export default {
     },
     mounted() {
         if (!this.isLogin()) {
-            this.$router.push("/home");
+            router.push("/home");
         }
     },
     methods: {
