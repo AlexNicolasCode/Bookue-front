@@ -2,7 +2,7 @@
     <div class="home">
         <Header :isLogged="true" :isBorder="true" :isHome="true" title="Sign up"/>
         <ul class="home__list">
-            <Book v-for="(item, index) in list" :key="index"/>
+            <Book v-for="(book, index) in bookList" :key="index" :book="bookList" />
         </ul>
     </div>
 </template>
@@ -19,6 +19,11 @@ export default {
         Book,
         Header
     },
+    data() {
+    	return {
+		bookList: null
+    	}
+    },
     mounted() {
         if (!this.isLogin()) {
             router.push("/login");
@@ -27,6 +32,26 @@ export default {
     methods: {
         isLogin: () => {
             return localStorage.getItem("user") ? true : false
+        },
+        getAllBooks: async () => {
+            const response = await client.query({ query: gql`{
+                getAllBooks {
+                    id
+                    title
+		    author
+		    description
+		    currentPages
+		    pages
+                }
+            }`})
+            
+            if (!response.data.getAllBooks) {
+            	localStorage.removeItem("user")
+            	router.push("/login");
+            	return
+            }
+            
+            this.bookList = response.data.getAllBooks
         },
     },
 }
