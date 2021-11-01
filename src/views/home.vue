@@ -22,7 +22,7 @@ export default {
     },
     data() {
     	return {
-		bookList: null
+		    bookList: null
     	}
     },
     mounted() {
@@ -35,7 +35,7 @@ export default {
                 return
             }
         },
-        isLoginExpired: () => {
+        isLoginExpired: async () => {
             await apolloClient.query({ query: gql`{
                 autoLogin {
                     name
@@ -62,14 +62,15 @@ export default {
                     pages
                 }
             }`})
+            const allBooks = response.data.getAllBooks
             
-            if (!response.data.getAllBooks) {
+            if (!allBooks) {
             	localStorage.removeItem("user")
             	router.push("/login");
             	return
             }
             
-            this.bookList = response.data.getAllBooks
+            this.bookList = allBooks
         },
         isLoginInvalid: () => {
             const token = localStorage.getItem("user") ? true : false

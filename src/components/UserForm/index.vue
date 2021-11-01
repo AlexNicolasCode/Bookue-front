@@ -60,7 +60,7 @@ export default {
         this.mutationTeste()
     },
     methods: {
-        async mutationTeste () {
+        mutationTeste: async () => {
             await apolloClient.mutate({ mutation: gql`mutation ($password: String!, $email: String!, $name: String!) {
                 signUpUser(password: $password, email: $email, name: $name) {
                     token
@@ -76,7 +76,7 @@ export default {
                 if (token) localStorage.setItem("user", token)
             })
         },
-        isLogin: () => {
+        isLogin: async () => {
             return localStorage.getItem("user") ? true : false
         },
         submitForm: () => {
@@ -101,7 +101,7 @@ export default {
                     email: this.user.email, 
                     password: this.user.password,
                 },
-            }).then((res) => {
+            }).then(async (res) => {
                 const token = res.data.signUpUser.token;
 
                 if (!token) {
@@ -128,7 +128,7 @@ export default {
                     email: this.user.email, 
                     password: this.user.password,
                 },
-            }).then((res) => {
+            }).then(async (res) => {
                 const token = res.data.signUpUser.token;
 
                 if (!token) {
