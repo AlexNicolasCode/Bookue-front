@@ -12,6 +12,7 @@ import Header from "../components/Header/index.vue"
 import Book from "../components/Book/index.vue"
 import "../styles/colors.css"
 import "../styles/reset.css"
+import { apolloClient } from '../services/Apollo/ApolloClient'
 
 export default {
     name: 'Home',
@@ -25,23 +26,40 @@ export default {
     	}
     },
     mounted() {
-        if (!this.isLogin()) {
-            router.push("/login");
-        }
+        this.autoLogin()
     },
     methods: {
-        isLogin: () => {
-            return localStorage.getItem("user") ? true : false
+        autoLogin: () => {
+            if (this.isLoginInvalid() || this.isLoginExpired()) {
+                router.push({ path: "/login" })
+                return
+            }
+        },
+        isLoginExpired: () => {
+            await apolloClient.query({ query: gql`{
+                autoLogin {
+                    name
+                    email
+                }}`, 
+            }).then((res) => {
+                const user = res.data.autoUser;
+
+                if (!user) {
+                    return true
+                }
+
+                return false
+            })
         },
         getAllBooks: async () => {
             const response = await client.query({ query: gql`{
                 getAllBooks {
                     id
                     title
-		    author
-		    description
-		    currentPages
-		    pages
+                    author
+                    description
+                    currentPages
+                    pages
                 }
             }`})
             
@@ -53,6 +71,14 @@ export default {
             
             this.bookList = response.data.getAllBooks
         },
+        isLoginInvalid: () => {
+            const token = localStorage.getItem("user") ? true : false
+            if (!token) {
+                return true
+            }
+
+            return false
+        }
     },
 }
 </script>
