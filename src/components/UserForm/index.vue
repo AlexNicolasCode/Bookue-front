@@ -3,21 +3,26 @@
         <BrandName class="container__title" />
         <div v-if="isInvalidForm && isRegisterForm">This account already exist.</div>
         <div v-if="isInvalidForm && !isRegisterForm">Invalid login, check your email and password.</div>
-        <form @submit="submitForm" class="form">
+        <form class="form">
             <input class="form__item" @change="user.name" v-if="isRegisterForm" name="name" placeholder="name" />
             <label v-if="isNameAlert">Name invalid</label>
             <input class="form__item" @change="user.email" name="email" type="email" placeholder="email" />
             <label v-if="isEmailAlert">Email invalid</label>
             <input class="form__item" @change="user.password" name="password" type="password" placeholder="password" />
             <label v-if="isPasswordAlert">Password invalid. Please, set a password with more than 3 letters, numbers or simbols</label>
-            <LoginAndRegisterButton class="form__btn" :border="false" :title="title" :isHeader="false"/>
+            <LoginAndRegisterButton class="form__btn" :submitForm="submitForm" :border="false" :title="title" :isHeader="false"/>
         </form>
     </div>
 </template>
 
 <script>
+import gql from "graphql-tag";
+
 import LoginAndRegisterButton from "../LoginAndRegisterButton/index.vue";
 import BrandName from "../BrandName/index.vue";
+import { apolloClient } from "../../services/Apollo/ApolloClient";
+import router from "../../router";
+
 export default {
     name: 'UserForm',
     components: {
@@ -25,6 +30,14 @@ export default {
         BrandName
     },
     props: ["isRegisterForm", "title"],
+    apollo: {
+        // Simple query that will update the 'hello' vue property
+        hello: gql`{
+            loginUser(email: $email, password: $password) {
+                token
+            }
+        }`,
+    },
     data() {
         return {
             user: {
@@ -40,11 +53,29 @@ export default {
         }
     },
     mounted() {
-        if (!this.isLogin()) {
-            router.push("/home");
+        if (this.isLogin()) {
+            console.log(localStorage.getItem("user"))
+            router.push({ path: "/home" });
         }
+        this.mutationTeste()
     },
     methods: {
+        async mutationTeste () {
+            await apolloClient.mutate({ mutation: gql`mutation ($password: String!, $email: String!, $name: String!) {
+                signUpUser(password: $password, email: $email, name: $name) {
+                    token
+                }}`,
+
+                variables: {
+                    name: this.user.name,
+                    email: this.user.email, 
+                    password: this.user.password,
+                },
+            }).then((res) => {
+                const token = res.data.signUpUser.token;
+                if (token) localStorage.setItem("user", token)
+            })
+        },
         isLogin: () => {
             return localStorage.getItem("user") ? true : false
         },
@@ -61,38 +92,52 @@ export default {
                 return
             }
 
-            const response = await client.query({ query: gql`{
-                loginUser(email: ${this.user.email}, password: ${this.user.password}) {
+            await apolloClient.query({ query: gql`($email: String!, $password: String!){
+                loginUser(email: $email, password: $password) {
                     token
+                }}`, 
+
+                variables: {
+                    email: this.user.email, 
+                    password: this.user.password,
+                },
+            }).then((res) => {
+                const token = res.data.signUpUser.token;
+
+                if (!token) {
+                    return false
                 }
-            }` })
-            const token = response.data.token;
 
-            if (!token) {
-                return false
-            }
+                await saveTokenInLocalStorage(token)
+                return true
+            })
 
-            await saveTokenInLocalStorage(token)
-            return true
         },
         registerUser: async () => {
             if (!this.validateUserName() && !this.validateUserEmail() && !this.validateUserPassword()) {
                 return
             }
 
-            const response = await client.query({ query: gql`{
-                signUpUser(name: ${this.user.name}, email: ${this.user.email}, password: ${this.user.password}) {
+            await apolloClient.mutate({ mutation: gql`mutation ($password: String!, $email: String!, $name: String!) {
+                signUpUser(password: $password, email: $email, name: $name) {
                     token
+                }}`,
+
+                variables: {
+                    name: this.user.name,
+                    email: this.user.email, 
+                    password: this.user.password,
+                },
+            }).then((res) => {
+                const token = res.data.signUpUser.token;
+
+                if (!token) {
+                    return false
                 }
-            }`})
-            const token = response.data.token;
 
-            if (!token) {
-                return false
-            }
-
-            await saveTokenInLocalStorage(token)
-            return true
+                await saveTokenInLocalStorage(token)
+                return true
+            })
         },
         saveTokenInLocalStorage: ({ token }) => {
             localStorage.setItem("user", token)
