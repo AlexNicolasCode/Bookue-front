@@ -26,13 +26,14 @@ export default {
     	return {
 		    bookList: null,
             isLogged: null
-    	}
+        }
     },
     beforeMount() {
         this.validateLogin()
     },
     mounted() {
-        this.getAllBooks()
+        this.autoLogin()
+        this.fetchBookList()
     },
     methods: {
         autoLogin() {
@@ -56,32 +57,31 @@ export default {
 
             if (!user.data.autoLogin) {
                 this.isLogged = false
+                return
             }
 
             this.isLogged = true
         },
         isLoginInvalid() {
-            this.isLogged = localStorage.getItem("user") ? false : true
+            this.isLogged = localStorage.getItem("user") ? true : false
         },
-        async getAllBooks() {
-            const response = await apolloClient.query({ query: gql`{
-                getAllBooks {
-                    id
-                    title
-                    author
-                    description
-                    currentPage
-                    pages
-                }
-            }`})
-            const allBooks = response.data.getAllBooks
-            
-            if (!allBooks) {
-                localStorage.removeItem("user")
-                return
+        async fetchBookList() {
+            try {
+                const response = await apolloClient.query({ query: gql`{
+                    getAllBooks {
+                        id
+                        title
+                        author
+                        description
+                        currentPage
+                        pages
+                    }
+                }`})
+                const allBooks = response.data.getAllBooks
+                this.bookList = allBooks
+            } catch(e) {
+                location.reload()
             }
-            
-            this.bookList = allBooks
         }
     },
 }
