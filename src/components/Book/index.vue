@@ -13,7 +13,7 @@
 
             <div class="book__options">
                 <button class="book__btn book__notes">Notes</button>
-                <button class="book__btn book__details">Details</button>
+                <router-link :to="detailsPage"><button class="book__btn book__details">Details</button></router-link>
             </div>
         </article>
     </li>
@@ -22,7 +22,12 @@
 <script>
 export default {
 	name: "UserForm",
-	props:  ["book"]
+	props:  ["book"],
+    data() {
+        return {
+            detailsPage: `/book?bookId=${this.book.id}`
+        }
+    }
 }
 </script>
 
