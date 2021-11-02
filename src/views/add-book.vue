@@ -31,11 +31,11 @@ import { InMemoryCache } from "apollo-cache-inmemory";
 import ApolloClient from "apollo-client";
 import Cookies from "js-cookie";
 
-import router from "../../router";
-import Header from "../../components/Header/index.vue";
+import router from "../router";
+import Header from "../components/Header/index.vue";
 
-import "../../styles/reset.css";
-import "../../styles/colors.css";
+import "../styles/reset.css";
+import "../styles/colors.css";
 
 export default {
     name: 'AddBook',

@@ -3,7 +3,7 @@ import Default from '../views/default.vue'
 import Home from '../views/home.vue'
 import Login from '../views/login.vue'
 import Register from '../views/Register.vue'
-import AddBook from '../views/add-book/index.vue'
+import AddBook from '../views/add-book.vue'
 import Book from '../views/book.vue'
 
 const router = createRouter({
