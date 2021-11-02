@@ -2,27 +2,160 @@
     <div class="add-book">
         <Header :isLogged="true" :isBorder="true" :isHome="false"/>
         <div class="add-book__content">
-            <form class="add-book__form">
-                <input class="add-book__item" type="text" name="title" placeholder="Title">
-                <input class="add-book__item" type="text" name="author" placeholder="Author">
-                <input class="add-book__item" type="text" name="pages" placeholder="Pages">
-                <textarea class="add-book__item add-book__description" type="text" name="description" placeholder="Description" />
-                <button class="add-book__btn">Next</button>
+            <label v-if="alerts.bookAdded">This book already exist</label>
+            <form v-if="!isSetCurrentPage" class="add-book__form" @submit="submitForm">
+                <input class="add-book__item" v-model="book.title" type="text" name="title" placeholder="Title">
+                <label v-if="alerts.title">Title small</label>
+                <input class="add-book__item" v-model="book.author" type="text" name="author" placeholder="Author">
+                <label v-if="alerts.author">Author small</label>
+                <input class="add-book__item" v-model="book.pages" type="number" name="pages" placeholder="Pages">
+                <label v-if="alerts.pages">Please, set total pages of book</label>
+                <textarea class="add-book__item add-book__description" v-model="book.description" type="text" name="description" placeholder="Description" />
+                <label v-if="alerts.description">Description small</label>
+                <button type="submit" class="add-book__btn">Next</button>
+            </form>
+            <form v-if="isSetCurrentPage" class="add-book__form" @submit="submitForm">
+                <input class="add-book__item" v-model="book.currentPage" type="number" name="currentPage" placeholder="Current page">
+                <label v-if="alerts.currentPage">Please, set the current page of book</label>
+                <button type="submit" class="add-book__btn">Next</button>
             </form>
         </div>
     </div>
 </template>
 
 <script>
-import "../../styles/colors.css"
-import "../../styles/reset.css"
+import router from "../../router";
+import Header from "../../components/Header/index.vue";
+import "../../styles/colors.css";
+import "../../styles/reset.css";
+import gql from "graphql-tag";
+import { apolloClient } from "../../services/Apollo/ApolloClient";
 
 export default {
+    name: 'AddBook',
+    components: {
+        Header
+    },
     data() {
         return {
-            list: ["dkadksa", "dksakdsa", "kdkasdksa", "kdaskda", "kdskdsa"]
+            book: {
+                title: '',
+                author: '',
+                currentPage: '',
+                pages: '',
+                description: ''
+            },
+            isSetCurrentPage: false,
+            alerts: {
+                title: null,
+                author: null,
+                currentPage: null,
+                pages: null,
+                description: null,
+                bookAdded: null
+            }
         }
-    }    
+    },
+    methods: {
+        async submitForm(e) {
+            e.preventDefault();
+
+            if (!this.isValidBookData()) {
+                return
+            }
+
+            if (!this.isSetCurrentPage) {
+                this.isSetCurrentPage = !this.isSetCurrentPage
+                return
+            }
+
+            if (!this.isValidBookCurrentPage()) {
+                return
+            }
+
+            if (await this.createBook()) {
+                this.redirectToHome();
+            }
+        },
+        async createBook() {          
+            const response = await apolloClient.mutate({ mutation: gql`mutation Mutation($title: String, $author: String, $description: String, $pages: String, $currentPage: String) {
+                addBook(title: $title, author: $author, description: $description, currentPage: $currentPage, pages: $pages) {
+                    id
+                }}`,
+
+                variables: {
+                    title: this.book.title,
+                    author: this.book.author,
+                    description: this.book.description,
+                    currentPage: `${this.book.currentPage}`,
+                    pages: `${this.book.pages}`
+                }
+            })
+
+            if (!response.data.addBook) {
+                this.isSetCurrentPage = !this.isSetCurrentPage
+                this.alerts.bookAdded = true
+                return false
+            }
+
+            return true
+        },
+        redirectToHome() {
+            router.push({ path: "/home" })
+        },
+        isValidBookData() {
+            if (this.isValidBookTitle() && this.isValidBookAuthor() && this.isValidBookDescription() && this.isValidBookPages()) {
+                return true
+            }
+
+            return false
+        },
+        isValidBookTitle() {
+            if (this.book.title.length < 3) {
+                this.alerts.title = true
+                return false
+            }
+
+            this.alerts.title = false
+            return true
+        },
+        isValidBookAuthor() {
+            if (this.book.author.length < 3) {
+                this.alerts.author = true
+                return false
+            }
+
+            this.alerts.author = false
+            return true
+        },
+        isValidBookPages() {
+            if (this.book.pages < 10) {
+                this.alerts.pages = true
+                return false
+            }
+
+            this.alerts.pages = false
+            return true
+        },
+        isValidBookDescription() {
+            if (this.book.description.length < 3 || this.book.description.length === 0) {
+                this.alerts.description = true
+                return false
+            }
+
+            this.alerts.description = false
+            return true
+        },
+        isValidBookCurrentPage() {
+            if (this.book.currentPage < -1 && this.book.pages > this.book.currentPage) {
+                this.alerts.currentPage = true
+                return false
+            }
+
+            this.alerts.currentPage = false
+            return true
+        },
+    }
 }
 </script>
 

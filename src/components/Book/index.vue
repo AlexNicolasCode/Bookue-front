@@ -2,13 +2,13 @@
     <li class="book">
         <article class="book__content">
             <div class="book__apresentation">
-                <h2 class="book__title">{ book.title }</h2>
-                <h3 class="book__author">{ book.author }</h3>
-                <p class="book__pages">{ book.currentPage }/{ book.pages }</p>
+                <h2 class="book__title">{{ book.title }}</h2>
+                <h3 class="book__author">{{ book.author }}</h3>
+                <p class="book__pages">{{ book.currentPage }}/{{ book.pages }}</p>
             </div>
 
             <div class="book__description">
-                <p class="book__text">{ book.description }</p>
+                <p class="book__text">{{ book.description }}</p>
             </div>
 
             <div class="book__options">
