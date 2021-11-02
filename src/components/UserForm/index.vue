@@ -1,8 +1,8 @@
 <template>
     <div class="container">
         <BrandName class="container__title" />
-        <div v-if="isInvalidForm && isRegisterForm">This account already exist.</div>
-        <div v-if="isInvalidForm && !isRegisterForm">Invalid login, check your email and password.</div>
+        <div v-if="isInvalidForm && isRegister">This account already exist.</div>
+        <div v-if="isInvalidForm && !isRegister">Invalid login, check your email and password.</div>
         <form @submit="submitForm" class="form">
             <input class="form__item" v-model="user.name" v-if="isRegisterForm" name="name" placeholder="name" />
             <label v-if="isNameAlert">Name invalid</label>
@@ -67,35 +67,52 @@ export default {
             this.loginUser()
         },
         async loginUser() {
-            if (this.isValidUserEmail() || this.isValidPassword()) {
+            if (!this.isValidUserEmail() || !this.isValidPassword()) {
                 return
             }
 
-            const user = await apolloClient.query({ query: gql`($email: String!, $password: String!){
-                loginUser(email: $email, password: $password) {
-                    token
-                }}`, 
-
-                variables: {
-                    email: this.user.email, 
-                    password: this.user.password,
-                },
-            })
-           const token = user.data.loginUser.token;
+            const token = await this.getLoginToken()
 
             if (!token) {
                 this.isInvalidForm = true
+                return
             }
 
             this.isInvalidForm = false
             await this.saveTokenInLocalStorage(token)
             this.redirectToHome()
         },
+        async getLoginToken() {
+            const user = await apolloClient.query({ query: gql`query ($password: String!, $email: String!) {
+                loginUser(password: $password, email: $email) {
+                    token
+                }}`,
+
+                variables: {
+                    email: this.user.email, 
+                    password: this.user.password,
+                },
+            })
+            const token = user.data.loginUser.token;
+            return token
+        },
         async registerUser() {
             if (!this.isValidUserName() && !this.isValidUserEmail() && !this.isValidPassword()) {
                 return
             }
 
+            const token = await this.getCreateAccountToken()
+
+            if (token) {
+                this.isInvalidForm = true
+                return
+            }
+
+            this.isInvalidForm = false
+            await this.saveTokenInLocalStorage(token)
+            this.redirectToHome()
+        },
+        async getCreateAccountToken() {
             const user = await apolloClient.mutate({ mutation: gql`mutation ($password: String!, $email: String!, $name: String!) {
                 signUpUser(password: $password, email: $email, name: $name) {
                     token
@@ -108,15 +125,7 @@ export default {
                 },
             })
             const token = user.data.signUpUser.token;
-
-            if (!token) {
-                this.isInvalidForm = true
-                return
-            }
-
-            this.isInvalidForm = false
-            await this.saveTokenInLocalStorage(token)
-            this.redirectToHome()
+            return token
         },
         saveTokenInLocalStorage(token) {
             localStorage.setItem("user", token)
