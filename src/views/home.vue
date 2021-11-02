@@ -8,13 +8,18 @@
 </template>
 
 <script>
+import gql from 'graphql-tag'
+import Cookies from 'js-cookie'
+import { InMemoryCache } from "apollo-cache-inmemory"
+import ApolloClient from "apollo-client"
+import { setContext } from "apollo-link-context"
+import { createHttpLink } from "apollo-link-http"
+
 import Header from "../components/Header/index.vue"
 import Book from "../components/Book/index.vue"
 import "../styles/colors.css"
 import "../styles/reset.css"
-import { apolloClient } from '../services/Apollo/ApolloClient'
 import router from '../router'
-import gql from 'graphql-tag'
 
 export default {
     name: 'Home',
@@ -25,7 +30,7 @@ export default {
     data() {
     	return {
 		    bookList: null,
-            isLogged: null
+            isLogged: null,
         }
     },
     beforeMount() {
@@ -49,7 +54,7 @@ export default {
             this.isLoginExpired()
         },
         async isLoginExpired() {
-            const user = await apolloClient.query({ query: gql`{
+            const user = await this.clientApollo().query({ query: gql`{
                 autoLogin {
                     name
                 }}`, 
@@ -63,11 +68,10 @@ export default {
             this.isLogged = true
         },
         isLoginInvalid() {
-            this.isLogged = localStorage.getItem("user") ? true : false
+            this.isLogged = Cookies.get("user") ? true : false
         },
         async fetchBookList() {
-            try {
-                const response = await apolloClient.query({ query: gql`{
+            const response = await this.clientApollo().query({ query: gql`{
                     getAllBooks {
                         id
                         title
@@ -77,11 +81,29 @@ export default {
                         pages
                     }
                 }`})
-                const allBooks = response.data.getAllBooks
-                this.bookList = allBooks
-            } catch(e) {
-                location.reload()
-            }
+            const allBooks = response.data.getAllBooks
+            this.bookList = allBooks
+        },
+        clientApollo() {
+            const httpLink = createHttpLink({
+                uri: new URL(import.meta.env.VITE_BOOKUE_API),
+            })
+
+            const token = Cookies.get("user")
+            const authLink = setContext((_, { headers }) => {
+                return {
+                    headers: {
+                        ...headers,
+                        Authorization: token ?? '',
+                    },
+                }
+            })
+
+            const cache = new InMemoryCache()
+            return new ApolloClient({
+                link: authLink.concat(httpLink),
+                cache,
+            })
         }
     },
 }
