@@ -24,12 +24,18 @@
 </template>
 
 <script>
+import gql from "graphql-tag";
+import { createHttpLink } from 'apollo-link-http';
+import { setContext } from "apollo-link-context";
+import { InMemoryCache } from "apollo-cache-inmemory";
+import ApolloClient from "apollo-client";
+import Cookies from "js-cookie";
+
 import router from "../../router";
 import Header from "../../components/Header/index.vue";
-import "../../styles/colors.css";
+
 import "../../styles/reset.css";
-import gql from "graphql-tag";
-import { apolloClient } from "../../services/Apollo/ApolloClient";
+import "../../styles/colors.css";
 
 export default {
     name: 'AddBook',
@@ -78,7 +84,7 @@ export default {
             }
         },
         async createBook() {          
-            const response = await apolloClient.mutate({ mutation: gql`mutation Mutation($title: String, $author: String, $description: String, $pages: String, $currentPage: String) {
+            const response = await this.clientApollo().mutate({ mutation: gql`mutation Mutation($title: String, $author: String, $description: String, $pages: String, $currentPage: String) {
                 addBook(title: $title, author: $author, description: $description, currentPage: $currentPage, pages: $pages) {
                     id
                 }}`,
@@ -87,7 +93,7 @@ export default {
                     title: this.book.title,
                     author: this.book.author,
                     description: this.book.description,
-                    currentPage: `${this.book.currentPage}`,
+                    currentPage: `${this.book.currentPage ?? 0}`,
                     pages: `${this.book.pages}`
                 }
             })
@@ -147,7 +153,7 @@ export default {
             return true
         },
         isValidBookCurrentPage() {
-            if (this.book.currentPage < -1 && this.book.pages > this.book.currentPage) {
+            if (this.book.pages < this.book.currentPage) {
                 this.alerts.currentPage = true
                 return false
             }
@@ -155,6 +161,27 @@ export default {
             this.alerts.currentPage = false
             return true
         },
+        clientApollo() {
+            const httpLink = createHttpLink({
+                uri: new URL(import.meta.env.VITE_BOOKUE_API),
+            })
+
+            const token = Cookies.get("user")
+            const authLink = setContext((_, { headers }) => {
+                return {
+                    headers: {
+                        ...headers,
+                        Authorization: token ?? '',
+                    },
+                }
+            })
+
+            const cache = new InMemoryCache()
+            return new ApolloClient({
+                link: authLink.concat(httpLink),
+                cache,
+            })
+        }
     }
 }
 </script>
