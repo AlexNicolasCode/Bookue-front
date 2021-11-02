@@ -17,6 +17,7 @@
 
 <script>
 import gql from "graphql-tag";
+import Cookies from 'js-cookie';
 
 import LoginAndRegisterButton from "../LoginAndRegisterButton/index.vue";
 import BrandName from "../BrandName/index.vue";
@@ -55,7 +56,7 @@ export default {
             router.push({ path: "/home" });
         },
         isLogged() {
-            return localStorage.getItem("user")
+            return Cookies.get("user")
         },
         submitForm(event) {
             event.preventDefault();
@@ -128,7 +129,7 @@ export default {
             return token
         },
         saveTokenInLocalStorage(token) {
-            localStorage.setItem("user", token)
+            Cookies.set("user", token)
         },
         isValidUserName() {
             if (this.user.name.length < 3) {
