@@ -1,7 +1,5 @@
 <template>
-    <div class="loading">
-        kdakdsa
-    </div>
+    <div class="loading" />
 </template>
 
 <script>
@@ -12,18 +10,17 @@ import "../styles/reset.css"
 export default {
     name: "Default",
     mounted() {
-        console.log(localStorage.getItem("user") ? true : false)
-        // if (this.isLogin()) {
-        //     router.push({ path: "/home" });
-        //     return
-        // }
-
-        router.push({ path: "/login" });
+        this.redirect()
     },
     methods: {
-        isLogin: () => {
-            return localStorage.getItem("user") ? true : false
-        }
+        redirect() {
+            if (localStorage.getItem("user")) {
+                router.push({ path: "/home" });
+                return
+            }
+
+            router.push({ path: "/login" });
+        },
     }
 }
 </script>

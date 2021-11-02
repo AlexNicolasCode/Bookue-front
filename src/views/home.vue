@@ -2,7 +2,7 @@
     <div class="home">
         <Header :isLogged="true" :isBorder="true" :isHome="true" title="Sign up"/>
         <ul class="home__list">
-            <Book v-for="(book, index) in bookList" :key="index" :book="bookList" />
+            <Book v-for="(book, index) in bookList" :key="index" :book="book" />
         </ul>
     </div>
 </template>
@@ -13,6 +13,8 @@ import Book from "../components/Book/index.vue"
 import "../styles/colors.css"
 import "../styles/reset.css"
 import { apolloClient } from '../services/Apollo/ApolloClient'
+import router from '../router'
+import gql from 'graphql-tag'
 
 export default {
     name: 'Home',
@@ -22,62 +24,64 @@ export default {
     },
     data() {
     	return {
-		bookList: null
-    	}
+		    bookList: null,
+            isLogged: null
+        }
+    },
+    beforeMount() {
+        this.validateLogin()
     },
     mounted() {
         this.autoLogin()
+        this.fetchBookList()
     },
     methods: {
-        autoLogin: () => {
-            if (this.isLoginInvalid() || this.isLoginExpired()) {
-                router.push({ path: "/login" })
-                return
+        autoLogin() {
+            if (!this.isLogged) {
+                this.redirectToLogin()
             }
         },
-        isLoginExpired: () => {
-            await apolloClient.query({ query: gql`{
+        redirectToLogin() {
+            router.push({ path: "/login" })
+        },
+        validateLogin() {
+            this.isLoginInvalid()
+            this.isLoginExpired()
+        },
+        async isLoginExpired() {
+            const user = await apolloClient.query({ query: gql`{
                 autoLogin {
                     name
-                    email
                 }}`, 
-            }).then((res) => {
-                const user = res.data.autoUser;
-
-                if (!user) {
-                    return true
-                }
-
-                return false
             })
-        },
-        getAllBooks: async () => {
-            const response = await client.query({ query: gql`{
-                getAllBooks {
-                    id
-                    title
-                    author
-                    description
-                    currentPages
-                    pages
-                }
-            }`})
-            
-            if (!response.data.getAllBooks) {
-            	localStorage.removeItem("user")
-            	router.push("/login");
-            	return
-            }
-            
-            this.bookList = response.data.getAllBooks
-        },
-        isLoginInvalid: () => {
-            const token = localStorage.getItem("user") ? true : false
-            if (!token) {
-                return true
+
+            if (!user.data.autoLogin) {
+                this.isLogged = false
+                return
             }
 
-            return false
+            this.isLogged = true
+        },
+        isLoginInvalid() {
+            this.isLogged = localStorage.getItem("user") ? true : false
+        },
+        async fetchBookList() {
+            try {
+                const response = await apolloClient.query({ query: gql`{
+                    getAllBooks {
+                        id
+                        title
+                        author
+                        description
+                        currentPage
+                        pages
+                    }
+                }`})
+                const allBooks = response.data.getAllBooks
+                this.bookList = allBooks
+            } catch(e) {
+                location.reload()
+            }
         }
     },
 }
