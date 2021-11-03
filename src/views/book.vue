@@ -54,6 +54,7 @@ import { setContext } from "apollo-link-context"
 import { createHttpLink } from "apollo-link-http"
 
 import Header from "../components/Header/index.vue"
+import router from '../router'
 
 export default {
     name: 'Book',
@@ -109,7 +110,7 @@ export default {
         editProps(label) {
             this.edit[label] = !this.edit[label]
         },
-        async saveUpdatedBookInDatabase() {
+        async saveUpdatedBook() {
             const response = await this.clientApollo().mutate({ mutation: gql`mutation ($newTitle: String, $newAuthor: String, $newDescription: String, $newCurrentPage: String, $newPages: String, $updateBookId: String) {
                 updateBook(newTitle: $newTitle, newAuthor: $newAuthor, newDescription: $newDescription, newCurrentPage: $newCurrentPage, newPages: $newPages, id: $updateBookId) {
                     id
@@ -126,10 +127,13 @@ export default {
             })
 
             if (!response.data.updateBook) {
-                return false
+                return
             }
 
-            return true
+            this.goToHomePage()
+        },
+        goToHomePage() {
+            router.push({ path: "/home" })
         },
         clientApollo() {
             const httpLink = createHttpLink({
