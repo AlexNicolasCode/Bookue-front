@@ -174,6 +174,49 @@ export default {
         goToHomePage() {
             router.push({ path: "/home" })
         },
+        isValidBookUpdate(label) {
+            const optionsToValidate = {
+                "title": this.isValidTitle,
+                "author": this.isValidAuthor,
+                "currentPage": this.isValidCurrentPage,
+                "pages": this.isValidTotalPage
+            }
+
+            if (label !== "description" && !optionsToValidate[label]()) {
+                return false
+            }
+
+            return true
+        },
+        isValidTitle() {
+            console.log(this.book.title)
+            if (this.book.title.length > 3) {
+                return true
+            }
+
+            return false
+        },
+        isValidAuthor() {
+            if (this.book.author.length > 3) {
+                return true
+            }
+
+            return false
+        },
+        isValidCurrentPage() {
+            if (Number(this.book.currentPage) < Number(this.book.pages)) {
+                return true
+            }
+
+            return false
+        },
+        isValidTotalPage() {
+            if (Number(this.book.pages) > 0) {
+                return true
+            }
+
+            return false
+        },
         clientApollo() {
             const httpLink = createHttpLink({
                 uri: new URL(import.meta.env.VITE_BOOKUE_API),
