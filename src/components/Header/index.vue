@@ -1,6 +1,7 @@
 <template>
     <header>
         <LoginAndRegisterButton v-if="!isLogged" :border="isBorder" :title="title" :isHeader="true"/>
+        
         <div v-if="isLogged" class="home">
             <router-link to="/home">
                 <button v-if="!isHome" class="home__back-button">
@@ -9,7 +10,11 @@
                     </svg>
                 </button>
             </router-link>
-            <BrandName />
+
+            <router-link to="/home">
+                <BrandName />
+            </router-link>
+
             <router-link to="/add-book">
                 <svg v-if="isHome" class="home__addTask" width="30" height="30" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <line y1="8" x2="16" y2="8" stroke="#04B2D9" stroke-width="2"/>
