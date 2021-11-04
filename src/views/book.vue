@@ -1,7 +1,10 @@
 <template>
     <div class="book">
          <Header :isLogged="true" :isBorder="false" :isHome="true" title="Sign up"/>
+
          <main class="book__content">
+            <button @click="deleteBook">Delete</button>
+
              <article>
                  <div class="book__head-content">
                     <h1 class="book__title">{{ book.title }}</h1>
@@ -40,7 +43,7 @@
                  </ul>
             </article>
 
-            <button @click="saveUpdatedBookInDatabase">Save</button>
+            <button @click="saveUpdatedBook">Save</button>
          </main>
     </div>
 </template>
@@ -77,7 +80,8 @@ export default {
                 description: null,
                 currentPage: null,
                 pages: null
-            }
+            },
+            editingMode: false
         }
     },
     beforeMount() {
@@ -108,9 +112,26 @@ export default {
             this.book = book;
         },
         editProps(label) {
+            if (!this.isValidBookUpdate(label)) {
+                return
+            }
+
+            if (!this.editingMode) {
+                this.editingMode = true
+            }
+
             this.edit[label] = !this.edit[label]
         },
         async saveUpdatedBook() {
+            if (this.edit.title && this.edit.author && this.edit.description && this.edit.currentPage && this.edit.pages) {
+                return
+            }
+
+            if (!this.editingMode) {
+                this.goToHomePage()
+                return
+            }
+
             const response = await this.clientApollo().mutate({ mutation: gql`mutation ($newTitle: String, $newAuthor: String, $newDescription: String, $newCurrentPage: String, $newPages: String, $updateBookId: String) {
                 updateBook(newTitle: $newTitle, newAuthor: $newAuthor, newDescription: $newDescription, newCurrentPage: $newCurrentPage, newPages: $newPages, id: $updateBookId) {
                     id
@@ -126,7 +147,25 @@ export default {
                 }
             })
 
+
             if (!response.data.updateBook) {
+                return
+            }
+
+            this.goToHomePage()
+        },
+        async deleteBook() {
+            const response = await this.clientApollo().mutate({ mutation: gql`mutation Mutation($deleteBookId: String) {
+                deleteBook(id: $deleteBookId) {
+                    id
+                }}`,
+
+                variables: {
+                    deleteBookId: this.book.id,
+                }
+            })
+
+            if (!response.data.deleteBook) {
                 return
             }
 
