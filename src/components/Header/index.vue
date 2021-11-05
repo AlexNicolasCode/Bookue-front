@@ -1,6 +1,11 @@
 <template>
     <header>
-        <LoginAndRegisterButton v-if="!isLogged" :border="isBorder" :title="title" :isHeader="true"/>
+        <LoginAndRegisterButton 
+            v-if="!isLogged" 
+            :border="isBorder" 
+            :title="title" 
+            :isHeader="true" 
+        />
         
         <div v-if="isLogged" class="home">
             <router-link to="/home">
