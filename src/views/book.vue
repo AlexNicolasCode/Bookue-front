@@ -1,49 +1,45 @@
 <template>
-    <div class="book">
+    <div class="book-page">
          <Header :isLogged="true" :isBorder="false" :isHome="true" title="Sign up"/>
 
-         <main class="book__content">
-            <button @click="deleteBook">Delete</button>
+         <main class="book-page__content">
+            <section v-if="!isSettingCurrentPage" class="details__header-content">
+                <h1 class="details__title">{{ book.title }}</h1>
 
-             <article>
-                 <div class="book__head-content">
-                    <h1 class="book__title">{{ book.title }}</h1>
-                    <div>
-                        Progress
-                        <span>{{ book.currentPage / book.pages * 100 }}%</span>
-                    </div>
-                 </div>
+                <div class="details__progress">
+                    <p>Progress</p>
+                    <p class="details__percentage">{{ book.currentPage / book.pages * 100 }}%</p>
+                </div>
+            </section>
 
-                 <ul class="book__details">
-                    <li class="book__item">
-                        <p v-if="!edit.title" class="book__text">{{ book.title }}</p>
-                        <input v-if="edit.title" class="book__input" v-model="book.title" />
-                        <button @click="editProps('title')">edit</button>
-                    </li>
-                    <li class="book__item">
-                        <p v-if="!edit.author" class="book__text">{{ book.author }}</p>
-                        <input v-if="edit.author" class="book__input" v-model="book.author" />
-                        <button @click="editProps('author')">edit</button>
-                    </li>
-                    <li class="book__item">
-                        <p v-if="!edit.description" class="book__text">{{ book.description }}</p>
-                        <input v-if="edit.description" class="book__input" v-model="book.description" />
-                        <button @click="editProps('description')">edit</button>
-                    </li>
-                    <li class="book__item">
-                        <p v-if="!edit.currentPage" class="book__text">{{ book.currentPage }}</p>
-                        <input v-if="edit.currentPage" class="book__input" v-model="book.currentPage" />
-                        <button @click="editProps('currentPage')">edit</button>
-                    </li>
-                    <li class="book__item">
-                        <p v-if="!edit.pages" class="book__text">{{ book.pages }}</p>
-                        <input v-if="edit.pages" class="book__input" v-model="book.pages" />
-                        <button @click="editProps('pages')">edit</button>
+             <section v-if="!isSettingCurrentPage" class="details">
+                 <ul class="details__list">
+                    <li class="details__item" v-for="(bookItem, label) in book" :key="label">
+                        <label v-if="label !== 'id' && label !== '__typename'" class="details__label" :for="bookItem">{{ label }}</label>
+                        <div v-if="label !== 'id' && label !== 'id' && label !== '__typename'" class="details__content">
+                            <p v-if="!edit[label]" class="details__text">{{ bookItem }}</p>
+                            <input v-if="edit[label]" class="details__input" v-model="book[label]" />
+                            <button v-if="label !== 'id' && label !== 'currentPage'" class="details__edit-button" @click="editProps(label)">edit</button>
+                            <button v-if="label !== 'id' && label === 'currentPage'" class="details__edit-button" @click="setCurrentPage(label)">edit</button>
+                        </div>
                     </li>
                  </ul>
-            </article>
+            </section>
 
-            <button @click="saveUpdatedBook">Save</button>
+            <section v-if="isSettingCurrentPage" class="current-page">
+                <div class="current-page__content">
+                    <p class="current-page__count">{{ book.currentPage }}</p>
+                    <div class="current-page__options">
+                        <button class="current-page__btn current-page__more" @click="morePage">more</button>
+                        <button class="current-page__btn current-page__less" @click="lessPage">less</button>
+                    </div>
+                </div>
+            </section>
+
+            <section class="option">
+                <button v-if="!isSettingCurrentPage" class="option__delete" @click="deleteBook">Delete</button>
+                <button class="option__save" @click="saveUpdatedBook">Save</button>
+            </section>
          </main>
     </div>
 </template>
@@ -75,13 +71,14 @@ export default {
                 pages: null
             },
             edit: {
-                title: null,
-                author: null,
-                description: null,
-                currentPage: null,
-                pages: null
+                title: false,
+                author: false,
+                description: false,
+                currentPage: false,
+                pages: false
             },
-            editingMode: false
+            editingMode: false,
+            isSettingCurrentPage: false
         }
     },
     beforeMount() {
@@ -91,12 +88,12 @@ export default {
         async getBookData() {
             const response = await this.clientApollo().query({ query: gql`query ($getBookId: String) {
                 getBook(id: $getBookId) {
-                    pages
-                    currentPage
-                    description
-                    author
-                    title
                     id
+                    title
+                    author
+                    description
+                    currentPage
+                    pages
                 }}`,
 
                 variables: {
@@ -123,6 +120,11 @@ export default {
             this.edit[label] = !this.edit[label]
         },
         async saveUpdatedBook() {
+            if (this.isSettingCurrentPage) {
+                this.edit["currentPage"] = false
+                this.book.currentPage = String(this.book.currentPage)
+            }
+
             if (this.edit.title && this.edit.author && this.edit.description && this.edit.currentPage && this.edit.pages) {
                 return
             }
@@ -131,6 +133,7 @@ export default {
                 this.goToHomePage()
                 return
             }
+
 
             const response = await this.clientApollo().mutate({ mutation: gql`mutation ($newTitle: String, $newAuthor: String, $newDescription: String, $newCurrentPage: String, $newPages: String, $updateBookId: String) {
                 updateBook(newTitle: $newTitle, newAuthor: $newAuthor, newDescription: $newDescription, newCurrentPage: $newCurrentPage, newPages: $newPages, id: $updateBookId) {
@@ -146,7 +149,6 @@ export default {
                     newPages: this.book.pages
                 }
             })
-
 
             if (!response.data.updateBook) {
                 return
@@ -174,6 +176,24 @@ export default {
         goToHomePage() {
             router.push({ path: "/home" })
         },
+        setCurrentPage(label) {
+            this.isSettingCurrentPage = !this.isSettingCurrentPage
+            this.editProps(label)
+        },
+        morePage() {
+            if (Number(this.book.currentPage) === Number(this.book.pages)) {
+                return
+            }
+
+            this.book.currentPage = Number(this.book.currentPage) + 1
+        },
+        lessPage() {
+            if (Number(this.book.currentPage) === 0) {  
+                return
+            }
+
+            this.book.currentPage = Number(this.book.currentPage) - 1
+        },
         isValidBookUpdate(label) {
             const optionsToValidate = {
                 "title": this.isValidTitle,
@@ -189,7 +209,6 @@ export default {
             return true
         },
         isValidTitle() {
-            console.log(this.book.title)
             if (this.book.title.length > 3) {
                 return true
             }
@@ -241,3 +260,155 @@ export default {
     }
 }
 </script>
+
+<style>
+.book-page {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.book-page__content {
+    width: 365px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 90vh;
+}
+
+.details__header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 365px;
+    height: auto;
+}
+
+.details__title {
+    font-size: 30px;
+    font-weight: 800;
+}
+
+.details__progress {
+    width: 90px;
+    height: 60px;
+    font-size: 20px;
+    text-align: right;
+}
+
+.details__percentage {
+    font-weight: 800;
+}
+
+.details {
+    font-size: 12px;
+}
+
+.details__list {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 250px;
+}
+
+.details__item {
+    height: 40px;
+}
+
+.details__item:first-child {
+    display: none;
+}
+
+.details__item:last-child {
+    display: none;
+}
+
+.details__label {
+    text-transform: capitalize;    
+    color: var(--placeholder-color);
+}
+
+.details__content {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+}
+
+.details__text {
+    font-weight: 600;
+}
+
+.details__edit-button {
+    color: var(--primary-color);
+    font-weight: 800;
+    width: auto;
+    height: auto;
+}
+
+.option {
+    display: flex;
+    width: 100%;
+    height: 40px;
+    margin-top: 60px;
+}
+
+.option__delete {
+    line-height: 40px;
+    width: 40px;
+    height: 40px;
+    margin-right: 24px;
+    color: var(--placeholder-color);
+    margin-left: auto
+}
+
+.option__save {
+    width: 80px;
+    height: 40px;
+    font-size: 16px;
+    border-radius: 2.5px;
+    background: var(--primary-color);
+    color: var(--white-color);
+}
+
+.current-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 90vh;
+}
+
+.current-page__content {
+    display: flex;
+    height: 108px;
+}
+
+.current-page__count {
+    display: flex;
+    align-items: center;
+    font-size: 60px;
+    margin-right: 24px;
+}
+
+.current-page__options {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.current-page__btn {
+    width: 50px;
+    height: 50px;
+    border-radius: 2.5px;
+}
+
+.current-page__more {
+    background: var(--primary-color);
+    margin-bottom: auto;
+}
+
+.current-page__less {
+    border: solid var(--primary-color);
+}
+</style>
