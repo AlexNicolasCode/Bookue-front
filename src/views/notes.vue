@@ -3,8 +3,18 @@
 
     <main>
         <ul v-if="notes">
-            <li v-for="(note, index) in notes" :key="index">{{ note.text }}</li>
+            <li v-for="(note, index) in notes" :key="index">{{ note.text }}
+                <button v-if="isTashMode" @click="deleteNote(note.id)">Delete</button>
+            </li>
         </ul>
+
+        <button v-if="!isAddingNote" @click="startNote">Plus</button>
+
+        <textarea v-if="isAddingNote" v-model="newNote" />
+        <button v-if="isAddingNote" @click="addNote">Add</button>
+        <button v-if="isAddingNote" @click="discartNote">Discart</button>
+
+        <button v-if="!isAddingNote" @click="handleNote">Tash</button>
     </main>
 </template>
 
@@ -25,7 +35,10 @@ export default {
     },
     data() {
         return {
-            notes: null
+            notes: null,
+            newNote: null,
+            isAddingNote: false,
+            isTashMode: false
         }
     },
     beforeMount() {
@@ -54,28 +67,43 @@ export default {
             } catch(e) {
                 return
             }
-
-
+        },
+        startNote() {
+            this.isAddingNote = true
+        },
+        discartNote() {
+            this.isAddingNote = false
+            this.cleanInputs()
+        },
+        async addNote() {
+            const noteID = await this.saveBookNotes();
+            this.notes = [...this.notes, { _id: noteID, text: newNote }]
+            this.cleanInputs()
+        },
+        cleanInputs() {
+            this.newNote = null
+            this.isAddingNote = false
         },
         async saveBookNotes() {
-            const response = await this.clientApollo().mutate({ mutation: gql`mutation ($newTitle: String, $newAuthor: String, $newDescription: String, $newCurrentPage: String, $newPages: String, $updateBookId: String) {
-                updateBook(newTitle: $newTitle, newAuthor: $newAuthor, newDescription: $newDescription, newCurrentPage: $newCurrentPage, newPages: $newPages, id: $updateBookId) {
+            const response = await this.clientApollo().mutate({ mutation: gql`mutation Mutation($note: String, $bookId: String) {
+                addNote(note: $note, bookID: $bookId) {
                     id
                 }}`,
 
                 variables: {
-                    updateBookId: this.book.id,
-                    newTitle: this.book.title,
-                    newAuthor: this.book.author,
-                    newDescription: this.book.description,
-                    newCurrentPage: this.book.currentPage,
-                    newPages: this.book.pages
+                    note: this.newNote,
+                    bookId: this.$route.query.bookId,
                 }
             })
 
             if (!response.data.updateBook) {
                 return
             }
+
+            return response.data.updateBook.id
+        },
+        handleNote() {
+            this.isTashMode = !this.isTashMode
         },
         clientApollo() {
             const httpLink = createHttpLink({
