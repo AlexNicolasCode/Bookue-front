@@ -21,7 +21,7 @@
             </li>
 
             <li class="notes__item" v-if="isAddingNote">
-                <textarea class="notes__text" v-model="newNote" />
+                <textarea class="notes__text" v-model="newNote" @keyup.enter="addNote"/>
                 <div class="notes__options">
                     <button class="notes__btn notes__save-btn" v-if="!isEditMode" @click="addNote">
                         <img class="notes__img" src="../assets/save.svg" alt="Delete icon">
