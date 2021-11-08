@@ -38,12 +38,13 @@
             </li>
         </ul>
 
-        <p class="notes__not-found" v-if="!notes">This book have't note</p>
 
         <button class="notes__btn notes__add-btn" v-if="!isAddingNote && !isTashMode" @click="startNote">
             <img class="notes__img" src="../assets/add.svg" alt="Delete icon">
         </button>
 
+        <p class="notes__not-found" v-if="!notes">This book have't note</p>
+        <p class="notes__not-found" v-if="alert.repeatedNote">This note already exist</p>
 
         <button 
             :class="isTashMode ? 'notes__btn notes__tash-btn--alert' : 'notes__btn notes__tash-btn'" 
@@ -76,7 +77,10 @@ export default {
             newNote: "",
             isAddingNote: false,
             isTashMode: false,
-            isEditMode: false
+            isEditMode: false,
+            alert: { 
+                repeatedNote: false
+            }
         }
     },
     beforeMount() {
@@ -128,7 +132,7 @@ export default {
             if (response.data.deleteNote.id) {
                 this.getBookData();
                 this.notes = this.notes.filter((note) => note.id !== noteId);
-                
+
                 if (!this.notes[0]) {
                     this.notes = null;
                     this.isTashMode = false;
@@ -136,15 +140,24 @@ export default {
             }
         },
         async addNote() {
-            if (this.newNote) {
+            if (this.isRepeatedNote()) {
+                this.alert.repeatedNote = true
+                return
+            }
+
+            if (this.newNote && this.newNote.length > 3) {
                 await this.saveBookNotes();
                 this.cleanInputs();
                 this.isAddingNote = false
                 this.getBookData();
+                this.alert.repeatedNote = false
             }
         },
         cleanInputs() {
             this.newNote = ""
+        },
+        isRepeatedNote() {
+            return this.notes.find((note) => note.text === this.newNote) ? true : false
         },
         async saveBookNotes() {
             const response = await this.clientApollo().mutate({ mutation: gql`mutation Mutation($note: String, $bookId: String) {
