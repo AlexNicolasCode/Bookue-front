@@ -26,7 +26,7 @@ export default {
     data() {
         return {
             detailsPage: `/book?bookId=${this.book.id}`,
-            notesPage: `/book/notes?bookID=${this.book.id}`
+            notesPage: `/book/notes?title=${this.book.title}&bookID=${this.book.id}`
         }
     }
 }
