@@ -1,20 +1,49 @@
 <template>
     <Header :isLogged="true" :title="book"/>
 
-    <main>
-        <ul v-if="notes">
-            <li v-for="(note, index) in notes" :key="index">{{ note.text }}
-                <button v-if="isTashMode" @click="deleteNote(note.id)">Delete</button>
+    <main class="notes">
+        <h1>{{ $route.query.title }}</h1>
+
+        <ul class="notes__content" v-if="notes">
+            <li class="notes__item" v-for="(note, index) in notes" :key="index">
+                <p :class="isTashMode ? 'notes__text--alert' : 'notes__text'" v-if="!isEditMode">{{ note.text }}</p>
+                <textarea class="notes__text" v-if="isEditMode" :value="note.text"/>
+
+                <div class="notes__options" v-if="isEditNode || isTashMode">
+                    <button class="notes__btn notes__save-btn" v-if="isEditMode" @click="deleteNote(note.id)">
+                        <img class="notes__img" src="../assets/save.svg" alt="Delete icon">
+                    </button>
+
+                    <button :class="isTashMode ? 'notes__btn notes__delete-btn--alert' : 'notes__btn notes__delete-btn'" v-if="isTashMode" @click="deleteNote(note.id)">
+                        <img class="notes__img" src="../assets/remove.svg" alt="Delete icon">
+                    </button>
+                </div>
+            </li>
+
+            <li class="notes__item" v-if="isAddingNote">
+                <textarea class="notes__text" v-model="newNote" />
+                <div class="notes__options">
+                    <button class="notes__btn notes__save-btn" v-if="!isEditMode" @click="deleteNote(note.id)">
+                        <img class="notes__img" src="../assets/save.svg" alt="Delete icon">
+                    </button>
+
+                    <button class="notes__btn notes__delete-btn" v-if="!isTashMode" @click="deleteNote(note.id)">
+                        <img class="notes__img" src="../assets/remove.svg" alt="Delete icon">
+                    </button>
+                </div>
             </li>
         </ul>
 
-        <button v-if="!isAddingNote" @click="startNote">Plus</button>
+        <p class="notes__not-found" v-if="!notes">This book have't note</p>
 
-        <textarea v-if="isAddingNote" v-model="newNote" />
-        <button v-if="isAddingNote" @click="addNote">Add</button>
-        <button v-if="isAddingNote" @click="discartNote">Discart</button>
+        <button class="notes__btn notes__add-btn" v-if="!isAddingNote && !isTashMode" @click="startNote">
+            <img class="notes__img" src="../assets/add.svg" alt="Delete icon">
+        </button>
 
-        <button v-if="!isAddingNote" @click="handleNote">Tash</button>
+
+        <button :class="isTashMode ? 'notes__btn notes__tash-btn--alert' : 'notes__btn notes__tash-btn'" v-if="notes && !isAddingNote" @click="handleNote">
+             <img class="notes__img" src="../assets/trash.svg" alt="Delete icon">
+        </button>
     </main>
 </template>
 
@@ -38,7 +67,8 @@ export default {
             notes: null,
             newNote: null,
             isAddingNote: false,
-            isTashMode: false
+            isTashMode: false,
+            isEditMode: false
         }
     },
     beforeMount() {
@@ -57,9 +87,9 @@ export default {
                         bookId: this.$route.query.bookId,
                     }
                 })
-    
+
                 const notes = response.data.getNotes
-                if (!response) {
+                if (!notes || notes[0] === undefined) {
                     return
                 }
 
@@ -105,6 +135,7 @@ export default {
         handleNote() {
             this.isTashMode = !this.isTashMode
         },
+        
         clientApollo() {
             const httpLink = createHttpLink({
                 uri: new URL(import.meta.env.VITE_BOOKUE_API),
@@ -129,3 +160,96 @@ export default {
     }
 }
 </script>
+
+<style>
+.notes {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.notes__content {
+    width: 365px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-top: 24px;
+}
+
+.notes__item {
+    margin-top: 16px
+}
+
+.notes__text {
+    background-color: var(--gray-color);
+    color: var(--primary-font-color);
+    font-size: 16px;
+    height: auto;
+    padding: 30px;
+    width: 305px;
+}
+
+.notes__text--alert {
+    background-color: #F9ECE6;
+    color: var(--primary-font-color);
+    font-size: 16px;
+    height: auto;
+    padding: 30px;
+    width: 305px;
+}
+
+.notes__btn {
+    border-radius: 100px;
+    height: 40px;
+    width: 40px;
+}
+
+.notes__add-btn {
+    background-color: var(--primary-color);
+    margin-top: 24px;
+}
+
+.notes__save-btn {
+    background-color: var(--primary-color);
+    margin-right: 8px;
+}
+
+.notes__tash-btn {
+    background-color: var(--strong-gray-color);
+    position: absolute;
+    right: 16px;
+    bottom: 16px;
+}
+
+.notes__tash-btn--alert {
+    background-color: var(--alert-color);
+    position: absolute;
+    right: 16px;
+    bottom: 16px;
+}
+
+.notes__delete-btn {
+    background-color: var(--primary-color);
+}
+
+.notes__delete-btn--alert {
+    background-color: var(--alert-color);
+}
+
+.notes__img {
+    width: 25px;
+    height: 25px;
+}
+
+.notes__options {
+    float: right;
+    position: relative;
+    margin-top: -16px;
+}
+
+.notes__not-found {
+    color: var(--placeholder-color);
+    margin-top: 16px;
+}
+</style>
