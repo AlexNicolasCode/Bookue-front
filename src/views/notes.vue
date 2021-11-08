@@ -27,7 +27,7 @@
                         <img class="notes__img" src="../assets/save.svg" alt="Delete icon">
                     </button>
 
-                    <button class="notes__btn notes__delete-btn" v-if="!isTashMode" @click="deleteNote(note.id)">
+                    <button class="notes__btn notes__delete-btn" v-if="!isTashMode" @click="cancelNote">
                         <img class="notes__img" src="../assets/remove.svg" alt="Delete icon">
                     </button>
                 </div>
@@ -101,6 +101,10 @@ export default {
         startNote() {
             this.isAddingNote = true
         },
+        cancelNote() {
+            this.isAddingNote = false;
+            this.cleanInputs();
+        },
         discartNote() {
             this.isAddingNote = false
             this.cleanInputs()
@@ -109,12 +113,12 @@ export default {
             if (this.newNote) {
                 await this.saveBookNotes();
                 this.cleanInputs();
+                this.isAddingNote = false
                 this.getBookData();
             }
         },
         cleanInputs() {
             this.newNote = ""
-            this.isAddingNote = false
         },
         async saveBookNotes() {
             const response = await this.clientApollo().mutate({ mutation: gql`mutation Mutation($note: String, $bookId: String) {
