@@ -1,15 +1,15 @@
 <template>
-    <Header :isLogged="true" :title="book"/>
+    <Header :isLogged="true"/>
 
     <main class="notes">
         <h1>{{ $route.query.title }}</h1>
 
-        <ul class="notes__content" v-if="notes">
+        <ul class="notes__content" v-if="notes || isAddingNote">
             <li class="notes__item" v-for="(note, index) in notes" :key="index">
                 <p :class="isTashMode ? 'notes__text--alert' : 'notes__text'" v-if="!isEditMode">{{ note.text }}</p>
                 <textarea class="notes__text" v-if="isEditMode" :value="note.text"/>
 
-                <div class="notes__options" v-if="isEditNode || isTashMode">
+                <div class="notes__options" v-if="isTashMode">
                     <button class="notes__btn notes__save-btn" v-if="isEditMode" @click="deleteNote(note.id)">
                         <img class="notes__img" src="../assets/save.svg" alt="Delete icon">
                     </button>
@@ -23,7 +23,7 @@
             <li class="notes__item" v-if="isAddingNote">
                 <textarea class="notes__text" v-model="newNote" />
                 <div class="notes__options">
-                    <button class="notes__btn notes__save-btn" v-if="!isEditMode" @click="deleteNote(note.id)">
+                    <button class="notes__btn notes__save-btn" v-if="!isEditMode" @click="addNote">
                         <img class="notes__img" src="../assets/save.svg" alt="Delete icon">
                     </button>
 
@@ -65,7 +65,7 @@ export default {
     data() {
         return {
             notes: null,
-            newNote: null,
+            newNote: "",
             isAddingNote: false,
             isTashMode: false,
             isEditMode: false
@@ -106,12 +106,14 @@ export default {
             this.cleanInputs()
         },
         async addNote() {
-            const noteID = await this.saveBookNotes();
-            this.notes = [...this.notes, { _id: noteID, text: newNote }]
-            this.cleanInputs()
+            if (this.newNote) {
+                await this.saveBookNotes();
+                this.cleanInputs();
+                this.getBookData();
+            }
         },
         cleanInputs() {
-            this.newNote = null
+            this.newNote = ""
             this.isAddingNote = false
         },
         async saveBookNotes() {
