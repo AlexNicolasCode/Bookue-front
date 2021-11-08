@@ -14,7 +14,11 @@
                         <img class="notes__img" src="../assets/save.svg" alt="Delete icon">
                     </button>
 
-                    <button :class="isTashMode ? 'notes__btn notes__delete-btn--alert' : 'notes__btn notes__delete-btn'" v-if="isTashMode" @click="deleteNote(note.id)">
+                    <button 
+                        :class="isTashMode ? 'notes__btn notes__delete-btn--alert' : 'notes__btn notes__delete-btn'" 
+                        v-if="isTashMode" 
+                        @click="isTashMode ? deleteNote(note.id) : cancelEdit(note.id)"
+                    >
                         <img class="notes__img" src="../assets/remove.svg" alt="Delete icon">
                     </button>
                 </div>
@@ -41,7 +45,11 @@
         </button>
 
 
-        <button :class="isTashMode ? 'notes__btn notes__tash-btn--alert' : 'notes__btn notes__tash-btn'" v-if="notes && !isAddingNote" @click="handleNote">
+        <button 
+            :class="isTashMode ? 'notes__btn notes__tash-btn--alert' : 'notes__btn notes__tash-btn'" 
+            v-if="notes && !isAddingNote" 
+            @click="handleNote"
+        >
              <img class="notes__img" src="../assets/trash.svg" alt="Delete icon">
         </button>
     </main>
@@ -105,9 +113,27 @@ export default {
             this.isAddingNote = false;
             this.cleanInputs();
         },
-        discartNote() {
-            this.isAddingNote = false
-            this.cleanInputs()
+        async deleteNote(noteId) {
+            const response = await this.clientApollo().mutate({ mutation: gql`mutation DeleteNote($bookId: String, $noteId: String) {
+                deleteNote(bookID: $bookId, noteID: $noteId) {
+                    id
+                }}`,
+
+                variables: {
+                    noteId: noteId,
+                    bookId: this.$route.query.bookId,
+                }
+            })
+
+            if (response.data.deleteNote.id) {
+                this.getBookData();
+                this.notes = this.notes.filter((note) => note.id !== noteId);
+                
+                if (!this.notes[0]) {
+                    this.notes = null;
+                    this.isTashMode = false;
+                }
+            }
         },
         async addNote() {
             if (this.newNote) {
