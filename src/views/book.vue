@@ -229,7 +229,7 @@ export default {
             return false
         },
         isValidCurrentPage() {
-            if (Number(this.book.currentPage) < Number(this.book.pages)) {
+            if (Number(this.book.currentPage) < Number(this.book.pages) || Number(this.book.currentPage) === Number(this.book.pages)) {
                 return true
             }
 
