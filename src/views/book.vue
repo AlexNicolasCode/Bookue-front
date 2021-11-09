@@ -29,9 +29,15 @@
             <section v-if="isSettingCurrentPage" class="current-page">
                 <div class="current-page__content">
                     <p class="current-page__count">{{ book.currentPage }}</p>
+
                     <div class="current-page__options">
-                        <button class="current-page__btn current-page__more" @click="morePage">more</button>
-                        <button class="current-page__btn current-page__less" @click="lessPage">less</button>
+                        <button class="current-page__btn current-page__more" @click="morePage">
+                            <img class="current-page__img" src="../assets/add.svg" alt="add button">
+                        </button>
+
+                        <button class="current-page__btn current-page__less" @click="lessPage">
+                             <img class="current-page__img" src="../assets/less-current-page.svg" alt="add button">
+                        </button>
                     </div>
                 </div>
             </section>
@@ -410,5 +416,10 @@ export default {
 
 .current-page__less {
     border: solid var(--primary-color);
+}
+
+.current-page__img {
+    height: 30px;
+    width: 30px;
 }
 </style>
