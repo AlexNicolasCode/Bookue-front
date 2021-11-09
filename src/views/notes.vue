@@ -89,14 +89,14 @@ export default {
     methods: {
         async getBookData() {
             try {
-                const response = await this.clientApollo().query({ query: gql`query GetBook($bookId: String) {
-                    getNotes(bookID: $bookId) {
+                const response = await this.clientApollo().query({ query: gql`query GetBook($bookID: String) {
+                    getNotes(bookID: $bookID) {
                         id
                         text
                     }}`,
     
                     variables: {
-                        bookId: this.$route.query.bookId,
+                        bookID: this.$route.query.bookID,
                     }
                 })
 
@@ -118,14 +118,14 @@ export default {
             this.cleanInputs();
         },
         async deleteNote(noteId) {
-            const response = await this.clientApollo().mutate({ mutation: gql`mutation DeleteNote($bookId: String, $noteId: String) {
-                deleteNote(bookID: $bookId, noteID: $noteId) {
+            const response = await this.clientApollo().mutate({ mutation: gql`mutation DeleteNote($bookID: String, $noteId: String) {
+                deleteNote(bookID: $bookID, noteID: $noteId) {
                     id
                 }}`,
 
                 variables: {
                     noteId: noteId,
-                    bookId: this.$route.query.bookId,
+                    bookID: this.$route.query.bookID,
                 }
             })
 
@@ -174,14 +174,14 @@ export default {
             return this.notes.find((note) => note.text.trim() === String(this.newNote).trim()) ? true : false
         },
         async saveBookNotes() {
-            const response = await this.clientApollo().mutate({ mutation: gql`mutation Mutation($note: String, $bookId: String) {
-                addNote(note: $note, bookID: $bookId) {
+            const response = await this.clientApollo().mutate({ mutation: gql`mutation Mutation($note: String, $bookID: String) {
+                addNote(note: $note, bookID: $bookID) {
                     id
                 }}`,
 
                 variables: {
                     note: this.newNote,
-                    bookId: this.$route.query.bookId,
+                    bookID: this.$route.query.bookID,
                 }
             })
 

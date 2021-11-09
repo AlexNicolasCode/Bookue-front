@@ -25,7 +25,7 @@ export default {
 	props:  ["book"],
     data() {
         return {
-            detailsPage: `/book?bookId=${this.book.id}`,
+            detailsPage: `/book?bookID=${this.book.id}`,
             notesPage: `/book/notes?title=${this.book.title}&bookID=${this.book.id}`
         }
     }
