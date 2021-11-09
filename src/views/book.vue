@@ -163,13 +163,13 @@ export default {
             this.goToHomePage()
         },
         async deleteBook() {
-            const response = await this.clientApollo().mutate({ mutation: gql`mutation Mutation($deletebookID: String) {
-                deleteBook(id: $deletebookID) {
+            const response = await this.clientApollo().mutate({ mutation: gql`mutation ($id: String!) {
+                deleteBook(id: $id) {
                     id
                 }}`,
 
                 variables: {
-                    deletebookID: this.book.id,
+                    id: this.$route.query.bookID,
                 }
             })
 
