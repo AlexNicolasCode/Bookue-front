@@ -157,7 +157,11 @@ export default {
             this.newNote = ""
         },
         isRepeatedNote() {
-            return this.notes.find((note) => note.text === this.newNote) ? true : false
+            if (!this.notes) {
+                return false
+            }
+
+            return this.notes.find((note) => note.text.trim() === String(this.newNote).trim()) ? true : false
         },
         async saveBookNotes() {
             const response = await this.clientApollo().mutate({ mutation: gql`mutation Mutation($note: String, $bookId: String) {
