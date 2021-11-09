@@ -140,8 +140,8 @@ export default {
             }
         },
         async addNote() {
-            if (this.isRepeatedNote()) {
-                this.alert.repeatedNote = true
+            if (this.isRepeatedNote() || !this.isValidNote()) {
+                this.alertRepeatedNote()
                 return
             }
 
@@ -155,6 +155,16 @@ export default {
         },
         cleanInputs() {
             this.newNote = ""
+        },
+        alertRepeatedNote() {
+            this.alert.repeatedNote = true
+
+            setTimeout(() => {
+                this.alert.repeatedNote = false
+            }, 10000)
+        },
+        isValidNote() {
+            return this.newNote.trim().length !== 0
         },
         isRepeatedNote() {
             if (!this.notes) {
