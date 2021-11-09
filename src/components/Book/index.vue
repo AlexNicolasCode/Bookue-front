@@ -12,7 +12,7 @@
             </div>
 
             <div class="book__options">
-                <button class="book__btn book__notes">Notes</button>
+                <router-link :to="notesPage"><button class="book__btn book__notes">Notes</button></router-link>
                 <router-link :to="detailsPage"><button class="book__btn book__details">Details</button></router-link>
             </div>
         </article>
@@ -25,7 +25,8 @@ export default {
 	props:  ["book"],
     data() {
         return {
-            detailsPage: `/book?bookId=${this.book.id}`
+            detailsPage: `/book?bookID=${this.book.id}`,
+            notesPage: `/book/notes?title=${this.book.title}&bookID=${this.book.id}`
         }
     }
 }
