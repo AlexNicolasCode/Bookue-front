@@ -86,8 +86,8 @@ export default {
     },
     methods: {
         async getBookData() {
-            const response = await this.clientApollo().query({ query: gql`query ($getBookId: String) {
-                getBook(id: $getBookId) {
+            const response = await this.clientApollo().query({ query: gql`query ($getbookID: String) {
+                getBook(id: $getbookID) {
                     id
                     title
                     author
@@ -97,7 +97,7 @@ export default {
                 }}`,
 
                 variables: {
-                    getBookId: this.$route.query.bookId,
+                    getbookID: this.$route.query.bookID,
                 }
             })
 
@@ -135,13 +135,13 @@ export default {
             }
 
 
-            const response = await this.clientApollo().mutate({ mutation: gql`mutation ($newTitle: String, $newAuthor: String, $newDescription: String, $newCurrentPage: String, $newPages: String, $updateBookId: String) {
-                updateBook(newTitle: $newTitle, newAuthor: $newAuthor, newDescription: $newDescription, newCurrentPage: $newCurrentPage, newPages: $newPages, id: $updateBookId) {
+            const response = await this.clientApollo().mutate({ mutation: gql`mutation ($newTitle: String, $newAuthor: String, $newDescription: String, $newCurrentPage: String, $newPages: String, $updatebookID: String) {
+                updateBook(newTitle: $newTitle, newAuthor: $newAuthor, newDescription: $newDescription, newCurrentPage: $newCurrentPage, newPages: $newPages, id: $updatebookID) {
                     id
                 }}`,
 
                 variables: {
-                    updateBookId: this.book.id,
+                    updatebookID: this.book.id,
                     newTitle: this.book.title,
                     newAuthor: this.book.author,
                     newDescription: this.book.description,
@@ -157,13 +157,13 @@ export default {
             this.goToHomePage()
         },
         async deleteBook() {
-            const response = await this.clientApollo().mutate({ mutation: gql`mutation Mutation($deleteBookId: String) {
-                deleteBook(id: $deleteBookId) {
+            const response = await this.clientApollo().mutate({ mutation: gql`mutation Mutation($deletebookID: String) {
+                deleteBook(id: $deletebookID) {
                     id
                 }}`,
 
                 variables: {
-                    deleteBookId: this.book.id,
+                    deletebookID: this.book.id,
                 }
             })
 

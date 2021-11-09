@@ -18,6 +18,12 @@ input {
     box-shadow: none;
 }
 
+textarea {
+    font-family: "Poppins", sans-serif;
+    border: none;
+    resize: none;
+}
+
 textarea:focus {
     outline: none;
 }
