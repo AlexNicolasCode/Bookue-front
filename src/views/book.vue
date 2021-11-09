@@ -135,11 +135,14 @@ export default {
                 return
             }
 
+            if (!this.isValidFields()) {
+                return
+            }
+
             if (!this.editingMode) {
                 this.goToHomePage()
                 return
             }
-
 
             const response = await this.clientApollo().mutate({ mutation: gql`mutation ($newTitle: String, $newAuthor: String, $newDescription: String, $newCurrentPage: String, $newPages: String, $updatebookID: String) {
                 updateBook(newTitle: $newTitle, newAuthor: $newAuthor, newDescription: $newDescription, newCurrentPage: $newCurrentPage, newPages: $newPages, id: $updatebookID) {
@@ -241,6 +244,22 @@ export default {
             }
 
             return false
+        },
+        isValidFields() {
+            const fields = [
+                "title",
+                "author",
+                "currentPage",
+                "pages"
+            ]
+
+            for (let i = 0; i < fields.length; i++) {
+                if (!this.isValidBookUpdate(fields[i])) {
+                    return false
+                }
+            }
+
+            return true
         },
         clientApollo() {
             const httpLink = createHttpLink({
