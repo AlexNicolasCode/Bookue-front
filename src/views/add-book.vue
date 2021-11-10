@@ -62,7 +62,13 @@ export default {
             }
         }
     },
+    beforeMount() {
+        this.setHeadTitle()
+    },
     methods: {
+        setHeadTitle() {
+            document.title = `Add Book - Bookue`
+        },
         async submitForm(e) {
             e.preventDefault();
 
