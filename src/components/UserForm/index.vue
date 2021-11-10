@@ -103,8 +103,7 @@ export default {
             }
 
             const token = await this.getCreateAccountToken()
-
-            if (token) {
+            if (!token) {
                 this.isInvalidForm = true
                 return
             }
