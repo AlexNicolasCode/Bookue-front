@@ -5,6 +5,7 @@ import Login from '../views/login.vue'
 import Register from '../views/Register.vue'
 import AddBook from '../views/add-book.vue'
 import Book from '../views/book.vue'
+import Notes from '../views/notes.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -38,6 +39,11 @@ const router = createRouter({
       path: '/book',
       name: 'Book',
       component: Book
+    },
+    {
+      path: '/book/notes',
+      name: 'Notes',
+      component: Notes
     },
   ]
 })

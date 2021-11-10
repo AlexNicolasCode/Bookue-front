@@ -1,5 +1,6 @@
 <template>
-    <button @click="submitForm" :class="Btn">{{ title }}</button>    
+    <button v-if="!this.isHeader" @click="submitForm" :class="Btn">{{ title }}</button>    
+    <button v-if="this.isHeader" @click="goToNextPage" :class="Btn">{{ title }}</button> 
 </template>
 
 <style>
@@ -44,6 +45,7 @@
 </style>
 
 <script>
+import router from "../../router"
 
 export default {
     props: ["title", "border", "right", "isHeader"],
@@ -54,8 +56,27 @@ export default {
                 "btn": true,
                 "default-btn": !this.border,
                 "btn-with-border": this.border,
-            }
+            },            
         }
     },
+    methods: {
+        getRouter() {
+            return router.currentRoute.value.path
+        },
+        goToNextPage() {
+            if (this.getRouter() === "/register") {
+                this.goToLogin()
+                return
+            }
+
+            this.goToRegister()
+        },
+        goToRegister() {
+            router.push({ path: "/register" })
+        },
+        goToLogin() {
+            router.push({ path: "/login" })
+        }
+    }
 }
 </script>

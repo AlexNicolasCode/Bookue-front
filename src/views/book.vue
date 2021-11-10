@@ -29,9 +29,15 @@
             <section v-if="isSettingCurrentPage" class="current-page">
                 <div class="current-page__content">
                     <p class="current-page__count">{{ book.currentPage }}</p>
+
                     <div class="current-page__options">
-                        <button class="current-page__btn current-page__more" @click="morePage">more</button>
-                        <button class="current-page__btn current-page__less" @click="lessPage">less</button>
+                        <button class="current-page__btn current-page__more" @click="morePage">
+                            <img class="current-page__img" src="../assets/add.svg" alt="add button">
+                        </button>
+
+                        <button class="current-page__btn current-page__less" @click="lessPage">
+                             <img class="current-page__img" src="../assets/less-current-page.svg" alt="add button">
+                        </button>
                     </div>
                 </div>
             </section>
@@ -86,8 +92,8 @@ export default {
     },
     methods: {
         async getBookData() {
-            const response = await this.clientApollo().query({ query: gql`query ($getBookId: String) {
-                getBook(id: $getBookId) {
+            const response = await this.clientApollo().query({ query: gql`query ($getbookID: String) {
+                getBook(id: $getbookID) {
                     id
                     title
                     author
@@ -97,7 +103,7 @@ export default {
                 }}`,
 
                 variables: {
-                    getBookId: this.$route.query.bookId,
+                    getbookID: this.$route.query.bookID,
                 }
             })
 
@@ -129,19 +135,22 @@ export default {
                 return
             }
 
+            if (!this.isValidFields()) {
+                return
+            }
+
             if (!this.editingMode) {
                 this.goToHomePage()
                 return
             }
 
-
-            const response = await this.clientApollo().mutate({ mutation: gql`mutation ($newTitle: String, $newAuthor: String, $newDescription: String, $newCurrentPage: String, $newPages: String, $updateBookId: String) {
-                updateBook(newTitle: $newTitle, newAuthor: $newAuthor, newDescription: $newDescription, newCurrentPage: $newCurrentPage, newPages: $newPages, id: $updateBookId) {
+            const response = await this.clientApollo().mutate({ mutation: gql`mutation ($newTitle: String, $newAuthor: String, $newDescription: String, $newCurrentPage: String, $newPages: String, $updatebookID: String) {
+                updateBook(newTitle: $newTitle, newAuthor: $newAuthor, newDescription: $newDescription, newCurrentPage: $newCurrentPage, newPages: $newPages, id: $updatebookID) {
                     id
                 }}`,
 
                 variables: {
-                    updateBookId: this.book.id,
+                    updatebookID: this.book.id,
                     newTitle: this.book.title,
                     newAuthor: this.book.author,
                     newDescription: this.book.description,
@@ -157,13 +166,13 @@ export default {
             this.goToHomePage()
         },
         async deleteBook() {
-            const response = await this.clientApollo().mutate({ mutation: gql`mutation Mutation($deleteBookId: String) {
-                deleteBook(id: $deleteBookId) {
+            const response = await this.clientApollo().mutate({ mutation: gql`mutation ($id: String!) {
+                deleteBook(id: $id) {
                     id
                 }}`,
 
                 variables: {
-                    deleteBookId: this.book.id,
+                    id: this.$route.query.bookID,
                 }
             })
 
@@ -223,7 +232,7 @@ export default {
             return false
         },
         isValidCurrentPage() {
-            if (Number(this.book.currentPage) < Number(this.book.pages)) {
+            if (Number(this.book.currentPage) < Number(this.book.pages) || Number(this.book.currentPage) === Number(this.book.pages)) {
                 return true
             }
 
@@ -235,6 +244,22 @@ export default {
             }
 
             return false
+        },
+        isValidFields() {
+            const fields = [
+                "title",
+                "author",
+                "currentPage",
+                "pages"
+            ]
+
+            for (let i = 0; i < fields.length; i++) {
+                if (!this.isValidBookUpdate(fields[i])) {
+                    return false
+                }
+            }
+
+            return true
         },
         clientApollo() {
             const httpLink = createHttpLink({
@@ -410,5 +435,10 @@ export default {
 
 .current-page__less {
     border: solid var(--primary-color);
+}
+
+.current-page__img {
+    height: 30px;
+    width: 30px;
 }
 </style>
