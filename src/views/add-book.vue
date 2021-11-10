@@ -193,15 +193,11 @@ export default {
 </script>
 
 <style scoped>
-.add-book {
-
-}
-
 .add-book__content {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 90vh;
+    height: 80vh;
 }
 
 .add-book__form {
