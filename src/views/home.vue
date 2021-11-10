@@ -35,12 +35,16 @@ export default {
     },
     beforeMount() {
         this.validateLogin()
+        this.setHeadTitle()
     },
     mounted() {
         this.autoLogin()
         this.fetchBookList()
     },
     methods: {
+        setHeadTitle() {
+            document.title = "Home - Bookue"
+        },
         autoLogin() {
             if (!this.isLogged) {
                 this.redirectToLogin()
