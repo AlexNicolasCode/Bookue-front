@@ -16,6 +16,14 @@ export default {
     components: {
         Header,
         UserForm
+    },
+    beforeMount() {
+        this.setHeadTitle()
+    },
+    methods: {
+        setHeadTitle() {
+            document.title = "Register - Bookue"
+        }
     }
 }
 </script>
