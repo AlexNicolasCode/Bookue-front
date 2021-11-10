@@ -17,9 +17,12 @@ export default {
         UserForm,
         Header
     },
-    data() {
-        return {
-
+    beforeMount() {
+        this.setHeadTitle()
+    },
+    methods: {
+        setHeadTitle() {
+            document.title = "Login - Bookue"
         }
     }
 }
