@@ -86,7 +86,13 @@ export default {
     beforeMount() {
         this.getBookData()
     },
+    mounted() {
+        this.setHeadTitle()
+    },
     methods: {
+        setHeadTitle() {
+            document.title = `${this.$route.query.title} Notes - Bookue`
+        },
         async getBookData() {
             try {
                 const response = await this.clientApollo().query({ query: gql`query GetBook($bookID: String) {
