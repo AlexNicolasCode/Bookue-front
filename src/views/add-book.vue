@@ -113,7 +113,7 @@ export default {
             return true
         },
         redirectToHome() {
-            router.push({ path: "/home" })
+            router.push({ path: "/" })
         },
         isValidBookData() {
             if (this.isValidBookTitle() && this.isValidBookAuthor() && this.isValidBookDescription() && this.isValidBookPages()) {

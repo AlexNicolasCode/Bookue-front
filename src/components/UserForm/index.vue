@@ -53,7 +53,7 @@ export default {
     },
     methods: {
         redirectToHome() {
-            router.push({ path: "/home" });
+            router.push({ path: "/" });
         },
         isLogged() {
             return Cookies.get("user")
