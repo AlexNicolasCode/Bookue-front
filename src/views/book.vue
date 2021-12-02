@@ -189,7 +189,7 @@ export default {
             this.goToHomePage()
         },
         goToHomePage() {
-            router.push({ path: "/home" })
+            router.push({ path: "/" })
         },
         setCurrentPage(label) {
             this.isSettingCurrentPage = !this.isSettingCurrentPage
