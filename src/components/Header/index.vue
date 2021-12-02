@@ -8,7 +8,7 @@
         />
         
         <div v-if="isLogged" class="home">
-            <router-link to="/home">
+            <router-link to="/">
                 <button v-if="!isHome" class="header__back-button">
                     <svg width="8" height="10" viewBox="0 0 8 10" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M4.95313 9.28L0.133125 4.68L4.95313 0.0999994H7.25313L2.41313 4.68L7.25313 9.28H4.95313Z" fill="#04B2D9"/>
@@ -16,7 +16,7 @@
                 </button>
             </router-link>
 
-            <router-link to="/home">
+            <router-link to="/">
                 <BrandName />
             </router-link>
 
