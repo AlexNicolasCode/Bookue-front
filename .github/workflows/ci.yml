@@ -8,13 +8,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      
+      - uses: actions/checkout@v2
+      - name: get modules
+        run: yarn
         
       - name: Cypress run on Firefox
         uses: cypress-io/github-action@v2
         with:
-          browser: firefox
-          
-      - name: Cypress run on Chrome
-        uses: cypress-io/github-action@v2
-        with:
-          browser: chrome
+          build: yarn build
+          start: yarn start
+      
+      - name: tests
+        run: yarn test:e2e:ci
