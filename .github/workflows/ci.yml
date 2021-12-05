@@ -11,4 +11,7 @@ jobs:
       
       - uses: actions/checkout@v2
       - name: get modules
+        run: yarn
+        
+      - name: Tests
         run: yarn build && yarn test:e2e:ci
