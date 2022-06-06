@@ -33,6 +33,7 @@
     "@cypress/vue": "^3.0.3",
     "@faker-js/faker": "^7.1.0",
     "@testing-library/jest-dom": "^5.16.4",
+    "@types/jest": "^28.1.1",
     "@vitejs/plugin-vue": "^1.9.3",
     "coveralls": "^3.1.1",
     "cypress": "^8.5.0",
