@@ -6,7 +6,7 @@ export type HttpRequest = {
 }
 
 export interface HttpClient<R = any> {
-    request: (data: HttpClient) => Promise<HttpResponse<R>>
+    request: (data: HttpRequest) => Promise<HttpResponse<R>>
 }
 
 export type HttpMethod = 'get' | 'post' | 'put' | 'delete'
