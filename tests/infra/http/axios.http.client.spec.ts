@@ -1,7 +1,8 @@
 import { HttpClient, HttpRequest, HttpResponse } from "@/data/protocols/http";
-import axios, { AxiosResponse } from "axios";
 import { mockHttpRequest } from "tests/data/mocks";
 import { mockAxios } from "../mocks/mock.axios";
+
+import axios, { AxiosResponse } from "axios";
 
 jest.mock('axios')
 
@@ -18,7 +19,10 @@ class AxiosHttpClient implements HttpClient {
         } catch (error) {
             axiosResponse = error.response
         }
-        return
+        return {
+            statusCode: axiosResponse.status,
+            body: axiosResponse.data,
+        }
     }
 }
 
@@ -35,6 +39,20 @@ describe('AxiosHttpClient', () => {
             method: fakeRequest.method,
             headers: fakeRequest.headers,
             data: fakeRequest.body,
+        })
+    })
+
+    test('should return correct response', async () => {
+        const fakeRequest = mockHttpRequest()
+        const mockedAxios = mockAxios()
+        const sut = new AxiosHttpClient()
+
+        const httpResponse = await sut.request(fakeRequest)
+        const axiosResponse = await mockedAxios.request.mock.results[0].value
+
+        expect(httpResponse).toEqual({
+            statusCode: axiosResponse.status,
+            body: axiosResponse.data,
         })
     })
 })
