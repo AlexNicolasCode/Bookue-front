@@ -2,7 +2,7 @@ import { HttpClient, HttpStatusCode } from "@/data/protocols/http";
 import { AddAccount } from "@/domain/usecases";
 import { HttpClientSpy } from "../mocks";
 import { mockAddAccountParams } from "tests/domain/mocks";
-import { UnexpectedError } from "@/domain/errors";
+import { EmailInUseError, UnexpectedError } from "@/domain/errors";
 
 import { faker } from "@faker-js/faker";
 
@@ -20,6 +20,7 @@ class RemoteAddAccount implements AddAccount {
         })
         switch (httpResponse.statusCode) {
             case HttpStatusCode.ok: return httpResponse.body
+            case HttpStatusCode.forbidden: throw new EmailInUseError()
             default: throw new UnexpectedError()
         }
     }
@@ -79,5 +80,19 @@ describe('RemoteAddAccount', () => {
         const httpResponse = sut.add(fakeRequest)
         
         await expect(httpResponse).rejects.toThrow(new UnexpectedError())
+    })
+
+    test('should throw EmailInUseError if HttpClient return 403', async () => {
+        const url = faker.internet.url()
+        const httpClientSpy = new HttpClientSpy<boolean>()
+        const sut = new RemoteAddAccount(url, httpClientSpy)
+        const fakeRequest = mockAddAccountParams()
+        httpClientSpy.response = {
+            statusCode: HttpStatusCode.forbidden
+        }
+
+        const httpResponse = sut.add(fakeRequest)
+        
+        await expect(httpResponse).rejects.toThrow(new EmailInUseError())
     })
 })
