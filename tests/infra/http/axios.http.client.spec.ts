@@ -2,7 +2,7 @@ import { HttpClient, HttpRequest, HttpResponse } from "@/data/protocols/http";
 import { mockHttpRequest } from "tests/data/mocks";
 import { mockAxios, mockHttpResponse } from "../mocks/mock.axios";
 
-import axios, { AxiosResponse } from "axios";
+import axios, { Axios, AxiosResponse } from "axios";
 
 jest.mock('axios')
 
@@ -26,11 +26,24 @@ class AxiosHttpClient implements HttpClient {
     }
 }
 
+type SutTypes = {
+    sut: AxiosHttpClient
+    mockedAxios: jest.Mocked<typeof axios>
+}
+
+const makeSut = (): SutTypes => {
+    const mockedAxios = mockAxios()
+    const sut = new AxiosHttpClient()
+    return {
+        sut,
+        mockedAxios,
+    }
+}
+
 describe('AxiosHttpClient', () => {
     test('should call axios with correct values', async () => {
+        const { sut, mockedAxios } = makeSut()
         const fakeRequest = mockHttpRequest()
-        const mockedAxios = mockAxios()
-        const sut = new AxiosHttpClient()
 
         await sut.request(fakeRequest)
 
@@ -43,9 +56,8 @@ describe('AxiosHttpClient', () => {
     })
 
     test('should return correct response', async () => {
+        const { sut, mockedAxios } = makeSut()
         const fakeRequest = mockHttpRequest()
-        const mockedAxios = mockAxios()
-        const sut = new AxiosHttpClient()
 
         const httpResponse = await sut.request(fakeRequest)
         const axiosResponse = await mockedAxios.request.mock.results[0].value
@@ -57,9 +69,8 @@ describe('AxiosHttpClient', () => {
     })
 
     test('should return correct error', async () => {
+        const { sut, mockedAxios } = makeSut()
         const fakeRequest = mockHttpRequest()
-        const mockedAxios = mockAxios()
-        const sut = new AxiosHttpClient()
         mockedAxios.request.mockRejectedValueOnce({
             response: mockHttpResponse()
         })
