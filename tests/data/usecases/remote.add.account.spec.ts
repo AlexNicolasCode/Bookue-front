@@ -1,30 +1,10 @@
-import { HttpClient, HttpStatusCode } from "@/data/protocols/http";
-import { AddAccount } from "@/domain/usecases";
+import { HttpStatusCode } from "@/data/protocols/http";
 import { HttpClientSpy } from "../mocks";
 import { mockAddAccountParams } from "tests/domain/mocks";
 import { EmailInUseError, UnexpectedError } from "@/domain/errors";
+import { RemoteAddAccount } from "@/data/usecases/remote.add.account";
 
 import { faker } from "@faker-js/faker";
-
-class RemoteAddAccount implements AddAccount {
-    constructor (
-        private readonly url: string,
-        private readonly httpClient: HttpClient<boolean>,
-    ) {}
-
-    async add (params: AddAccount.Params): Promise<AddAccount.Result> {
-        const httpResponse = await this.httpClient.request({
-            url: this.url,
-            method: 'post',
-            body: params
-        })
-        switch (httpResponse.statusCode) {
-            case HttpStatusCode.ok: return httpResponse.body
-            case HttpStatusCode.forbidden: throw new EmailInUseError()
-            default: throw new UnexpectedError()
-        }
-    }
-}
 
 describe('RemoteAddAccount', () => {
     test('should call HttpClient with correct params', async () => {
