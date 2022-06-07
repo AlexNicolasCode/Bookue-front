@@ -95,4 +95,19 @@ describe('RemoteAddAccount', () => {
         
         await expect(httpResponse).rejects.toThrow(new EmailInUseError())
     })
+
+    test('should return true if HttpClient returns 200', async () => {
+        const url = faker.internet.url()
+        const httpClientSpy = new HttpClientSpy<boolean>()
+        const sut = new RemoteAddAccount(url, httpClientSpy)
+        const fakeRequest = mockAddAccountParams()
+        httpClientSpy.response = {
+            statusCode: HttpStatusCode.ok,
+            body: true,
+        }
+
+        const httpResponse = await sut.add(fakeRequest)
+        
+        expect(httpResponse).toBe(true)
+    })
 })
