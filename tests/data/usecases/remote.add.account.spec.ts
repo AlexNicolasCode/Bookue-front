@@ -66,4 +66,18 @@ describe('RemoteAddAccount', () => {
         
         await expect(httpResponse).rejects.toThrow(new UnexpectedError())
     })
+
+    test('should throw UnexpectedError if HttpClient return 404', async () => {
+        const url = faker.internet.url()
+        const httpClientSpy = new HttpClientSpy<boolean>()
+        const sut = new RemoteAddAccount(url, httpClientSpy)
+        const fakeRequest = mockAddAccountParams()
+        httpClientSpy.response = {
+            statusCode: HttpStatusCode.notFound
+        }
+
+        const httpResponse = sut.add(fakeRequest)
+        
+        await expect(httpResponse).rejects.toThrow(new UnexpectedError())
+    })
 })
