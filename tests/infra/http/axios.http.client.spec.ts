@@ -1,30 +1,10 @@
-import { HttpClient, HttpRequest, HttpResponse } from "@/data/protocols/http";
 import { mockHttpRequest } from "tests/data/mocks";
 import { mockAxios, mockHttpResponse } from "../mocks/mock.axios";
+import { AxiosHttpClient } from "@/infra/http";
 
-import axios, { Axios, AxiosResponse } from "axios";
+import axios from "axios";
 
 jest.mock('axios')
-
-class AxiosHttpClient implements HttpClient {
-    async request (data: HttpRequest): Promise<HttpResponse> {
-        let axiosResponse: AxiosResponse
-        try {
-            axiosResponse = await axios.request({
-                url: data.url,
-                method: data.method,
-                data: data.body,
-                headers: data.headers,
-            })
-        } catch (error) {
-            axiosResponse = error.response
-        }
-        return {
-            statusCode: axiosResponse.status,
-            body: axiosResponse.data,
-        }
-    }
-}
 
 type SutTypes = {
     sut: AxiosHttpClient
