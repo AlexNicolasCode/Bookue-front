@@ -1,6 +1,6 @@
 import { HttpClient, HttpRequest, HttpResponse } from "@/data/protocols/http";
 import { mockHttpRequest } from "tests/data/mocks";
-import { mockAxios } from "../mocks/mock.axios";
+import { mockAxios, mockHttpResponse } from "../mocks/mock.axios";
 
 import axios, { AxiosResponse } from "axios";
 
@@ -54,5 +54,18 @@ describe('AxiosHttpClient', () => {
             statusCode: axiosResponse.status,
             body: axiosResponse.data,
         })
+    })
+
+    test('should return correct error', async () => {
+        const fakeRequest = mockHttpRequest()
+        const mockedAxios = mockAxios()
+        const sut = new AxiosHttpClient()
+        mockedAxios.request.mockRejectedValueOnce({
+            response: mockHttpResponse()
+        })
+
+        const promise = sut.request(fakeRequest)
+
+        await expect(promise).toEqual(mockedAxios.request.mock.results[0].value)
     })
 })
