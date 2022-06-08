@@ -1,30 +1,10 @@
-import { HttpClient, HttpStatusCode } from "@/data/protocols/http";
-import { Authentication } from "@/domain/usecases";
+import { HttpStatusCode } from "@/data/protocols/http";
 import { HttpClientSpy } from "tests/data/mocks";
 import { mockAuthenticationParams } from "tests/domain/mocks";
+import { EmailInUseError, UnexpectedError } from "@/domain/errors";
+import { RemoteAuthentication } from "@/data/usecases";
 
 import { faker } from "@faker-js/faker";
-import { EmailInUseError, UnexpectedError } from "@/domain/errors";
-
-export class RemoteAuthentication implements Authentication {
-    constructor (
-        private readonly url: string,
-        private readonly httpClient: HttpClient,
-    ) {}
-
-    async auth (params: Authentication.Params): Promise<Authentication.Result> {
-        const httpResponse = await this.httpClient.request({
-            url: this.url,
-            method: 'post',
-            body: params,
-        })
-        switch (httpResponse.statusCode) {
-            case HttpStatusCode.ok: return httpResponse.body
-            case HttpStatusCode.forbidden: throw new EmailInUseError()
-            default: throw new UnexpectedError()
-        }
-    }
-}
 
 describe('RemoteAuthentication', () => {
     test('should call HttpClient with correct values', async () => {
