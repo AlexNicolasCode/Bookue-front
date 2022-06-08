@@ -78,4 +78,21 @@ describe('RemoteAuthentication', () => {
 
         await expect(httpResponse).rejects.toThrow(new EmailInUseError())
     })
+
+    test('should return correct body on success', async () => {
+        const url = faker.internet.url()
+        const httpClientSpy = new HttpClientSpy()
+        const sut = new RemoteAuthentication(url, httpClientSpy)
+        httpClientSpy.response = {
+            statusCode: HttpStatusCode.ok,
+            body: {
+                accessToken: faker.datatype.uuid(),
+                name: faker.random.word(),
+            },
+        }
+        
+        const httpResponse = await sut.auth(mockAuthenticationParams())
+
+        expect(httpResponse).toEqual(httpClientSpy.response.body)
+    })
 })
