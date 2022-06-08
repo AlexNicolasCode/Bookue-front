@@ -25,10 +25,25 @@ describe('RemoteAddAccount', () => {
         const url = faker.internet.url()
         const { sut, httpClientSpy } = makeSut(url)
         const fakeRequest = mockAddAccountParams()
+        const spacesRegex = /^\s+|\s+$/gm
 
         await sut.add(fakeRequest)
         
-        expect(httpClientSpy.body).toBe(fakeRequest)
+        expect(httpClientSpy.body.replace(spacesRegex,'')).toBe(`
+        mutation SignUp($name: String!, $email: String!, $password: String!, $passwordConfirmation: String!) {
+            signUp(name: $name, email: $email, password: $password, passwordConfirmation: $passwordConfirmation) {
+              accessToken
+              name
+            }
+          }
+
+        {  
+          "name": ${fakeRequest.name},
+          "email": ${fakeRequest.email},  
+          "password": ${fakeRequest.password},
+          "passwordConfirmation": ${fakeRequest.passwordConfirmation}
+        }
+        `.replace(spacesRegex,''))
         expect(httpClientSpy.url).toBe(url)
         expect(httpClientSpy.method).toBe('post')
     })
