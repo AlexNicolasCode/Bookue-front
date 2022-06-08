@@ -1,1 +1,1 @@
-export * from "./load.auth.token"
+export * from "./cookie.manager.adapter"

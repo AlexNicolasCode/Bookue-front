@@ -1,12 +1,12 @@
 import { mockCookieManager } from "../mocks";
-import { LoadAuthToken } from "@/infra/cookie";
+import { CookieManagerAdapter } from "@/infra/cookie";
 
 import { faker } from "@faker-js/faker";
 
-describe('LoadAuthToken', () => {
+describe('CookieManagerAdapter', () => {
     test('should call cookieManager with correct key', async () => {
         const fakeKey = faker.random.word()
-        const sut = new LoadAuthToken()
+        const sut = new CookieManagerAdapter()
         const mockedCookieManager = mockCookieManager()
         
         await sut.load(fakeKey)
@@ -16,7 +16,7 @@ describe('LoadAuthToken', () => {
 
     test('should return null if not found value', async () => {
         const fakeKey = faker.random.word()
-        const sut = new LoadAuthToken()
+        const sut = new CookieManagerAdapter()
         mockCookieManager(null)
         
         const value = await sut.load(fakeKey)
@@ -27,7 +27,7 @@ describe('LoadAuthToken', () => {
     test('should return correct value on success', async () => {
         const fakeKey = faker.random.word()
         const fakeToken = faker.datatype.uuid()
-        const sut = new LoadAuthToken()
+        const sut = new CookieManagerAdapter()
         mockCookieManager(fakeToken)
         
         const value = await sut.load(fakeKey)
