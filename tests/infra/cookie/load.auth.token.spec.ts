@@ -20,4 +20,14 @@ describe('LoadAuthToken', () => {
 
         expect(mockedCookieManager.get).toHaveBeenCalledWith(fakeKey)
     })
+
+    test('should return null if not found value', async () => {
+        const fakeKey = faker.random.word()
+        const sut = new LoadAuthToken()
+        mockCookieManager(null)
+        
+        const value = await sut.load(fakeKey)
+
+        expect(value).toBeFalsy()
+    })
 })
