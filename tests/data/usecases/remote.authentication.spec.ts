@@ -6,11 +6,24 @@ import { RemoteAuthentication } from "@/data/usecases";
 
 import { faker } from "@faker-js/faker";
 
+type SutTypes = {
+    sut: RemoteAuthentication
+    httpClientSpy: HttpClientSpy
+}
+
+const makeSut = (url: string = faker.internet.url()): SutTypes => {
+    const httpClientSpy = new HttpClientSpy<boolean>()
+    const sut = new RemoteAuthentication(url, httpClientSpy)
+    return {
+        sut,
+        httpClientSpy
+    }
+}
+
 describe('RemoteAuthentication', () => {
     test('should call HttpClient with correct values', async () => {
         const url = faker.internet.url()
-        const httpClientSpy = new HttpClientSpy()
-        const sut = new RemoteAuthentication(url, httpClientSpy)
+        const { sut, httpClientSpy } = makeSut(url)
         const fakeRequest = mockAuthenticationParams()
         const spacesRegex = /^\s+|\s+$/gm
         
@@ -34,9 +47,7 @@ describe('RemoteAuthentication', () => {
     })
 
     test('should throw UnexpectedError if HttpClient return 400', async () => {
-        const url = faker.internet.url()
-        const httpClientSpy = new HttpClientSpy()
-        const sut = new RemoteAuthentication(url, httpClientSpy)
+        const { sut, httpClientSpy } = makeSut()
         httpClientSpy.response = {
             statusCode: HttpStatusCode.badRequest
         }
@@ -47,9 +58,7 @@ describe('RemoteAuthentication', () => {
     })
 
     test('should throw UnexpectedError if HttpClient return 404', async () => {
-        const url = faker.internet.url()
-        const httpClientSpy = new HttpClientSpy()
-        const sut = new RemoteAuthentication(url, httpClientSpy)
+        const { sut, httpClientSpy } = makeSut()
         httpClientSpy.response = {
             statusCode: HttpStatusCode.notFound
         }
@@ -60,9 +69,7 @@ describe('RemoteAuthentication', () => {
     })
 
     test('should throw EmailInUseError if HttpClient return 403', async () => {
-        const url = faker.internet.url()
-        const httpClientSpy = new HttpClientSpy()
-        const sut = new RemoteAuthentication(url, httpClientSpy)
+        const { sut, httpClientSpy } = makeSut()
         httpClientSpy.response = {
             statusCode: HttpStatusCode.forbidden
         }
@@ -73,9 +80,7 @@ describe('RemoteAuthentication', () => {
     })
 
     test('should return correct body on success', async () => {
-        const url = faker.internet.url()
-        const httpClientSpy = new HttpClientSpy()
-        const sut = new RemoteAuthentication(url, httpClientSpy)
+        const { sut, httpClientSpy } = makeSut()
         httpClientSpy.response = {
             statusCode: HttpStatusCode.ok,
             body: {
