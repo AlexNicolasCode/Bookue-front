@@ -30,4 +30,15 @@ describe('LoadAuthToken', () => {
 
         expect(value).toBeFalsy()
     })
+
+    test('should return correct value on success', async () => {
+        const fakeKey = faker.random.word()
+        const fakeToken = faker.datatype.uuid()
+        const sut = new LoadAuthToken()
+        mockCookieManager(fakeToken)
+        
+        const value = await sut.load(fakeKey)
+
+        expect(value).toBe(fakeToken)
+    })
 })
