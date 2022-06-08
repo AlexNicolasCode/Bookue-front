@@ -12,10 +12,23 @@ describe('RemoteAuthentication', () => {
         const httpClientSpy = new HttpClientSpy()
         const sut = new RemoteAuthentication(url, httpClientSpy)
         const fakeRequest = mockAuthenticationParams()
+        const spacesRegex = /^\s+|\s+$/gm
         
         await sut.auth(fakeRequest)
 
-        expect(httpClientSpy.body).toBe(fakeRequest)
+        expect(httpClientSpy.body.replace(spacesRegex, '')).toBe(`
+        query Login($email: String!, $password: String!) {
+            login(email: $email, password: $password) {
+              accessToken
+              name
+            }
+          }
+          
+          {
+            "email": ${fakeRequest.email},
+            "password": ${fakeRequest.password},
+          }
+        `.replace(spacesRegex, ''))
         expect(httpClientSpy.url).toBe(url)
         expect(httpClientSpy.method).toBe('post')
     })
