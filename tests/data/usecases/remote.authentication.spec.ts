@@ -52,12 +52,12 @@ describe('RemoteAuthentication', () => {
         await expect(httpResponse).rejects.toThrow(new UnexpectedError())
     })
 
-    test('should throw UnexpectedError if HttpClient return 500', async () => {
+    test('should throw UnexpectedError if HttpClient return 404', async () => {
         const url = faker.internet.url()
         const httpClientSpy = new HttpClientSpy()
         const sut = new RemoteAuthentication(url, httpClientSpy)
         httpClientSpy.response = {
-            statusCode: HttpStatusCode.serverError
+            statusCode: HttpStatusCode.notFound
         }
         
         const httpResponse = sut.auth(mockAuthenticationParams())
