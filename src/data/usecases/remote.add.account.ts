@@ -8,7 +8,7 @@ export class RemoteAddAccount implements AddAccount {
         private readonly httpClient: HttpClient<boolean>,
     ) {}
 
-    async add (params: AddAccount.Params): Promise<AddAccount.Result> {
+    async add (params: AddAccount.Params): Promise<AddAccount.Result | undefined> {
         const httpResponse = await this.httpClient.request({
             url: this.url,
             method: 'post',

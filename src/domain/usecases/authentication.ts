@@ -1,5 +1,5 @@
 export interface Authentication {
-    auth: (params: Authentication.Params) => Promise<Authentication.Result>
+    auth: (params: Authentication.Params) => Promise<Authentication.Result | undefined>
 }
 
 export namespace Authentication {

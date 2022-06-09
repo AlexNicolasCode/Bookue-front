@@ -1,6 +1,6 @@
 import { HttpClient, HttpRequest, HttpResponse } from "@/data/protocols/http"
 
-import axios, { AxiosResponse } from "axios"
+import axios, { AxiosError, AxiosResponse } from "axios"
 
 export class AxiosHttpClient implements HttpClient {
     async request (data: HttpRequest): Promise<HttpResponse> {
@@ -12,7 +12,7 @@ export class AxiosHttpClient implements HttpClient {
                 data: data.body,
                 headers: data.headers,
             })
-        } catch (error) {
+        } catch (error: any) {
             axiosResponse = error.response
         }
         return {

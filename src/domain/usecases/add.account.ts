@@ -1,5 +1,5 @@
 export interface AddAccount {
-    add: (params: AddAccount.Params) => Promise<AddAccount.Result>
+    add: (params: AddAccount.Params) => Promise<AddAccount.Result | undefined>
 }
 
 export namespace AddAccount {

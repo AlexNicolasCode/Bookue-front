@@ -1,3 +1,3 @@
 export interface LoadCookie {
-    load: (key: string) => Promise<string>
+    load: (key: string) => Promise<string | undefined>
 }
