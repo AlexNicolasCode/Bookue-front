@@ -1,41 +1,29 @@
-# bookue-front-vue
+# testing
 
-This template should help get you started developing with Vue 3 in Vite.
-
-## Recommended IDE Setup
-
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.volar) (and disable Vetur).
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vitejs.dev/config/).
-
-## Project Setup
-
-```sh
-yarn
+## Project setup
+```
+yarn install
 ```
 
-### Compile and Hot-Reload for Development
-
-```sh
-yarn dev
+### Compiles and hot-reloads for development
+```
+yarn serve
 ```
 
-### Compile and Minify for Production
-
-```sh
+### Compiles and minifies for production
+```
 yarn build
 ```
 
-### Run Unit Tests with [Cypress Component Testing](https://docs.cypress.io/guides/component-testing/introduction)
-
-```sh
-yarn test:unit # or `yarn test:unit:ci` for headless testing
+### Run your unit tests
+```
+yarn test:unit
 ```
 
-### Run End-to-End Tests with [Cypress](https://www.cypress.io/)
-
-```sh
-yarn test:e2e # or `yarn test:e2e:ci` for headless testing
+### Lints and fixes files
 ```
+yarn lint
+```
+
+### Customize configuration
+See [Configuration Reference](https://cli.vuejs.org/config/).

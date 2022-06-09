@@ -1,6 +1,6 @@
 import { HttpStatusCode } from "@/data/protocols/http";
-import { HttpClientSpy } from "tests/data/mocks";
-import { mockAuthenticationParams } from "tests/domain/mocks";
+import { HttpClientSpy } from "tests/unit/data/mocks";
+import { mockAuthenticationParams } from "tests/unit/domain/mocks";
 import { EmailInUseError, UnexpectedError } from "@/domain/errors";
 import { RemoteAuthentication } from "@/data/usecases";
 

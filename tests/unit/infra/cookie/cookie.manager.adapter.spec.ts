@@ -15,11 +15,11 @@ describe('CookieManagerAdapter', () => {
             expect(mockedCookieManager.get).toHaveBeenCalledWith(fakeKey)
         })
     
-        test('should return null if not found value', async () => {
+        test('should return undefined if not found value', async () => {
             const fakeKey = faker.random.word()
             const sut = new CookieManagerAdapter()
-            mockCookieManager(null)
-            
+            mockCookieManager(null as any)
+
             const value = await sut.load(fakeKey)
     
             expect(value).toBeFalsy()
