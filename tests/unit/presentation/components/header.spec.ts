@@ -35,4 +35,19 @@ describe('Header', () => {
 
     expect(hasLogo).toBe(true);
   });
+  
+  test('should not show logo if user is unlogged', async () => {
+    const wrapper = mount(Header, {
+      localVue,
+      router,
+      propsData: {
+        isLoggedUser: false,
+        isHomePage: true,
+      },
+    });
+
+    const hasLogo = wrapper.find('.header__logo').exists();
+
+    expect(hasLogo).toBe(false);
+  });
 });
