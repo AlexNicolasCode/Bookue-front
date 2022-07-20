@@ -50,4 +50,19 @@ describe('Header', () => {
 
     expect(hasLogo).toBe(false);
   });
+  
+  test('should not show logo if current route is not homepage', async () => {
+    const wrapper = mount(Header, {
+      localVue,
+      router,
+      propsData: {
+        isLoggedUser: true,
+        isHomePage: false,
+      },
+    });
+
+    const hasLogo = wrapper.find('.header__logo').exists();
+
+    expect(hasLogo).toBe(false);
+  });
 });
