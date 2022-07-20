@@ -1,6 +1,12 @@
 import Header from '@/presentation/components/Header.vue';
 
-import { mount } from '@vue/test-utils';
+import { createLocalVue, mount } from '@vue/test-utils';
+import VueRouter from 'vue-router'
+
+const localVue = createLocalVue()
+localVue.use(VueRouter)
+const router = new VueRouter()
+
 
 describe('Header', () => {
   test('should show back button if user is logged', async () => {
@@ -13,5 +19,20 @@ describe('Header', () => {
     const hasBackButton = wrapper.find('.header__back-button').exists();
 
     expect(hasBackButton).toBe(true);
+  });
+  
+  test('should show logo if user is logged and current route is homepage', async () => {
+    const wrapper = mount(Header, {
+      localVue,
+      router,
+      propsData: {
+        isLoggedUser: true,
+        isHomePage: true,
+      },
+    });
+
+    const hasLogo = wrapper.find('.header__logo').exists();
+
+    expect(hasLogo).toBe(true);
   });
 });
