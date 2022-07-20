@@ -1,18 +1,18 @@
-import { EmailInUseError, UnexpectedError } from "@/domain/errors"
-import { Authentication } from "@/domain/usecases"
-import { HttpClient, HttpStatusCode } from "../protocols/http"
+import { EmailInUseError, UnexpectedError } from '@/domain/errors';
+import { Authentication } from '@/domain/usecases';
+import { HttpClient, HttpStatusCode } from '../protocols/http';
 
 export class RemoteAuthentication implements Authentication {
-    constructor (
+  constructor(
         private readonly url: string,
         private readonly httpClient: HttpClient,
-    ) {}
+  ) {}
 
-    async auth (params: Authentication.Params): Promise<Authentication.Result | undefined> {
-        const httpResponse = await this.httpClient.request({
-            url: this.url,
-            method: 'post',
-            body: `
+  async auth(params: Authentication.Params): Promise<Authentication.Result | undefined> {
+    const httpResponse = await this.httpClient.request({
+      url: this.url,
+      method: 'post',
+      body: `
             query Login($email: String!, $password: String!) {
                 login(email: $email, password: $password) {
                   accessToken
@@ -25,11 +25,11 @@ export class RemoteAuthentication implements Authentication {
                 "password": ${params.password},
               }
             `,
-        })
-        switch (httpResponse.statusCode) {
-            case HttpStatusCode.ok: return httpResponse.body
-            case HttpStatusCode.forbidden: throw new EmailInUseError()
-            default: throw new UnexpectedError()
-        }
+    });
+    switch (httpResponse.statusCode) {
+      case HttpStatusCode.ok: return httpResponse.body;
+      case HttpStatusCode.forbidden: throw new EmailInUseError();
+      default: throw new UnexpectedError();
     }
+  }
 }

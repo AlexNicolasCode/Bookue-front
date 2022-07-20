@@ -5,6 +5,6 @@ module.exports = defineConfig({
   pages: {
     index: {
       entry: 'src/main/config/main.ts',
-    }
-  }
+    },
+  },
 });
