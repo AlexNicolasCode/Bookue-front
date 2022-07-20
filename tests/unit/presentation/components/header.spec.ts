@@ -21,6 +21,18 @@ describe('Header', () => {
     expect(hasBackButton).toBe(true);
   });
   
+  test('should not show back button if user is unlogged', async () => {
+    const wrapper = mount(Header, {
+      propsData: {
+        isLoggedUser: false,
+      },
+    });
+
+    const hasBackButton = wrapper.find('.header__back-button').exists();
+
+    expect(hasBackButton).toBe(false);
+  });
+  
   test('should show logo if user is logged and current route is homepage', async () => {
     const wrapper = mount(Header, {
       localVue,
