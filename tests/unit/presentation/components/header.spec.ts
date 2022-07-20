@@ -33,6 +33,18 @@ describe('Header', () => {
     expect(hasBackButton).toBe(false);
   });
   
+  test('should show login button if user is unlogged', async () => {
+    const wrapper = mount(Header, {
+      propsData: {
+        isLoggedUser: false,
+      },
+    });
+
+    const hasLoginButton = wrapper.find('.header__login-button').exists();
+
+    expect(hasLoginButton).toBe(true);
+  });
+  
   test('should show logo if user is logged and current route is homepage', async () => {
     const wrapper = mount(Header, {
       localVue,

@@ -1,17 +1,24 @@
 <template>
-    <header>
-        <div v-if="isLoggedUser">
+        <header v-if="isLoggedUser">
             <router-link to="/">
                 <button class="header__back-button"></button>
             </router-link>
-        </div>
 
-        <section v-if="isLoggedUser && isHomePage">
-            <div class="header__logo">
-                logo
+            <section v-if="isHomePage">
+                <div class="header__logo">
+                    logo
+                </div>
+            </section>
+        </header>
+        <header v-else>
+            <div class="header__login-button">
+                login
             </div>
-        </section>
-    </header>
+
+            <div class="header__register-button">
+                register
+            </div>
+        </header>
 </template>
 
 <script>
