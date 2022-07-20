@@ -45,6 +45,18 @@ describe('Header', () => {
     expect(hasLoginButton).toBe(true);
   });
   
+  test('should show register button if user is unlogged', async () => {
+    const wrapper = mount(Header, {
+      propsData: {
+        isLoggedUser: false,
+      },
+    });
+
+    const hasRegisterButton = wrapper.find('.header__register-button').exists();
+
+    expect(hasRegisterButton).toBe(true);
+  });
+  
   test('should show logo if user is logged and current route is homepage', async () => {
     const wrapper = mount(Header, {
       localVue,
