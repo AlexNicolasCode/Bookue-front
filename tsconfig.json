@@ -3,7 +3,7 @@
     "target": "esnext",
     "module": "esnext",
     "strict": true,
-    "jsx": "preserve",
+    "jsx": "react-jsx",
     "moduleResolution": "node",
     "experimentalDecorators": true,
     "skipLibCheck": true,
@@ -18,16 +18,32 @@
       "jest"
     ],
     "paths": {
-      "@/tests/*": ["../tests/*"],
-      "@/*": ["src/*"]
+      "@/tests/*": [
+        "../tests/*"
+      ],
+      "@/*": [
+        "src/*"
+      ]
     },
     "lib": [
       "esnext",
       "dom",
       "dom.iterable",
       "scripthost"
-    ]
+    ],
+    "allowJs": true,
+    "noEmit": true,
+    "incremental": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true
   },
-  "include": ["src", "tests"],
-  "exclude": ["node_modules", "src/env.ts"],
+  "include": [
+    "src",
+    "tests", 
+    "pages"  
+  ],
+  "exclude": [
+    "node_modules",
+    "src/env.ts"
+  ]
 }
