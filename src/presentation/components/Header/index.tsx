@@ -1,13 +1,13 @@
 import { useRouter } from "next/router"
-
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faArrowLeft, faPlus } from '@fortawesome/free-solid-svg-icons'
+import { faArrowLeft, faPlus } from "@fortawesome/free-solid-svg-icons"
+
+import { Logo } from "../Logo"
 
 import { 
     AddBookButtonStyled,
     BackButtonStyled,
     HeaderStyled, 
-    LogoStyled, 
 } from "./styles"
 
 export function Header() {
@@ -50,10 +50,8 @@ export function Header() {
     return (
         <HeaderStyled>
             {renderBackButton()}
-            
-            <LogoStyled>
-                Bookue
-            </LogoStyled>
+
+            <Logo/>
 
             {renderAddBookButton()}
         </HeaderStyled>
