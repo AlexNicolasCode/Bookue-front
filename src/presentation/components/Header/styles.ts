@@ -13,6 +13,10 @@ const BackButtonStyled = styled.section`
     color: ${globalColors.primary}
 `
 
+const AddBookButtonStyled = styled.section`
+    color: ${globalColors.primary}
+`
+
 const LogoStyled = styled.section`
     font-family: 'Poppins';
     font-size: 22px;
@@ -25,4 +29,5 @@ export {
     HeaderStyled, 
     BackButtonStyled, 
     LogoStyled,
+    AddBookButtonStyled,
 }

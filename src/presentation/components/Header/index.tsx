@@ -1,9 +1,10 @@
 import { useRouter } from "next/router"
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'
+import { faArrowLeft, faPlus } from '@fortawesome/free-solid-svg-icons'
 
 import { 
+    AddBookButtonStyled,
     BackButtonStyled,
     HeaderStyled, 
     LogoStyled, 
@@ -29,6 +30,23 @@ export function Header() {
         }
     }
 
+    const goToAddBookPage = () => {
+        router.push('/book/add')
+    }
+
+    const renderAddBookButton = () => {
+        if (router.pathname === '/') {
+            return (
+                <AddBookButtonStyled>
+                    <FontAwesomeIcon
+                        icon={faPlus}
+                        onClick={goToAddBookPage}
+                    />
+                </AddBookButtonStyled>
+            )
+        }
+    }
+
     return (
         <HeaderStyled>
             {renderBackButton()}
@@ -37,7 +55,7 @@ export function Header() {
                 Bookue
             </LogoStyled>
 
-            {renderBackButton()}
+            {renderAddBookButton()}
         </HeaderStyled>
     )
 }
