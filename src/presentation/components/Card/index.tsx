@@ -1,3 +1,5 @@
+import { BookModel } from "@/domain/models"
+
 import {
     CardStyled,
     CountPageStyled,
@@ -9,17 +11,20 @@ import {
     TitleStyled,
 } from "./styles"
 
-export function Card() {
+type CardProps = {
+    book: BookModel
+}
+
+export function Card({ book }: CardProps) {
     return (
         <CardStyled>
             <HeaderStyled>
-                <TitleStyled>Sherlock Holmes</TitleStyled>
-                <CountPageStyled>0 - 100</CountPageStyled>
+                <TitleStyled>{book.title}</TitleStyled>
+                <CountPageStyled>{book.currentPage} - {book.pages}</CountPageStyled>
             </HeaderStyled>
 
             <DescriptionStyled>
-                Sherlock Holmes é um personagem de ficção da literatura 
-                britânica criado pelo médico e escritor Sir Arthur Conan Doyle...
+                {book.description}
             </DescriptionStyled>
 
             <OptionsStyled>
