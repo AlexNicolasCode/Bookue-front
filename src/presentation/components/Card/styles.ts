@@ -5,6 +5,7 @@ const CardStyled = styled.article`
     display: flex;
     flex-direction: column;
     width: 100%;
+    margin-bottom: 1rem;
 
     article {
         padding: 0.5rem 0;
@@ -25,6 +26,7 @@ const CountPageStyled = styled.p`
 
 const DescriptionStyled = styled.p`
     text-align: justify;
+    font-size: 0.7rem;
 `
 
 const OptionsStyled = styled.article`
