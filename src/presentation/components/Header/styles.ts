@@ -4,8 +4,13 @@ import { globalColors } from "@/presentation/styles/colors"
 
 const HeaderStyled = styled.header`
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
+    align-items: center;
     padding: 1rem;
+`
+
+const BackButtonStyled = styled.section`
+    color: ${globalColors.primary}
 `
 
 const LogoStyled = styled.section`
@@ -18,5 +23,6 @@ const LogoStyled = styled.section`
 
 export { 
     HeaderStyled, 
+    BackButtonStyled, 
     LogoStyled,
 }
