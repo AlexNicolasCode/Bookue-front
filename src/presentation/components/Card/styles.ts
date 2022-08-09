@@ -25,8 +25,9 @@ const CountPageStyled = styled.p`
 `
 
 const DescriptionStyled = styled.p`
-    text-align: justify;
+    color: ${globalColors.gray};
     font-size: 0.7rem;
+    text-align: justify;
 `
 
 const OptionsStyled = styled.article`
