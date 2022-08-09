@@ -18,7 +18,7 @@ export function Header() {
     }
 
     const renderBackButton = () => {
-        if (router.pathname === '/') {
+        if (router.pathname !== '/') {
             return (
                 <BackButtonStyled>
                     <FontAwesomeIcon
