@@ -1,16 +1,36 @@
 import { MouseEventHandler } from "react";
 
-import { ButtonStyled } from "./styles";
+import { ButtonBorderStyled, ButtonStyled } from "./styles";
 
 type ButtonProps = {
     value?: string
+    borded?: boolean
     onClick?: MouseEventHandler<HTMLButtonElement>
 }
 
-export function Button({ value, onClick }: ButtonProps) {
+export function Button({ value, onClick, borded }: ButtonProps) {
+    const renderDefaultButton = () => {
+        return (
+            <ButtonStyled onClick={onClick}>
+                {value}
+            </ButtonStyled>
+        )
+    }
+
+    const renderBorderButton = () => {
+        return (
+            <ButtonBorderStyled onClick={onClick}>
+                {value}
+            </ButtonBorderStyled>
+        )
+    }
+
     return (
-        <ButtonStyled onClick={onClick}>
-            {value}
-        </ButtonStyled>
+        <>
+            {borded
+                ? renderBorderButton()
+                : renderDefaultButton()
+            }
+        </>
     )
 } 

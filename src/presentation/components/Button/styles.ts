@@ -9,6 +9,16 @@ const ButtonStyled = styled.button`
     width: 125px;
     height: 40px;
 `
+
+const ButtonBorderStyled = styled.button`
+    border: 2px solid ${globalColors.primary};
+    border-radius: 2.5px;
+    color: ${globalColors.primary};
+    width: 125px;
+    height: 40px;
+`
+
 export {
     ButtonStyled,
+    ButtonBorderStyled,
 }
