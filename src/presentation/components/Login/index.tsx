@@ -13,22 +13,29 @@ import {
 
 import { makeRemoteAuthentication } from "@/main/factory/usecases";
 import { makeCookieManagerAdapter } from "@/main/factory/cookie";
+import { Authentication } from "@/domain/usecases";
 
 export function Login() {
     const router = useRouter()
-
-    const [email, setEmail] = useState<string>("")
-    const [password, setPassword] = useState<string>("")
     const [alert, setAlert] = useState<string>("")
+    const [userForm, setUserForm] = useState<Authentication.Params>({
+        email: "",
+        password: "",
+    })
+    const setEmail = (text: string) => setUserForm({...userForm, email: text})
+    const setPassword = (text: string) => setUserForm({...userForm, password: text})
     
     const loginUser = async () => {
         const remoteAuthentication = makeRemoteAuthentication()
-        const result = await remoteAuthentication.auth({ email, password })
-        if (!result) {
+        const account = await remoteAuthentication.auth({
+            email: userForm.email,
+            password: userForm.password,
+        })
+        if (!account) {
             alertUserNotFound()
             return
         }
-        await setJwtLocaly(result.accessToken)
+        await setJwtLocaly(account.accessToken)
         goToFeedPage()
     }
 
@@ -57,13 +64,13 @@ export function Login() {
                     type="email"
                     placeholder="Email"
                     setState={setEmail}
-                    value={email}
+                    value={userForm.email}
                 />
                 <Input 
                     type="password"
                     placeholder="Password"
                     setState={setPassword}
-                    value={password}
+                    value={userForm.password}
                 />
 
                 {

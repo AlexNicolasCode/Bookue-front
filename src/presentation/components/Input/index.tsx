@@ -5,7 +5,7 @@ import { InputStyled } from "./styles";
 type InputProps = {
     type: string
     placeholder: string
-    setState: Dispatch<SetStateAction<string>>
+    setState: (text: string) => void
     value: string
 }
 
