@@ -1,3 +1,4 @@
+import { globalColors } from "@/presentation/styles/colors"
 import styled from "styled-components"
 
 const LoginStyled = styled.section`
@@ -23,7 +24,12 @@ const FieldsStyled = styled.section`
     grid-gap: 12px;
 `
 
+const AlertStyled = styled.p`
+    color: ${globalColors.warn};
+`
+
 export {
-    LoginStyled,
+    AlertStyled,
     FieldsStyled,
+    LoginStyled,
 }
