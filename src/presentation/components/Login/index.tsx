@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useRouter } from "next/router";
 
 import { Input } from "../Input";
 import { Logo } from "../Logo";
@@ -14,10 +15,12 @@ import { makeRemoteAuthentication } from "@/main/factory/usecases";
 import { makeCookieManagerAdapter } from "@/main/factory/cookie";
 
 export function Login() {
+    const router = useRouter()
+
     const [email, setEmail] = useState<string>("")
     const [password, setPassword] = useState<string>("")
     const [alert, setAlert] = useState<string>("")
-
+    
     const loginUser = async () => {
         const remoteAuthentication = makeRemoteAuthentication()
         const result = await remoteAuthentication.auth({ email, password })
@@ -25,7 +28,8 @@ export function Login() {
             alertUserNotFound()
             return
         }
-        setJwtLocaly(result.accessToken)
+        await setJwtLocaly(result.accessToken)
+        goToFeedPage()
     }
 
     const alertUserNotFound = () => {
@@ -35,9 +39,13 @@ export function Login() {
         }, 5000)
     }
 
-    const setJwtLocaly = (accessToken: string) => {
+    const setJwtLocaly = async (accessToken: string): Promise<void> => {
         const cookieManager = makeCookieManagerAdapter()
-        cookieManager.set('bookue-user', accessToken)
+        await cookieManager.set('bookue-user', accessToken)
+    }
+
+    const goToFeedPage = () => {
+        router.push("/")
     }
 
     return (
