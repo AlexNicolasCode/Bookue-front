@@ -1,4 +1,4 @@
-import { EmailInUseError, UnexpectedError } from '@/domain/errors';
+import { EmailInUseError, InvalidEmailError, UnexpectedError } from '@/domain/errors';
 import { Authentication } from '@/domain/usecases';
 import { HttpClient, HttpStatusCode } from '../protocols/http';
 
@@ -12,22 +12,25 @@ export class RemoteAuthentication implements Authentication {
     const httpResponse = await this.httpClient.request({
       url: this.url,
       method: 'post',
-      body: `
-            query Login($email: String!, $password: String!) {
-                login(email: $email, password: $password) {
-                  accessToken
-                  name
-                }
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        query: `
+          query Login($email: String!, $password: String!) {
+              login(email: $email, password: $password) {
+                accessToken
+                name
               }
-              
-              {
-                "email": ${params.email},
-                "password": ${params.password},
-              }
-            `,
+            }
+        `,
+        variables: {
+            email: params.email,
+            password: params.password,
+        }
+      }),
     });
     switch (httpResponse.statusCode) {
       case HttpStatusCode.ok: return httpResponse.body;
+      case HttpStatusCode.unauthorized: throw new InvalidEmailError();
       case HttpStatusCode.forbidden: throw new EmailInUseError();
       default: throw new UnexpectedError();
     }
