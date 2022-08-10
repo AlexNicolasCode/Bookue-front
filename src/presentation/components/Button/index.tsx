@@ -1,13 +1,13 @@
 import { ButtonStyled } from "./styles";
 
 type ButtonProps = {
-    children?: JSX.Element
+    value?: string
 }
 
-export function Button({ children }: ButtonProps) {
+export function Button({ value }: ButtonProps) {
     return (
         <ButtonStyled>
-            {children}
+            {value}
         </ButtonStyled>
     )
 } 
