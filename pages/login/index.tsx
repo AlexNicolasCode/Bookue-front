@@ -1,8 +1,6 @@
 import { useRouter } from "next/router"
 
-import { Button, Login } from "@/presentation/components"
-
-import { HeaderStyled } from "./styles"
+import { UnloggedHeader, Login } from "@/presentation/components"
 
 function LoginPage() {
     const router = useRouter()
@@ -13,13 +11,10 @@ function LoginPage() {
 
     return (
         <>
-            <HeaderStyled>
-                <Button 
-                    borded
-                    onClick={goToSignUpPage}
-                    value="Sign up"
-                />
-            </HeaderStyled>
+            <UnloggedHeader 
+                value="Sign up"
+                onClick={goToSignUpPage}
+            />
 
             <Login />
         </>
