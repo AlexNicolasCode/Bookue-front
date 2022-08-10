@@ -26,17 +26,21 @@ export function Login() {
     const setPassword = (text: string) => setUserForm({...userForm, password: text})
     
     const loginUser = async () => {
-        const remoteAuthentication = makeRemoteAuthentication()
-        const account = await remoteAuthentication.auth({
-            email: userForm.email,
-            password: userForm.password,
-        })
-        if (!account) {
-            alertUserNotFound()
-            return
+        try {
+            const remoteAuthentication = makeRemoteAuthentication()
+            const account = await remoteAuthentication.auth({
+                email: userForm.email,
+                password: userForm.password,
+            })
+            if (!account) {
+                alertUserNotFound()
+                return
+            }
+            await setJwtLocaly(account.accessToken)
+            goToFeedPage()
+        } catch (error) {
+            setAlert(error.message)
         }
-        await setJwtLocaly(account.accessToken)
-        goToFeedPage()
     }
 
     const alertUserNotFound = () => {
