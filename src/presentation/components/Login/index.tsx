@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import { useRouter } from "next/router";
 
 import { 
@@ -25,7 +25,8 @@ export function Login() {
     const setEmail = (text: string) => setUserForm({...userForm, email: text})
     const setPassword = (text: string) => setUserForm({...userForm, password: text})
     
-    const loginUser = async () => {
+    const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+        event.preventDefault()
         try {
             const remoteAuthentication = makeRemoteAuthentication()
             const account = await remoteAuthentication.auth({
@@ -63,7 +64,7 @@ export function Login() {
         <LoginStyled>
             <Logo/>
 
-            <Form>
+            <Form onSubmit={handleSubmit}>
                 <Input 
                     type="email"
                     placeholder="Email"
@@ -84,10 +85,7 @@ export function Login() {
                     </Alert>
                 }
 
-                <SubmitButton
-                    onClick={loginUser}
-                    value={'Login'}
-                />
+                <SubmitButton value={'Login'}/>
             </Form>
         </LoginStyled>
     )

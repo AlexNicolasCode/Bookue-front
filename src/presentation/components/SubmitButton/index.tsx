@@ -1,17 +1,14 @@
-import { MouseEventHandler } from "react";
-
 import { ButtonBorderStyled, ButtonStyled } from "./styles";
 
 type ButtonProps = {
     value?: string
     borded?: boolean
-    onClick?: MouseEventHandler<HTMLButtonElement>
 }
 
-export function SubmitButton({ value, onClick, borded }: ButtonProps) {
+export function SubmitButton({ value, borded }: ButtonProps) {
     const renderDefaultButton = () => {
         return (
-            <ButtonStyled onClick={onClick}>
+            <ButtonStyled type="submit">
                 {value}
             </ButtonStyled>
         )
@@ -19,7 +16,7 @@ export function SubmitButton({ value, onClick, borded }: ButtonProps) {
 
     const renderBorderButton = () => {
         return (
-            <ButtonBorderStyled onClick={onClick}>
+            <ButtonBorderStyled type="submit">
                 {value}
             </ButtonBorderStyled>
         )

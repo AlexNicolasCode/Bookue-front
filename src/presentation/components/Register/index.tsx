@@ -93,10 +93,7 @@ function Register() {
                     </Alert>
                 }
 
-                <SubmitButton
-                    onClick={handleSubmit}
-                    value={'Register'}
-                />
+                <SubmitButton value={'Register'}/>
             </Form>
         </RegisterStyled>
     )
