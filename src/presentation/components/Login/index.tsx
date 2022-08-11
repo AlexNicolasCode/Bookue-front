@@ -2,11 +2,11 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 
 import { 
-    Button,
     Form,
     Logo,
     Input,
     Alert,
+    SubmitButton,
 } from "src/presentation/components";
 
 import { LoginStyled } from "./styles";
@@ -84,7 +84,7 @@ export function Login() {
                     </Alert>
                 }
 
-                <Button 
+                <SubmitButton
                     onClick={loginUser}
                     value={'Login'}
                 />

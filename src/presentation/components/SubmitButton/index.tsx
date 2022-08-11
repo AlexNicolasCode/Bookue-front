@@ -8,7 +8,7 @@ type ButtonProps = {
     onClick?: MouseEventHandler<HTMLButtonElement>
 }
 
-export function Button({ value, onClick, borded }: ButtonProps) {
+export function SubmitButton({ value, onClick, borded }: ButtonProps) {
     const renderDefaultButton = () => {
         return (
             <ButtonStyled onClick={onClick}>

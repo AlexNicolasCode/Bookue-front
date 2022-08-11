@@ -4,8 +4,8 @@ import {
     Form,
     Input,
     Logo,
-    Button,
     Alert,
+    SubmitButton,
 } from "src/presentation/components"
 
 import { RegisterStyled } from "./styled"
@@ -77,7 +77,7 @@ function Register() {
                     </Alert>
                 }
 
-                <Button
+                <SubmitButton
                     onClick={registerUser}
                     value={'Register'}
                 />
