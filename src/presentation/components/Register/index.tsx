@@ -40,9 +40,20 @@ function Register() {
                 password: userForm.password,
                 passwordConfirmation: userForm.passwordConfirmation,
             })
+            await setJwtLocaly(account.accessToken)
+            goToFeedPage()
         } catch (error) {
             setAlert(error.message)
         }
+    }
+
+    const setJwtLocaly = async (accessToken: string): Promise<void> => {
+        const cookieManager = makeCookieManagerAdapter()
+        await cookieManager.set('bookue-user', accessToken)
+    }
+
+    const goToFeedPage = () => {
+        router.push("/")
     }
 
     return (
