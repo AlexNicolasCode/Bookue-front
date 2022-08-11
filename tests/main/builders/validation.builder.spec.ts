@@ -1,0 +1,35 @@
+import { faker } from "@faker-js/faker";
+
+import { FieldValidation } from "@/validation/protocols";
+import { RequiredFieldValidation } from "@/validation/validators";
+
+class ValidationBuilder {
+    private constructor (
+        private readonly fieldName: string,
+        private readonly validations: FieldValidation[],
+    ) {}
+
+    static field (fieldName: string): ValidationBuilder {
+        return new ValidationBuilder(fieldName, [])
+    }
+
+    required (): ValidationBuilder {
+        this.validations.push(new RequiredFieldValidation(this.fieldName))
+        return this
+    }
+
+    build (): FieldValidation[] {
+        return this.validations
+    }
+}
+
+describe('ValidationBuilder', () => {
+    test('Should return RequiredFieldValidation', () => {
+        const field = faker.database.column()
+        const sut = ValidationBuilder
+
+        const validations = sut.field(field).required().build()
+
+        expect(validations).toEqual([new RequiredFieldValidation(field)])
+    })
+})
