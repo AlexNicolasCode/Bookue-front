@@ -46,4 +46,16 @@ describe('ValidationBuilder', () => {
 
         expect(validations).toEqual([new EmailValidation(field)])
     })
+
+    test('Should return a list of validations', () => {
+        const field = faker.database.column()
+        const sut = ValidationBuilder
+
+        const validations = sut.field(field).required().email().build()
+
+        expect(validations).toEqual([
+            new RequiredFieldValidation(field),
+            new EmailValidation(field),
+        ])
+    })
 })
