@@ -9,6 +9,7 @@ import {
 import { AddAccount } from "@/domain/usecases"
 
 import { RegisterStyled } from "./styled"
+import { makeRemoteAddAccount } from "@/main/factory/usecases"
 
 function Register() {
     const [userForm, setUserForm] = useState<AddAccount.Params>({
@@ -21,7 +22,15 @@ function Register() {
     const setEmail = (text: string) => setUserForm({...userForm, email: text})
     const setPassword = (text: string) => setUserForm({...userForm, password: text})
     const setPasswordConfirmation = (text: string) => setUserForm({...userForm, passwordConfirmation: text})
-    const registerUser = () => {}
+    const registerUser = () => {
+        const remoteAddAccount = makeRemoteAddAccount()
+        remoteAddAccount.add({
+            name: userForm.name,
+            email: userForm.email,
+            password: userForm.password,
+            passwordConfirmation: userForm.passwordConfirmation,
+        })
+    }
 
     return (
         <RegisterStyled>
