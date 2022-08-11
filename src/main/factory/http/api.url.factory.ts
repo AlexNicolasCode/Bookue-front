@@ -1,1 +1,3 @@
-export const makeBookueApiUrl = (path: string): string => `${process.env.NEXT_PUBLIC_BOOKUE_API_URL}`;
+import env from "@/main/config/env";
+
+export const makeBookueApiUrl = (path: string): string => `${env.BOOKUE_API_URL}`;
