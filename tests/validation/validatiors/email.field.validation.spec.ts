@@ -1,16 +1,7 @@
 import { faker } from "@faker-js/faker";
 
-import { FieldValidation } from "@/validation/protocols";
 import { InvalidEmailError } from "@/domain/errors";
-
-class EmailValidation implements FieldValidation {
-    constructor (readonly field: string) {}
-
-    validate (input: object): Error {
-        const emailRegex = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/
-        return (!input[this.field] || emailRegex.test(input[this.field])) ? null : new InvalidEmailError()
-    }
-}
+import { EmailValidation } from "@/validation/validators";
 
 describe('EmailValidation', () => {
     test('Should return error if email is invalid', () => {
