@@ -1,10 +1,11 @@
+import { faker } from '@faker-js/faker';
+
 import { HttpStatusCode } from '@/data/protocols/http';
 import { mockAddAccountParams } from 'tests/unit/domain/mocks';
 import { EmailInUseError, UnexpectedError } from '@/domain/errors';
-import { RemoteAddAccount } from '@/data/usecases';
-
-import { faker } from '@faker-js/faker';
 import { HttpClientSpy } from '../mocks';
+import { RemoteAddAccount } from '@/data/usecases';
+import { AddAccount } from '@/domain/usecases';
 
 type SutTypes = {
     sut: RemoteAddAccount
@@ -12,7 +13,7 @@ type SutTypes = {
 }
 
 const makeSut = (url: string = faker.internet.url()): SutTypes => {
-  const httpClientSpy = new HttpClientSpy<boolean>();
+  const httpClientSpy = new HttpClientSpy<AddAccount.Result>();
   const sut = new RemoteAddAccount(url, httpClientSpy);
   return {
     sut,
@@ -25,27 +26,12 @@ describe('RemoteAddAccount', () => {
     const url = faker.internet.url();
     const { sut, httpClientSpy } = makeSut(url);
     const fakeRequest = mockAddAccountParams();
-    const spacesRegex = /^\s+|\s+$/gm;
 
     await sut.add(fakeRequest);
 
-    expect(httpClientSpy.body.replace(spacesRegex, '')).toBe(`
-        mutation SignUp($name: String!, $email: String!, $password: String!, $passwordConfirmation: String!) {
-            signUp(name: $name, email: $email, password: $password, passwordConfirmation: $passwordConfirmation) {
-              accessToken
-              name
-            }
-          }
-
-        {  
-          "name": ${fakeRequest.name},
-          "email": ${fakeRequest.email},  
-          "password": ${fakeRequest.password},
-          "passwordConfirmation": ${fakeRequest.passwordConfirmation}
-        }
-        `.replace(spacesRegex, ''));
     expect(httpClientSpy.url).toBe(url);
     expect(httpClientSpy.method).toBe('post');
+    expect(httpClientSpy.headers).toStrictEqual({ 'Content-Type': 'application/json' });
   });
 
   test('should throw UnexpectedError if HttpClient return 500', async () => {

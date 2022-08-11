@@ -25,25 +25,12 @@ describe('RemoteAuthentication', () => {
     const url = faker.internet.url();
     const { sut, httpClientSpy } = makeSut(url);
     const fakeRequest = mockAuthenticationParams();
-    const spacesRegex = /^\s+|\s+$/gm;
 
     await sut.auth(fakeRequest);
 
-    expect(httpClientSpy.body.replace(spacesRegex, '')).toBe(`
-        query Login($email: String!, $password: String!) {
-            login(email: $email, password: $password) {
-              accessToken
-              name
-            }
-          }
-          
-          {
-            "email": ${fakeRequest.email},
-            "password": ${fakeRequest.password},
-          }
-        `.replace(spacesRegex, ''));
     expect(httpClientSpy.url).toBe(url);
     expect(httpClientSpy.method).toBe('post');
+    expect(httpClientSpy.headers).toStrictEqual({ 'Content-Type': 'application/json' });
   });
 
   test('should throw UnexpectedError if HttpClient return 400', async () => {
