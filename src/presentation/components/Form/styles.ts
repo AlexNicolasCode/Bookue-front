@@ -1,6 +1,6 @@
 import styled from "styled-components"
 
-const FormStyled = styled.section`
+const FormStyled = styled.form`
     display: flex;
     flex-direction: column;
     justify-content: space-between;
