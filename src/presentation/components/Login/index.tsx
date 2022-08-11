@@ -6,12 +6,10 @@ import {
     Form,
     Logo,
     Input,
+    Alert,
 } from "src/presentation/components";
 
-import {
-    AlertStyled,
-    LoginStyled,
-} from "./styles";
+import { LoginStyled } from "./styles";
 
 import { makeRemoteAuthentication } from "@/main/factory/usecases";
 import { makeCookieManagerAdapter } from "@/main/factory/cookie";
@@ -81,9 +79,9 @@ export function Login() {
 
                 {
                     alert.length > 0 && 
-                    <AlertStyled>
+                    <Alert>
                         {alert}
-                    </AlertStyled>
+                    </Alert>
                 }
 
                 <Button 

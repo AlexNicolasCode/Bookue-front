@@ -15,11 +15,6 @@ const LoginStyled = styled.section`
     }
 `
 
-const AlertStyled = styled.p`
-    color: ${globalColors.warn};
-`
-
 export {
-    AlertStyled,
     LoginStyled,
 }
