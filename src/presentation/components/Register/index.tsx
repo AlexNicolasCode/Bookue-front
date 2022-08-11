@@ -1,4 +1,5 @@
-import { useState } from "react"
+import { useRouter } from "next/router"
+import { FormEvent, useState } from "react"
 
 import {
     Form,
@@ -12,8 +13,11 @@ import { RegisterStyled } from "./styled"
 
 import { AddAccount } from "@/domain/usecases"
 import { makeRemoteAddAccount } from "@/main/factory/usecases"
+import { makeCookieManagerAdapter } from "@/main/factory/cookie"
 
 function Register() {
+    const router = useRouter()
+
     const [alert, setAlert] = useState<string>("")
     const [userForm, setUserForm] = useState<AddAccount.Params>({
         name: '',
@@ -25,17 +29,18 @@ function Register() {
     const setEmail = (text: string) => setUserForm({...userForm, email: text})
     const setPassword = (text: string) => setUserForm({...userForm, password: text})
     const setPasswordConfirmation = (text: string) => setUserForm({...userForm, passwordConfirmation: text})
-    const registerUser = async () => {
+
+    const handleSubmit = async (event: FormEvent<HTMLFormElement>): Promise<void> => {
+        event.preventDefault()
         try {
             const remoteAddAccount = makeRemoteAddAccount()
-            await remoteAddAccount.add({
+            const account = await remoteAddAccount.add({
                 name: userForm.name,
                 email: userForm.email,
                 password: userForm.password,
                 passwordConfirmation: userForm.passwordConfirmation,
             })
         } catch (error) {
-            console.log(error.message)
             setAlert(error.message)
         }
     }
@@ -44,7 +49,7 @@ function Register() {
         <RegisterStyled>
             <Logo/>
 
-            <Form>
+            <Form onSubmit={handleSubmit}>
                 <Input 
                     type="name"
                     placeholder="Name"
@@ -78,7 +83,7 @@ function Register() {
                 }
 
                 <SubmitButton
-                    onClick={registerUser}
+                    onClick={handleSubmit}
                     value={'Register'}
                 />
             </Form>
