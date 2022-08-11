@@ -20,7 +20,13 @@
       "dom.iterable"
     ],
     "allowJs": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "strict": false,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "incremental": true,
+    "isolatedModules": true
   },
   "include": [
     "src",
