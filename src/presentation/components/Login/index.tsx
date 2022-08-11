@@ -1,13 +1,15 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
 
-import { Input } from "../Input";
-import { Logo } from "../Logo";
-import { Button } from "../Button";
+import { 
+    Button,
+    Form,
+    Logo,
+    Input,
+} from "src/presentation/components";
 
 import {
     AlertStyled,
-    FieldsStyled,
     LoginStyled,
 } from "./styles";
 
@@ -63,7 +65,7 @@ export function Login() {
         <LoginStyled>
             <Logo/>
 
-            <FieldsStyled>
+            <Form>
                 <Input 
                     type="email"
                     placeholder="Email"
@@ -88,7 +90,7 @@ export function Login() {
                     onClick={loginUser}
                     value={'Login'}
                 />
-            </FieldsStyled>
+            </Form>
         </LoginStyled>
     )
 }

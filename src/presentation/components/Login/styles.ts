@@ -13,15 +13,6 @@ const LoginStyled = styled.section`
             margin-bottom: 20px;
         }
     }
-` 
-
-const FieldsStyled = styled.section`
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    grid-gap: 12px;
 `
 
 const AlertStyled = styled.p`
@@ -30,6 +21,5 @@ const AlertStyled = styled.p`
 
 export {
     AlertStyled,
-    FieldsStyled,
     LoginStyled,
 }
