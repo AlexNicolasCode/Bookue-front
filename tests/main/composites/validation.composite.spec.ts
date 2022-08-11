@@ -37,4 +37,17 @@ describe('ValidationComposite', () => {
 
         expect(error).toBe(errorMessage)
     })
+
+    test('Should falsy if validation succeds', () => {
+        const fieldName = faker.database.column()
+        const fieldValidationsSpy = [
+            new FieldValidationSpy(fieldName),
+            new FieldValidationSpy(fieldName)
+        ]
+        const sut = ValidationComposite.build(fieldValidationsSpy)
+
+        const error = sut.validate(fieldName, { [fieldName]: faker.random.word() })
+
+        expect(error).toBeFalsy()
+    })
 })
