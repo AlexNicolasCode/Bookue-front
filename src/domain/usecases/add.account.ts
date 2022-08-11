@@ -9,5 +9,8 @@ export namespace AddAccount {
         password: string
         passwordConfirmation: string
     }
-    export type Result = boolean
+    export type Result = {
+        accessToken: string
+        name: string
+    }
 }

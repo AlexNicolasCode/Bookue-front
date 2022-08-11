@@ -5,7 +5,7 @@ import { HttpClient, HttpStatusCode } from '../protocols/http';
 export class RemoteAddAccount implements AddAccount {
   constructor(
         private readonly url: string,
-        private readonly httpClient: HttpClient<boolean>,
+        private readonly httpClient: HttpClient<AddAccount.Result>,
   ) {}
 
   async add(params: AddAccount.Params): Promise<AddAccount.Result | undefined> {
