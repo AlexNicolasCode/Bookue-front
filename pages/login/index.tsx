@@ -3,13 +3,17 @@ import { useRouter } from "next/router"
 import { UnloggedHeader, Login } from "@/presentation/components"
 import { makeLoginValidation } from "@/main/factory/validation"
 import { ValidationComposite } from "@/main/composites"
+import { makeRemoteAuthentication } from "@/main/factory/usecases"
+import { Authentication } from "@/domain/usecases"
 
 export type LoginPageProps = {
     validation: ValidationComposite
+    remoteAuthentication: Authentication
 }
 
 function LoginPage({
-    validation = makeLoginValidation()
+    validation = makeLoginValidation(),
+    remoteAuthentication = makeRemoteAuthentication(),
 }: LoginPageProps) {
     const router = useRouter()
 
@@ -26,6 +30,7 @@ function LoginPage({
 
             <Login
                 validation={validation}
+                remoteAuthentication={remoteAuthentication}
             />
         </>
     )

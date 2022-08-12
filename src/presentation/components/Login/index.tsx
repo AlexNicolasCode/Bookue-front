@@ -11,12 +11,13 @@ import {
 
 import { LoginStyled } from "./styles";
 
-import { makeRemoteAuthentication } from "@/main/factory/usecases";
 import { makeCookieManagerAdapter } from "@/main/factory/cookie";
 import { ValidationComposite } from "@/main/composites";
+import { Authentication } from "@/domain/usecases";
 
 export type LoginProps = {
     validation: ValidationComposite
+    remoteAuthentication: Authentication
 }
 
 type UserFormProps = {
@@ -30,7 +31,7 @@ type UserFormProps = {
     }
 }
 
-export function Login({ validation }: LoginProps) {
+export function Login({ validation, remoteAuthentication }: LoginProps) {
     const router = useRouter()
     const [alert, setAlert] = useState<string>("")
     const [userForm, setUserForm] = useState<UserFormProps>({
@@ -93,7 +94,6 @@ export function Login({ validation }: LoginProps) {
                 setAlert(error)
                 return
             }
-            const remoteAuthentication = makeRemoteAuthentication()
             const account = await remoteAuthentication.auth({
                 email: userForm.email.text,
                 password: userForm.password.text,
