@@ -1,8 +1,16 @@
 import { useRouter } from "next/router"
 
 import { UnloggedHeader, Login } from "@/presentation/components"
+import { makeLoginValidation } from "@/main/factory/validation"
+import { ValidationComposite } from "@/main/composites"
 
-function LoginPage() {
+export type LoginPageProps = {
+    validation: ValidationComposite
+}
+
+function LoginPage({
+    validation = makeLoginValidation()
+}: LoginPageProps) {
     const router = useRouter()
 
     const goToSignUpPage = () => {
@@ -16,7 +24,9 @@ function LoginPage() {
                 onClick={goToSignUpPage}
             />
 
-            <Login />
+            <Login
+                validation={validation}
+            />
         </>
     )
 }
