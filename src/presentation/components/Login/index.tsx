@@ -13,28 +13,77 @@ import { LoginStyled } from "./styles";
 
 import { makeRemoteAuthentication } from "@/main/factory/usecases";
 import { makeCookieManagerAdapter } from "@/main/factory/cookie";
-import { Authentication } from "@/domain/usecases";
 import { ValidationComposite } from "@/main/composites";
 
 export type LoginProps = {
     validation: ValidationComposite
 }
 
+type UserFormProps = {
+    email: {
+        isWrongFill: boolean
+        text: string
+    }
+    password: {
+        isWrongFill: boolean
+        text: string
+    }
+}
+
 export function Login({ validation }: LoginProps) {
     const router = useRouter()
     const [alert, setAlert] = useState<string>("")
-    const [userForm, setUserForm] = useState<Authentication.Params>({
-        email: "",
-        password: "",
+    const [userForm, setUserForm] = useState<UserFormProps>({
+        email: {
+            isWrongFill: false,
+            text: ""
+        },
+        password: {
+            isWrongFill: false,
+            text: ""
+        },
     })
-    const setEmail = (text: string) => setUserForm({...userForm, email: text})
-    const setPassword = (text: string) => setUserForm({...userForm, password: text})
+    const setEmail = (text: string) => setUserForm({ 
+        email: {
+            isWrongFill: userForm.email.isWrongFill,
+            text: text
+        },
+        password: userForm.password
+    })
+    const setPassword = (text: string) => setUserForm({ 
+        email: userForm.email,
+        password: {
+            isWrongFill: userForm.password.isWrongFill,
+            text: text
+        },
+    })
 
     const validateForm = (): string => {
-        const passwordValidationError = validation.validate('password', userForm)
-        const emailValidationError = validation.validate('email', userForm)
+        const emailValidationError = validation.validate('email', { email: userForm.email.text })
+        const passwordValidationError = validation.validate('password', { password: userForm.password.text })
+        setWrongFields(emailValidationError, passwordValidationError)
         return emailValidationError || passwordValidationError
     }
+
+    const setWrongFields = (
+        emailValidationError?: string, 
+        passwordValidationError?: string
+    ) => {
+        if (emailValidationError || passwordValidationError) {
+            setUserForm({
+                email: {
+                    isWrongFill: emailValidationError ? true : false,
+                    text: userForm.email.text,
+                },
+                password: {
+                    isWrongFill: passwordValidationError ? true : false,
+                    text: userForm.password.text,
+                },
+            })
+        }
+    }
+
+    const cleanWrongField = (): void => setWrongFields()
     
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
@@ -46,9 +95,10 @@ export function Login({ validation }: LoginProps) {
             }
             const remoteAuthentication = makeRemoteAuthentication()
             const account = await remoteAuthentication.auth({
-                email: userForm.email,
-                password: userForm.password,
+                email: userForm.email.text,
+                password: userForm.password.text,
             })
+            cleanWrongField()
             if (!account) {
                 alertUserNotFound()
                 return
@@ -56,6 +106,9 @@ export function Login({ validation }: LoginProps) {
             await setJwtLocaly(account.accessToken)
             goToFeedPage()
         } catch (error) {
+            if (error.message.includes('email')) {
+                setWrongFields(error.message)
+            }
             setAlert(error.message)
         }
     }
@@ -84,14 +137,16 @@ export function Login({ validation }: LoginProps) {
                 <Input 
                     type="email"
                     placeholder="Email"
+                    isWrongFill={userForm.email.isWrongFill}
                     setState={setEmail}
-                    value={userForm.email}
+                    value={userForm.email.text}
                 />
                 <Input 
                     type="password"
                     placeholder="Password"
+                    isWrongFill={userForm.password.isWrongFill}
                     setState={setPassword}
-                    value={userForm.password}
+                    value={userForm.password.text}
                 />
 
                 {
