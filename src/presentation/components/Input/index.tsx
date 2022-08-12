@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { InputStyled } from "./styles";
 
 type InputProps = {
@@ -8,7 +9,7 @@ type InputProps = {
     value: string
 }
 
-export function Input({ 
+function InputComponent({ 
     type,
     placeholder,
     isWrongFill,
@@ -25,3 +26,6 @@ export function Input({
         />
     )
 }
+
+const Input = memo(InputComponent)
+export { Input }
