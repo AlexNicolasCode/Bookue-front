@@ -1,8 +1,6 @@
 import { MouseEventHandler } from "react"
 
-import { SubmitButton } from "../SubmitButton"
-
-import { HeaderStyled } from "./styles"
+import { ButtonBorderStyled, HeaderStyled } from "./styles"
 
 type UnloggedHeaderProps = {
     value: string
@@ -12,11 +10,9 @@ type UnloggedHeaderProps = {
 function UnloggedHeader({ value, onClick }: UnloggedHeaderProps) {
     return (
         <HeaderStyled>
-            <SubmitButton
-                borded
-                onClick={onClick}
-                value={value}
-            />
+            <ButtonBorderStyled onClick={onClick}>
+                {value}
+            </ButtonBorderStyled>
         </HeaderStyled>
     )    
 }
