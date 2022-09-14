@@ -137,6 +137,7 @@ export function Login({ validation, remoteAuthentication }: LoginProps) {
                 <Input 
                     type="email"
                     placeholder="Email"
+                    field={"email"}
                     isWrongFill={userForm.email.isWrongFill}
                     setState={setEmail}
                     value={userForm.email.text}
@@ -144,6 +145,7 @@ export function Login({ validation, remoteAuthentication }: LoginProps) {
                 <Input 
                     type="password"
                     placeholder="Password"
+                    field={"password"}
                     isWrongFill={userForm.password.isWrongFill}
                     setState={setPassword}
                     value={userForm.password.text}
