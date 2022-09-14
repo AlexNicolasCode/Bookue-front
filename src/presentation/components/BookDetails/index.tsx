@@ -1,9 +1,11 @@
 import { BookModel } from "@/domain/models";
+import { MouseEventHandler, useState } from "react";
 import {
     ContainerStyled,
     DetailsContainerStyled,
     EditButtonStyled,
     FieldContainerStyled,
+    FieldContentEditingModeStyled,
     FieldContentStyled,
     FieldLabelStyled,
     FieldStyled,
@@ -21,36 +23,69 @@ type BookDetailsProps = {
 type BookField = {
     label: string
     text: string | number
+    isEditing: boolean
 }
 
 export function BookDetails({ book }: BookDetailsProps) {
-    const getBookProgressPerCent = () => {
-        const perCent = String((book.currentPage * 100) / book.pages);
-        return perCent.substring(0, 3)
-    }
-
-    const bookFields: BookField[] = [
+    const [editableBook, setEditableBook] = useState<BookModel>(book)
+    const [bookFields, setBookFields] = useState<BookField[]>([
         {
             label: "Title",
-            text: book.title,
+            text: editableBook.title,
+            isEditing: false,
         },
         {
             label: "Author",
-            text: book.author,
+            text: editableBook.author,
+            isEditing: false,
         },
         {
             label: "Description",
-            text: book.description,
+            text: editableBook.description,
+            isEditing: false,
         },
         {
             label: "Current Page",
-            text: book.currentPage,
+            text: editableBook.currentPage,
+            isEditing: false,
         },
         {
             label: "Pages",
-            text: book.pages,
+            text: editableBook.pages,
+            isEditing: false,
         },
-    ]
+    ])
+
+    const getBookProgressPerCent = () => {
+        const perCent = String((editableBook.currentPage * 100) / editableBook.pages);
+        return perCent.substring(0, 3)
+    }
+
+    const setBookFieldByLabel = (label: string, targetLabel: string, value: string | boolean) => {
+        const bookFiedlsEditted = bookFields.map((bookField: BookField) => {
+            if (bookField.label === label) {
+                return {
+                    ...bookField,
+                    [targetLabel]: value,
+                }
+            }
+            return bookField
+        })
+        setBookFields(bookFiedlsEditted)
+    }
+
+    const setEditableBookContentByLabel = (label: string, value: string) => {
+        setEditableBook({
+            ...editableBook,
+            [label]: value,
+        })
+        setBookFieldByLabel(label, "text", value)
+    }
+
+    const handleEditModeByLabel = (label: string) => {
+        const bookField = bookFields.find((field) => field.label === label)
+        setBookFieldByLabel(label, "isEditing", !bookField.isEditing)
+    }
 
     return (
         <ContainerStyled>
@@ -66,12 +101,23 @@ export function BookDetails({ book }: BookDetailsProps) {
             <DetailsContainerStyled>
                 {bookFields.map((book) =>
                     <FieldContainerStyled>
-                        <FieldStyled>
-                            <FieldLabelStyled>{ book.label }</FieldLabelStyled>
-                            <FieldContentStyled>{ book.text }</FieldContentStyled>
-                        </FieldStyled>
+                        {book.isEditing
+                            ?
+                            <FieldStyled>
+                                <FieldLabelStyled>{ book.label }</FieldLabelStyled>
+                                <FieldContentEditingModeStyled
+                                    onChange={(event) => setEditableBookContentByLabel(book.label, event.target.value)}
+                                    value={ book.text }
+                                />
+                            </FieldStyled>
+                            :
+                            <FieldStyled>
+                                <FieldLabelStyled>{ book.label }</FieldLabelStyled>
+                                <FieldContentStyled>{ book.text }</FieldContentStyled>
+                            </FieldStyled>
+                        }
 
-                        <EditButtonStyled>Edit</EditButtonStyled>
+                        <EditButtonStyled onClick={() => handleEditModeByLabel(book.label)}>Edit</EditButtonStyled>
                     </FieldContainerStyled>
                 )}
             </DetailsContainerStyled>
