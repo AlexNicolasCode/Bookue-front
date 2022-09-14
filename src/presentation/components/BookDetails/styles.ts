@@ -55,11 +55,16 @@ const FieldContentStyled = styled.p`
     font-weight: bold;
 `
 
-const EditButtonStyled = styled.p`
+const FieldContentEditingModeStyled = styled.input`
+    font-weight: bold;
+`
+
+const EditButtonStyled = styled.button`
     color: ${globalColors.primary};
     font-size: 12px;
     font-weight: bold;
-    line-height: 50px;
+    height: 50px;
+    width: 20px;
 `
 
 export {
@@ -74,5 +79,6 @@ export {
     FieldStyled,
     FieldLabelStyled,
     FieldContentStyled,
+    FieldContentEditingModeStyled,
     EditButtonStyled,
 }
