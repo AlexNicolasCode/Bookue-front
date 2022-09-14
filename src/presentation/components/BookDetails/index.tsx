@@ -1,5 +1,6 @@
+import { useState } from "react";
+
 import { BookModel } from "@/domain/models";
-import { MouseEventHandler, useState } from "react";
 import {
     ContainerStyled,
     DetailsContainerStyled,
