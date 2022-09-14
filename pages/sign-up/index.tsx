@@ -3,8 +3,11 @@ import { GetServerSideProps } from "next"
 
 import { UnloggedHeader, Register } from "@/presentation/components"
 import { makeCookieManagerAdapter } from "@/main/factory/cookie"
+import { makeRegisterValidation } from "@/main/factory/validation"
 
-function SignUpPage() {
+function SignUpPage({
+    validation = makeRegisterValidation()
+}) {
     const router = useRouter()
 
     const goToLoginPage = () => {
@@ -18,7 +21,9 @@ function SignUpPage() {
                 onClick={goToLoginPage}
             />
 
-            <Register />
+            <Register
+                validation={validation}
+            />
         </>
     )
 }
