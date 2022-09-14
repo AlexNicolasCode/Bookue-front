@@ -22,7 +22,7 @@ type BookDetailsProps = {
 
 type BookField = {
     label: string
-    text: string | number
+    value: string | number
     isEditing: boolean
 }
 
@@ -31,27 +31,27 @@ export function BookDetails({ book }: BookDetailsProps) {
     const [bookFields, setBookFields] = useState<BookField[]>([
         {
             label: "Title",
-            text: editableBook.title,
+            value: editableBook.title,
             isEditing: false,
         },
         {
             label: "Author",
-            text: editableBook.author,
+            value: editableBook.author,
             isEditing: false,
         },
         {
             label: "Description",
-            text: editableBook.description,
+            value: editableBook.description,
             isEditing: false,
         },
         {
             label: "Current Page",
-            text: editableBook.currentPage,
+            value: editableBook.currentPage,
             isEditing: false,
         },
         {
             label: "Pages",
-            text: editableBook.pages,
+            value: editableBook.pages,
             isEditing: false,
         },
     ])
@@ -83,7 +83,7 @@ export function BookDetails({ book }: BookDetailsProps) {
             ...editableBook,
             [label]: value,
         })
-        setBookFieldByLabel(label, "text", value)
+        setBookFieldByLabel(label, "value", value)
     }
 
     const handleEditModeByLabel = (label: string) => {
@@ -112,13 +112,13 @@ export function BookDetails({ book }: BookDetailsProps) {
                                 <FieldContentEditingModeStyled
                                     onChange={(event) => setEditableBookContentByLabel(book.label, event.target.value)}
                                     type={getTypeByLabel(book.label)}
-                                    value={ book.text }
+                                    value={ book.value }
                                 />
                             </FieldStyled>
                             :
                             <FieldStyled>
                                 <FieldLabelStyled>{ book.label }</FieldLabelStyled>
-                                <FieldContentStyled>{ book.text }</FieldContentStyled>
+                                <FieldContentStyled>{ book.value }</FieldContentStyled>
                             </FieldStyled>
                         }
 
