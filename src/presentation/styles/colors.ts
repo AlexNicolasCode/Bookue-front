@@ -1,9 +1,9 @@
 const globalColors = {
-    primary: '#04B2D9',
+    primary: '#04b2d9',
     white: '#f2f2f2',
-    gray: '#E1E1E1',
-    warn: '#D94404',
-    dark: '#0C0C0C',
+    gray: '#e1e1e1',
+    warn: '#d94404',
+    dark: '#0c0c0c',
     placeholder: '#535353',
 }
 
