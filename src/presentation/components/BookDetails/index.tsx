@@ -61,6 +61,10 @@ export function BookDetails({ book }: BookDetailsProps) {
         return perCent.substring(0, 3)
     }
 
+    const getTypeByLabel = (label: string) => {
+        return label === "Current Page" || label === "Pages" ? "number" : "text"
+    }
+
     const setBookFieldByLabel = (label: string, targetLabel: string, value: string | boolean) => {
         const bookFiedlsEditted = bookFields.map((bookField: BookField) => {
             if (bookField.label === label) {
@@ -107,6 +111,7 @@ export function BookDetails({ book }: BookDetailsProps) {
                                 <FieldLabelStyled>{ book.label }</FieldLabelStyled>
                                 <FieldContentEditingModeStyled
                                     onChange={(event) => setEditableBookContentByLabel(book.label, event.target.value)}
+                                    type={getTypeByLabel(book.label)}
                                     value={ book.text }
                                 />
                             </FieldStyled>
