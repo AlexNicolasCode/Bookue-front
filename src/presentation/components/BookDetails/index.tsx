@@ -99,8 +99,8 @@ export function BookDetails({ book }: BookDetailsProps) {
             </HeaderStyled>
 
             <DetailsContainerStyled>
-                {bookFields.map((book) =>
-                    <FieldContainerStyled>
+                {bookFields.map((book, index) =>
+                    <FieldContainerStyled key={index}>
                         {book.isEditing
                             ?
                             <FieldStyled>
