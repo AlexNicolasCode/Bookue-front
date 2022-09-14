@@ -11,38 +11,118 @@ import {
 
 import { RegisterStyled } from "./styled"
 
-import { AddAccount } from "@/domain/usecases"
 import { makeRemoteAddAccount } from "@/main/factory/usecases"
 import { makeCookieManagerAdapter } from "@/main/factory/cookie"
+import { ValidationComposite } from "@/main/composites"
 
-function Register() {
+type RegisterProps = {
+    validation: ValidationComposite
+}
+
+type RegisterFormProps = {
+    name: {
+        isWrongFill: boolean
+        text: string
+    }
+    email: {
+        isWrongFill: boolean
+        text: string
+    }
+    password: {
+        isWrongFill: boolean
+        text: string
+    }
+    passwordConfirmation: {
+        isWrongFill: boolean
+        text: string
+    }
+}
+
+type ValidationErrors = {
+    name: string
+    email: string
+    password: string
+    passwordConfirmation: string
+}
+
+function Register({ validation }: RegisterProps) {
     const router = useRouter()
 
     const [alert, setAlert] = useState<string>("")
-    const [userForm, setUserForm] = useState<AddAccount.Params>({
-        name: '',
-        email: '',
-        password: '',
-        passwordConfirmation: '',
+    const [userForm, setUserForm] = useState<RegisterFormProps>({
+        name: {
+            isWrongFill: false,
+            text: ""
+        },
+        email: {
+            isWrongFill: false,
+            text: ""
+        },
+        password: {
+            isWrongFill: false,
+            text: ""
+        },
+        passwordConfirmation: {
+            isWrongFill: false,
+            text: ""
+        },
     })
-    const setName = (text: string) => setUserForm({...userForm, name: text})
-    const setEmail = (text: string) => setUserForm({...userForm, email: text})
-    const setPassword = (text: string) => setUserForm({...userForm, password: text})
-    const setPasswordConfirmation = (text: string) => setUserForm({...userForm, passwordConfirmation: text})
+
+    const setField = (field, text: string) => setUserForm({ 
+        ...userForm,
+        [field]: {
+            isWrongFill: userForm[field].isWrongFill,
+            text: text
+        },
+    })
+
+    const validateForm = (): string => {
+        const fields = ['name', 'email', 'password', 'passwordConfirmation']
+        for (let i = 0; i >= fields.length; i++) {
+            const field = fields[i]
+            const error = validation.validate(
+                field,
+                { [field]: userForm[field].text }
+            )
+            setWrongFields(field, error)
+            return error
+        }
+    }
+
+    const setWrongFields = (field: string, error: string) => {
+        setUserForm({
+            ...userForm,
+            [field]: {
+                isWrongFill: error ? true : false,
+                text: userForm[field].text,
+            },
+        })
+    }
+
+    const cleanWrongField = (): void => setWrongFields('', '')
 
     const handleSubmit = async (event: FormEvent<HTMLFormElement>): Promise<void> => {
         event.preventDefault()
         try {
+            const error = validateForm()
+            if (error) {
+                setAlert(error)
+                return
+            }
             const remoteAddAccount = makeRemoteAddAccount()
             const account = await remoteAddAccount.add({
-                name: userForm.name,
-                email: userForm.email,
-                password: userForm.password,
-                passwordConfirmation: userForm.passwordConfirmation,
+                name: userForm.name.text,
+                email: userForm.email.text,
+                password: userForm.password.text,
+                passwordConfirmation: userForm.passwordConfirmation.text,
             })
+            cleanWrongField()
             await setJwtLocaly(account.accessToken)
             goToFeedPage()
         } catch (error) {
+            if (error.message.includes('email')) {
+                setWrongFields('email', error.message)
+            }
             setAlert(error.message)
         }
     }
@@ -64,26 +144,34 @@ function Register() {
                 <Input 
                     type="name"
                     placeholder="Name"
-                    setState={setName}
-                    value={userForm.name}
+                    setState={setField}
+                    field={'name'}
+                    isWrongFill={userForm.name.isWrongFill}
+                    value={userForm.name.text}
                 />
                 <Input 
                     type="email"
                     placeholder="Email"
-                    setState={setEmail}
-                    value={userForm.email}
+                    setState={setField}
+                    field={'email'}
+                    isWrongFill={userForm.email.isWrongFill}
+                    value={userForm.email.text}
                 />
-                <Input 
+                <Input
                     type="password"
                     placeholder="Password"
-                    setState={setPassword}
-                    value={userForm.password}
+                    setState={setField}
+                    field={'password'}
+                    isWrongFill={userForm.password.isWrongFill}
+                    value={userForm.password.text}
                 />
                 <Input 
                     type="password"
                     placeholder="Password confirmation"
-                    setState={setPasswordConfirmation}
-                    value={userForm.passwordConfirmation}
+                    setState={setField}
+                    field={'passwordConfirmation'}
+                    isWrongFill={userForm.passwordConfirmation.isWrongFill}
+                    value={userForm.passwordConfirmation.text}
                 />
 
                 {
