@@ -1,5 +1,6 @@
 export * from "./Header"
 export * from "./Card"
+export * from "./BookDetails"
 export * from "./BookList"
 export * from "./Logo"
 export * from "./Login"
