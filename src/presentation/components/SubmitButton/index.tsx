@@ -3,15 +3,15 @@ import { MouseEventHandler } from "react";
 import { ButtonBorderStyled, ButtonStyled } from "./styles";
 
 type ButtonProps = {
-    value?: string
+    text?: string
     borded?: boolean
 }
 
-export function SubmitButton({ value, borded }: ButtonProps) {
+export function SubmitButton({ text, borded }: ButtonProps) {
     const renderDefaultButton = () => {
         return (
             <ButtonStyled type="submit">
-                {value}
+                {text}
             </ButtonStyled>
         )
     }
@@ -19,7 +19,7 @@ export function SubmitButton({ value, borded }: ButtonProps) {
     const renderBorderButton = () => {
         return (
             <ButtonBorderStyled type="submit">
-                {value}
+                {text}
             </ButtonBorderStyled>
         )
     }

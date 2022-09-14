@@ -156,7 +156,7 @@ export function Login({ validation, remoteAuthentication }: LoginProps) {
                     </Alert>
                 }
 
-                <SubmitButton value={'Login'}/>
+                <SubmitButton text={'Login'}/>
             </Form>
         </LoginStyled>
     )

@@ -181,7 +181,7 @@ function Register({ validation }: RegisterProps) {
                     </Alert>
                 }
 
-                <SubmitButton value={'Register'}/>
+                <SubmitButton text={'Register'}/>
             </Form>
         </RegisterStyled>
     )
