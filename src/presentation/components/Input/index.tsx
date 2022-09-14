@@ -5,7 +5,8 @@ type InputProps = {
     type: string
     placeholder: string
     isWrongFill: boolean 
-    setState: (text: string) => void
+    setState: (field: string, text: string) => void
+    field: string
     value: string
 }
 
@@ -14,6 +15,7 @@ function InputComponent({
     placeholder,
     isWrongFill,
     setState,
+    field,
     value,
 }: InputProps) {
     return (
@@ -21,7 +23,7 @@ function InputComponent({
             type={type}
             placeholder={placeholder}
             isWrongFill={isWrongFill}
-            onChange={(event) => setState(event.target.value)}
+            onChange={(event) => setState(field, event.target.value)}
             value={value}
         />
     )
