@@ -4,6 +4,7 @@ const globalColors = {
     gray: '#8c8c8c',
     warn: '#d94404',
     dark: '#0c0c0c',
+    field: '#f9f9f9',
     placeholder: '#535353',
 }
 

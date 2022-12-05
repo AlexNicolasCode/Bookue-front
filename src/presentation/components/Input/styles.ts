@@ -7,7 +7,7 @@ type InputStyledProps = {
 }
 
 const InputStyled = styled.input`
-    background-color: ${globalColors.gray};
+    background-color: ${globalColors.field};
     border: none;
     width: 70%;
     height: 40px;
