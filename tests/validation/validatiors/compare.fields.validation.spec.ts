@@ -29,4 +29,18 @@ describe('CompareFieldsValidation', () => {
 
     expect(error).toEqual(new InvalidFieldError())
   })
+
+  test('Should return falsy if compare is valid', () => {
+    const field = 'any_field'
+    const fieldToCompare = 'other_field'
+    const value = faker.random.word()
+    const sut = makeSut(field, fieldToCompare)
+
+    const error = sut.validate({
+      [field]: value,
+      [fieldToCompare]: value
+    })
+
+    expect(error).toBeFalsy()
+  })
 })
