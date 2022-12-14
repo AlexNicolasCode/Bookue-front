@@ -1,0 +1,32 @@
+import { InvalidFieldError } from '@/validation/errors'
+import { FieldValidation } from '@/validation/protocols'
+
+import { faker } from '@faker-js/faker'
+
+export class CompareFieldsValidation implements FieldValidation {
+    constructor (
+      readonly field: string,
+      private readonly fieldToCompare: string
+    ) {}
+  
+    validate (input: object): Error {
+      return input[this.field] !== input[this.fieldToCompare] ? new InvalidFieldError() : null
+    }
+  }
+
+const makeSut = (field: string, fieldToCompare: string): CompareFieldsValidation => new CompareFieldsValidation(field, fieldToCompare)
+
+describe('CompareFieldsValidation', () => {
+  test('Should return error if compare is invalid', () => {
+    const field = 'any_field'
+    const fieldToCompare = 'other_field'
+    const sut = makeSut(field, fieldToCompare)
+
+    const error = sut.validate({
+      [field]: 'any_value',
+      [fieldToCompare]: 'other_value'
+    })
+
+    expect(error).toEqual(new InvalidFieldError())
+  })
+})
