@@ -1,5 +1,7 @@
 export class InvalidFieldError extends Error {
-    constructor () {
-      super('Invalid email')
+    constructor (
+      private readonly field: string
+    ) {
+      super(`Invalid ${field}`);
     }
 }

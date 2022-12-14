@@ -16,7 +16,7 @@ describe('CompareFieldsValidation', () => {
       [fieldToCompare]: 'other_value'
     })
 
-    expect(error).toEqual(new InvalidFieldError())
+    expect(error).toEqual(new InvalidFieldError(`${field} fields comparation`))
   })
 
   test('Should return falsy if compare is valid', () => {
