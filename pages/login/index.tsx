@@ -6,7 +6,6 @@ import { makeLoginValidation } from "@/main/factory/validation"
 import { ValidationComposite } from "@/main/composites"
 import { makeRemoteAuthentication } from "@/main/factory/usecases"
 import { Authentication } from "@/domain/usecases"
-import { makeCookieManagerAdapter } from "@/main/factory/cookie"
 
 export type LoginPageProps = {
     validation: ValidationComposite
@@ -39,9 +38,8 @@ function LoginPage({
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-    const cookieManager = makeCookieManagerAdapter()
-    const token = await cookieManager.load('bookue-user')
-    if (token) {
+    const accessToken = context.req.cookies['bookue-user']
+    if (accessToken) {
         return {
             props: {},
             redirect: {
