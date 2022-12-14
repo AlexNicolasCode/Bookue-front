@@ -1,7 +1,6 @@
 import { faker } from "@faker-js/faker";
 
-import { FieldValidation } from "@/validation/protocols";
-import { EmailValidation, RequiredFieldValidation } from "@/validation/validators";
+import { CompareFieldsValidation, EmailValidation, RequiredFieldValidation } from "@/validation/validators";
 import { ValidationBuilder as sut } from "@/main/builders/validation.builder";
 
 describe('ValidationBuilder', () => {
@@ -19,6 +18,14 @@ describe('ValidationBuilder', () => {
         const validations = sut.field(field).email().build()
 
         expect(validations).toEqual([new EmailValidation(field)])
+    })
+
+    test('Should return CompareFieldsValidation', () => {
+        const field = faker.database.column()
+
+        const validations = sut.field(field).sameAs(field).build()
+
+        expect(validations).toEqual([new CompareFieldsValidation(field, field)])
     })
 
     test('Should return a list of validations', () => {
