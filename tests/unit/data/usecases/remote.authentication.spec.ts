@@ -3,6 +3,7 @@ import { HttpClientSpy } from 'tests/unit/data/mocks';
 import { mockAuthenticationParams } from 'tests/unit/domain/mocks';
 import { EmailInUseError, UnexpectedError } from '@/domain/errors';
 import { RemoteAuthentication } from '@/data/usecases';
+import { Authentication } from '@/domain/usecases';
 
 import { faker } from '@faker-js/faker';
 
@@ -11,8 +12,14 @@ type SutTypes = {
     httpClientSpy: HttpClientSpy
 }
 
+type HttpResponseAddAccount = {
+  data: {
+    login: Authentication.Result
+  }
+}
+
 const makeSut = (url: string = faker.internet.url()): SutTypes => {
-  const httpClientSpy = new HttpClientSpy<boolean>();
+  const httpClientSpy = new HttpClientSpy<HttpResponseAddAccount>();
   const sut = new RemoteAuthentication(url, httpClientSpy);
   return {
     sut,
@@ -25,6 +32,16 @@ describe('RemoteAuthentication', () => {
     const url = faker.internet.url();
     const { sut, httpClientSpy } = makeSut(url);
     const fakeRequest = mockAuthenticationParams();
+    httpClientSpy.response = {
+      statusCode: HttpStatusCode.ok,
+      body: {
+        data: {
+          login: {
+            accessToken: faker.datatype.uuid(),
+          }
+        }
+      },
+    };
 
     await sut.auth(fakeRequest);
 
@@ -71,13 +88,16 @@ describe('RemoteAuthentication', () => {
     httpClientSpy.response = {
       statusCode: HttpStatusCode.ok,
       body: {
-        accessToken: faker.datatype.uuid(),
-        name: faker.random.word(),
+        data: {
+          login: {
+            accessToken: faker.datatype.uuid(),
+          }
+        }
       },
     };
 
     const httpResponse = await sut.auth(mockAuthenticationParams());
 
-    expect(httpResponse).toEqual(httpClientSpy.response.body);
+    expect(httpResponse).toEqual(httpClientSpy.response.body.data.login);
   });
 });

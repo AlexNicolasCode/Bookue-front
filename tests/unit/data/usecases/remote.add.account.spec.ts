@@ -12,8 +12,14 @@ type SutTypes = {
     httpClientSpy: HttpClientSpy
 }
 
+type HttpResponseAddAccount = {
+  data: {
+    signUp: AddAccount.Result
+  }
+}
+
 const makeSut = (url: string = faker.internet.url()): SutTypes => {
-  const httpClientSpy = new HttpClientSpy<AddAccount.Result>();
+  const httpClientSpy = new HttpClientSpy<HttpResponseAddAccount>();
   const sut = new RemoteAddAccount(url, httpClientSpy);
   return {
     sut,
@@ -26,6 +32,16 @@ describe('RemoteAddAccount', () => {
     const url = faker.internet.url();
     const { sut, httpClientSpy } = makeSut(url);
     const fakeRequest = mockAddAccountParams();
+    httpClientSpy.response = {
+      statusCode: HttpStatusCode.ok,
+      body: {
+        data: {
+          signUp: {
+            accessToken: faker.datatype.uuid()
+          }
+        }
+      },
+    };
 
     await sut.add(fakeRequest);
 
@@ -87,11 +103,17 @@ describe('RemoteAddAccount', () => {
     const fakeRequest = mockAddAccountParams();
     httpClientSpy.response = {
       statusCode: HttpStatusCode.ok,
-      body: true,
+      body: {
+        data: {
+          signUp: {
+            accessToken: faker.datatype.uuid()
+          }
+        }
+      },
     };
 
     const httpResponse = await sut.add(fakeRequest);
 
-    expect(httpResponse).toBe(true);
+    expect(httpResponse).toBe(httpClientSpy.response.body.data.signUp);
   });
 });
