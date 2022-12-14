@@ -44,20 +44,15 @@ export function Login({ validation, remoteAuthentication }: LoginProps) {
             text: ""
         },
     })
-    const setEmail = (text: string) => setUserForm({ 
-        email: {
-            isWrongFill: userForm.email.isWrongFill,
-            text: text
-        },
-        password: userForm.password
-    })
-    const setPassword = (text: string) => setUserForm({ 
-        email: userForm.email,
-        password: {
-            isWrongFill: userForm.password.isWrongFill,
+    
+    const setField = (field, text: string) => setUserForm({ 
+        ...userForm,
+        [field]: {
+            isWrongFill: userForm[field].isWrongFill,
             text: text
         },
     })
+
 
     const validateForm = (): string => {
         const emailValidationError = validation.validate('email', { email: userForm.email.text })
@@ -136,18 +131,18 @@ export function Login({ validation, remoteAuthentication }: LoginProps) {
             <Form onSubmit={handleSubmit}>
                 <Input 
                     type="email"
-                    placeholder="Email"
-                    field={"email"}
+                    placeholder="email"
+                    setState={setField}
+                    field={'email'}
                     isWrongFill={userForm.email.isWrongFill}
-                    setState={setEmail}
                     value={userForm.email.text}
                 />
                 <Input 
                     type="password"
-                    placeholder="Password"
-                    field={"password"}
+                    placeholder="password"
+                    setState={setField}
+                    field={'password'}
                     isWrongFill={userForm.password.isWrongFill}
-                    setState={setPassword}
                     value={userForm.password.text}
                 />
 
