@@ -11,6 +11,5 @@ export namespace AddAccount {
     }
     export type Result = {
         accessToken: string
-        name: string
     }
 }

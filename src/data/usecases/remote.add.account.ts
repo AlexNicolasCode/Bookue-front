@@ -2,10 +2,18 @@ import { EmailInUseError, UnexpectedError } from '@/domain/errors';
 import { AddAccount } from '@/domain/usecases';
 import { HttpClient, HttpStatusCode } from '../protocols/http';
 
+type HttpResponseAddAccount = {
+  data: {
+    signUp: {
+      accessToken: string
+    }
+  }
+}
+
 export class RemoteAddAccount implements AddAccount {
   constructor(
         private readonly url: string,
-        private readonly httpClient: HttpClient<AddAccount.Result>,
+        private readonly httpClient: HttpClient<HttpResponseAddAccount>,
   ) {}
 
   async add(params: AddAccount.Params): Promise<AddAccount.Result | undefined> {
@@ -18,7 +26,6 @@ export class RemoteAddAccount implements AddAccount {
           mutation SignUp($name: String!, $email: String!, $password: String!, $passwordConfirmation: String!) {
               signUp(name: $name, email: $email, password: $password, passwordConfirmation: $passwordConfirmation) {
                 accessToken
-                name
               }
             }`,
 
@@ -31,7 +38,7 @@ export class RemoteAddAccount implements AddAccount {
       })
     });
     switch (httpResponse.statusCode) {
-      case HttpStatusCode.ok: return httpResponse.body;
+      case HttpStatusCode.ok: return httpResponse.body.data.signUp;
       case HttpStatusCode.forbidden: throw new EmailInUseError();
       default: throw new UnexpectedError();
     }

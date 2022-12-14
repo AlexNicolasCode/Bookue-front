@@ -38,12 +38,6 @@ type RegisterFormProps = {
     }
 }
 
-type ValidationErrors = {
-    name: string
-    email: string
-    password: string
-    passwordConfirmation: string
-}
 
 function Register({ validation }: RegisterProps) {
     const router = useRouter()
@@ -99,8 +93,6 @@ function Register({ validation }: RegisterProps) {
         })
     }
 
-    const cleanWrongField = (): void => setWrongFields('', '')
-
     const handleSubmit = async (event: FormEvent<HTMLFormElement>): Promise<void> => {
         event.preventDefault()
         try {
@@ -110,14 +102,13 @@ function Register({ validation }: RegisterProps) {
                 return
             }
             const remoteAddAccount = makeRemoteAddAccount()
-            const account = await remoteAddAccount.add({
+            const { accessToken } = await remoteAddAccount.add({
                 name: userForm.name.text,
                 email: userForm.email.text,
                 password: userForm.password.text,
                 passwordConfirmation: userForm.passwordConfirmation.text,
             })
-            cleanWrongField()
-            await setJwtLocaly(account.accessToken)
+            await setJwtLocaly(accessToken)
             goToFeedPage()
         } catch (error) {
             if (error.message.includes('email')) {
