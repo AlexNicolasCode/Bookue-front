@@ -2,7 +2,6 @@ import { useRouter } from "next/router"
 import { GetServerSideProps } from "next"
 
 import { UnloggedHeader, Register } from "@/presentation/components"
-import { makeCookieManagerAdapter } from "@/main/factory/cookie"
 import { makeRegisterValidation } from "@/main/factory/validation"
 
 function SignUpPage({
@@ -29,9 +28,8 @@ function SignUpPage({
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-    const cookieManager = makeCookieManagerAdapter()
-    const token = await cookieManager.load('bookue-user')
-    if (token) {
+    const accessToken = context.req.cookies['bookue-user']
+    if (accessToken) {
         return {
             props: {},
             redirect: {
