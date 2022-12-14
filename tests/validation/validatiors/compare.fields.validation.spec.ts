@@ -1,18 +1,7 @@
 import { InvalidFieldError } from '@/validation/errors'
-import { FieldValidation } from '@/validation/protocols'
+import { CompareFieldsValidation } from '@/validation/validators'
 
 import { faker } from '@faker-js/faker'
-
-export class CompareFieldsValidation implements FieldValidation {
-    constructor (
-      readonly field: string,
-      private readonly fieldToCompare: string
-    ) {}
-  
-    validate (input: object): Error {
-      return input[this.field] !== input[this.fieldToCompare] ? new InvalidFieldError() : null
-    }
-  }
 
 const makeSut = (field: string, fieldToCompare: string): CompareFieldsValidation => new CompareFieldsValidation(field, fieldToCompare)
 
