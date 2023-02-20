@@ -1,0 +1,3 @@
+[submodule "api"]
+	path = Bookue-api
+	url = https://github.com/AlexNicolasCode/Bookue-api
