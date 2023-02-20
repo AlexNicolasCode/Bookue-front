@@ -73,10 +73,19 @@ function Register({ validation }: RegisterProps) {
     const validateForm = (): string => {
         const fields = ['name', 'email', 'password', 'passwordConfirmation']
         const errorList = fields.map((field: string) => {
-            const error = validation.validate(
-                field,
-                { [field]: userForm[field].text }
-            )
+            const fieldInput = { [field]: userForm[field].text }
+            if (field === 'password') {
+                const error = validation.validate(
+                    field,
+                    {
+                        ...fieldInput,
+                        passwordConfirmation: userForm['passwordConfirmation'].text
+                    }
+                )
+                setWrongFields(field, error)
+                return error
+            }
+            const error = validation.validate(field, fieldInput)
             setWrongFields(field, error)
             return error
         })
