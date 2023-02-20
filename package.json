@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "start:api": "cd Bookue-api && yarn && yarn mongo:up && yarn start:dev",
     "start:dev": "next dev",
     "start:prod": "next start",
     "build": "next build",
