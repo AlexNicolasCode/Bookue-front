@@ -1,1 +1,1 @@
-export * from './book.form';
+export * from './book-form'

@@ -1,29 +1,7 @@
-import { createContext, ReactNode, useState } from "react";
+import { ReactNode, useState } from "react"
 
-type BookForm = {
-    title: {
-        text: string
-    },
-    author: {
-        text: string
-    },
-    pages: {
-        text: string
-    },
-    description: {
-        text: string
-    },
-    currentPage: {
-        text: string
-    },
-}
-
-type BookFormContextData = {
-    bookForm: BookForm
-    setField: (field: string, text: string) => void
-}
-
-export const BookFormContext = createContext({} as BookFormContextData)
+import { BookFormContext } from "./context"
+import { BookForm } from "./types"
 
 type BookFormContextProviderProps = {
     children: ReactNode
