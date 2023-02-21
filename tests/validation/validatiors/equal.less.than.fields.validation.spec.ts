@@ -31,4 +31,17 @@ describe('EqualLessThanFieldsValidation', () => {
 
     expect(error).toEqual(new InvalidFieldError(`${field} fields comparation`))
   })
+
+  test('Should return falsy if compare is valid', () => {
+    const field = 'any_field'
+    const fieldToCompare = 'other_field'
+    const sut = makeSut(field, fieldToCompare)
+
+    const error = sut.validate({
+      [field]: '100',
+      [fieldToCompare]: '10'
+    })
+
+    expect(error).toBeFalsy()
+  })
 })
