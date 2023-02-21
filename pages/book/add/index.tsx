@@ -2,12 +2,13 @@ import { FormEvent } from "react"
 import { GetServerSideProps } from "next"
 import { useRouter } from "next/router"
 
-import { Header, Input, Form, Container, SubmitButton, Text } from "@/presentation/components"
+import { Header, Input, Form, Container, SubmitButton } from "@/presentation/components"
 import { useBookForm } from "@/presentation/hooks"
+import { makeBookFormValidation } from "@/main/factory/validation"
 
 function AddBookPage() {
-    const { bookForm, setField } = useBookForm()
     const router = useRouter()
+    const { bookForm, setField, setWrongFillField } = useBookForm()
 
     const formFields = [
         {
@@ -28,8 +29,29 @@ function AddBookPage() {
         },
     ]
 
+
+    const setErrorAlert = (field: string, error: string) => {
+        setWrongFillField(field)
+    }
+
+    const validateForm = (): string => {
+        const fields = ['title', 'author', 'description', 'pages', 'currentPage']
+        const validation = makeBookFormValidation()
+        const errorList = fields.map((field: string) => {
+            const fieldInput = { [field]: bookForm[field].text }
+            const error = validation.validate(field, fieldInput)
+            setErrorAlert(field, error)
+            return error
+        })
+        return errorList.find((error: string) => error !== undefined)
+    }
+
     const goToCurrentPageScreen = async (event: FormEvent<HTMLFormElement>): Promise<void> => {
         event.preventDefault()
+        const error = validateForm()
+        if (error) {
+            return
+        }
         router.push('/book/add/current-page')
     }
 
