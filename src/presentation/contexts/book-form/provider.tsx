@@ -35,9 +35,21 @@ export function BookFormContextProvider({ children }: BookFormContextProviderPro
     const setField = (field, text: string): void => setBookForm({ 
         ...bookForm,
         [field]: {
-            text: text
+            isWrongField: bookForm[field].isWrongFill,
+            text: text,
         },
     })
+
+    const setWrongFillField = (field): void => {
+        cleanAllWrongFields()
+        setBookForm({ 
+            ...bookForm,
+            [field]: {
+                isWrongField: true,
+                text: bookForm[field].text,
+            },
+        })
+    }
 
     const cleanAllWrongFields = (): void => {
         setBookForm(defaultBookForm)
@@ -48,7 +60,7 @@ export function BookFormContextProvider({ children }: BookFormContextProviderPro
         value={{ 
             bookForm,
             setField,
-            cleanAllWrongFields,
+            setWrongFillField,
         }}>
         { children }
       </BookFormContext.Provider>
