@@ -7,7 +7,9 @@ const TextStyled = styled.p`
     font-size: 12px;
     width: 125px;
     height: 40px;
-
+    display: flex;
+    justify-content: center;
+    align-items: center;
 `
 
 export {
