@@ -5,6 +5,7 @@ import { BookForm } from "./types"
 type BookFormContextData = {
     bookForm: BookForm
     setField: (field: string, text: string) => void
+    cleanAllWrongFields: () => void
 }
 
 export const BookFormContext = createContext({} as BookFormContextData)
