@@ -94,8 +94,10 @@ function AddBookPage() {
                 value={bookForm.currentPage.text}
                 max={bookForm.pages.text}
             />
-            <SubmitButton text={'Save'} />
-            <Text text="Skip" />
+            <Container flex smallMarginTop>
+                <SubmitButton text={'Save'} />
+                <Text text="Skip" />
+            </Container>
         </Form>
     )
 
