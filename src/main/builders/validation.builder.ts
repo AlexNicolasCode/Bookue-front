@@ -26,6 +26,11 @@ export class ValidationBuilder {
         return this
     }
 
+    equalLessThan (fieldToCompare: string): ValidationBuilder {
+        this.validations.push(new CompareFieldsValidation(this.fieldName, fieldToCompare))
+        return this
+    }
+
     build (): FieldValidation[] {
         return this.validations
     }
