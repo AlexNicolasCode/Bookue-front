@@ -64,7 +64,7 @@ function AddBookPage() {
         event.preventDefault()
     }
 
-    const renderInputFields = (): any => formFields.map((field) => (
+    const renderInputFields = (): any => formFields.map((field, index) => (
         <Input
             type="text"
             field={field.fieldName}
@@ -72,6 +72,7 @@ function AddBookPage() {
             isWrongFill={false}
             setState={setField}
             value={bookForm[field.fieldName].text}
+            key={index}
         />
     ))
     
