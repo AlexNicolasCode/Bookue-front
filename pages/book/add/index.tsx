@@ -1,15 +1,14 @@
-import { FormEvent, useState } from "react"
+import { FormEvent } from "react"
 import { GetServerSideProps } from "next"
+import { useRouter } from "next/router"
 
 import { Header, Input, Form, Container, SubmitButton, Text } from "@/presentation/components"
-
-type BookForm = {
-    [x: string]: {
-        text: string
-    }
-}
+import { useBookForm } from "@/presentation/hooks"
 
 function AddBookPage() {
+    const { bookForm, setField } = useBookForm()
+    const router = useRouter()
+
     const formFields = [
         {
             fieldName: "title",
@@ -29,39 +28,9 @@ function AddBookPage() {
         },
     ]
 
-    const [isCurrentPageStep, setIsCurrentPageStep] = useState<boolean>(false)
-    const [bookForm, setBookForm] = useState<BookForm>({
-        title: {
-            text: ''
-        },
-        author: {
-            text: ''
-        },
-        pages: {
-            text: ''
-        },
-        description: {
-            text: ''
-        },
-        currentPage: {
-            text: ''
-        },
-    })
-
-    const setField = (field, text: string) => setBookForm({ 
-        ...bookForm,
-        [field]: {
-            text: text
-        },
-    })
-
-    const handleToCurrentPageStep = async (event: FormEvent<HTMLFormElement>): Promise<void> => {
+    const goToCurrentPageScreen = async (event: FormEvent<HTMLFormElement>): Promise<void> => {
         event.preventDefault()
-        setIsCurrentPageStep(true)
-    }
-
-    const handleSubmit = async (event: FormEvent<HTMLFormElement>): Promise<void> => {
-        event.preventDefault()
+        router.push('/book/add/current-page')
     }
 
     const renderInputFields = (): any => formFields.map((field, index) => (
@@ -77,27 +46,9 @@ function AddBookPage() {
     ))
     
     const renderAddBookForm = () => (
-        <Form onSubmit={handleToCurrentPageStep}>
+        <Form onSubmit={goToCurrentPageScreen}>
             {renderInputFields()}
             <SubmitButton text={'Next'} />
-        </Form>
-    )
-    
-    const renderCurrentPageForm = () => (
-        <Form onSubmit={handleSubmit}>
-            <Input
-                type="number"
-                field={'currentPage'}
-                placeholder={'Set current page (Optional)'}
-                isWrongFill={false}
-                setState={setField}
-                value={bookForm.currentPage.text}
-                max={bookForm.pages.text}
-            />
-            <Container flex smallMarginTop>
-                <SubmitButton text={'Save'} />
-                <Text text="Skip" />
-            </Container>
         </Form>
     )
 
@@ -106,7 +57,7 @@ function AddBookPage() {
             <Header/>
 
             <Container>
-                {isCurrentPageStep ? renderCurrentPageForm() : renderAddBookForm()}
+                {renderAddBookForm()}
             </Container>
         </>
     )
