@@ -1,8 +1,6 @@
 import { InvalidFieldError } from '@/validation/errors'
 import { FieldValidation } from '@/validation/protocols'
 
-import { faker } from '@faker-js/faker'
-
 export class EqualLessThanFieldsValidation implements FieldValidation {
     constructor (
         readonly field: string,
