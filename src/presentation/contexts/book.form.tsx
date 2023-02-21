@@ -19,13 +19,14 @@ type BookForm = {
 }
 
 type BookFormContextData = {
-    bookForm: BookForm;
-};
+    bookForm: BookForm
+    setField: (field: string, text: string) => void
+}
 
 export const BookFormContext = createContext({} as BookFormContextData)
 
 type BookFormContextProviderProps = {
-    children: ReactNode;
+    children: ReactNode
 }
 
 export function BookFormContextProvider({ children }: BookFormContextProviderProps) {
@@ -47,10 +48,18 @@ export function BookFormContextProvider({ children }: BookFormContextProviderPro
         },
     })
 
+    const setField = (field, text: string) => setBookForm({ 
+        ...bookForm,
+        [field]: {
+            text: text
+        },
+    })
+
     return (
       <BookFormContext.Provider 
         value={{ 
             bookForm,
+            setField,
         }}>
         { children }
       </BookFormContext.Provider>
