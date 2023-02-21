@@ -8,6 +8,7 @@ type InputProps = {
     setState: (field: string, text: string) => void
     field: string
     value: string
+    max?: string
 }
 
 function InputComponent({ 
@@ -17,6 +18,7 @@ function InputComponent({
     setState,
     field,
     value,
+    max,
 }: InputProps) {
     return (
         <InputStyled 
@@ -25,6 +27,7 @@ function InputComponent({
             isWrongFill={isWrongFill}
             onChange={(event) => setState(field, event.target.value)}
             value={value}
+            max={max}
         />
     )
 }
