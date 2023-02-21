@@ -10,9 +10,9 @@ export class EqualLessThanFieldsValidation implements FieldValidation {
     ) {}
   
     validate (input: object): Error {
-        return input[this.field] <= input[this.fieldToCompare] ?
-        new InvalidFieldError(`${this.field} fields comparation`) :
-        null
+        return input[this.field] >= input[this.fieldToCompare] ?
+        null :
+        new InvalidFieldError(`${this.field} fields comparation`)
     }
 }
 
@@ -40,6 +40,19 @@ describe('EqualLessThanFieldsValidation', () => {
     const error = sut.validate({
       [field]: '100',
       [fieldToCompare]: '10'
+    })
+
+    expect(error).toBeFalsy()
+  })
+
+  test('Should return falsy if field are equal is valid', () => {
+    const field = 'any_field'
+    const fieldToCompare = 'other_field'
+    const sut = makeSut(field, fieldToCompare)
+
+    const error = sut.validate({
+      [field]: '100',
+      [fieldToCompare]: '100'
     })
 
     expect(error).toBeFalsy()
