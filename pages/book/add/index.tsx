@@ -1,7 +1,7 @@
 import { FormEvent, useState } from "react"
 import { GetServerSideProps } from "next"
 
-import { Header, Input, Form, Container, SubmitButton } from "@/presentation/components"
+import { Header, Input, Form, Container, SubmitButton, Text } from "@/presentation/components"
 
 type BookForm = {
     [x: string]: {
@@ -29,6 +29,7 @@ function AddBookPage() {
         },
     ]
 
+    const [isCurrentPageStep, setIsCurrentPageStep] = useState<boolean>(false)
     const [bookForm, setBookForm] = useState<BookForm>({
         title: {
             text: ''
@@ -42,6 +43,9 @@ function AddBookPage() {
         description: {
             text: ''
         },
+        currentPage: {
+            text: ''
+        },
     })
 
     const setField = (field, text: string) => setBookForm({ 
@@ -52,6 +56,11 @@ function AddBookPage() {
     })
 
     const handleToCurrentPageStep = async (event: FormEvent<HTMLFormElement>): Promise<void> => {
+        event.preventDefault()
+        setIsCurrentPageStep(true)
+    }
+
+    const handleSubmit = async (event: FormEvent<HTMLFormElement>): Promise<void> => {
         event.preventDefault()
     }
 
@@ -65,16 +74,36 @@ function AddBookPage() {
             value={bookForm[field.fieldName].text}
         />
     ))
+    
+    const renderAddBookForm = () => (
+        <Form onSubmit={handleToCurrentPageStep}>
+            {renderInputFields()}
+            <SubmitButton text={'Next'} />
+        </Form>
+    )
+    
+    const renderCurrentPageForm = () => (
+        <Form onSubmit={handleSubmit}>
+            <Input
+                type="number"
+                field={'currentPage'}
+                placeholder={'Set current page (Optional)'}
+                isWrongFill={false}
+                setState={setField}
+                value={bookForm.currentPage.text}
+                max={bookForm.pages.text}
+            />
+            <SubmitButton text={'Save'} />
+            <Text text="Skip" />
+        </Form>
+    )
 
     return (
         <>
             <Header/>
 
             <Container>
-                <Form onSubmit={handleToCurrentPageStep}>
-                    {renderInputFields()}
-                    <SubmitButton text={'Next'} />
-                </Form>
+                {isCurrentPageStep ? renderCurrentPageForm() : renderAddBookForm()}
             </Container>
         </>
     )
