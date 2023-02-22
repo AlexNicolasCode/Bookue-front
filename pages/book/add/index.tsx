@@ -68,7 +68,7 @@ function AddBookPage() {
     const renderInputFields = (): any => formFields.map((field, index) => {
         return (
         <Input
-            type="text"
+            type={field.fieldName === 'pages' ? 'number' : 'text'}
             field={field.fieldName}
             placeholder={field.placeholder}
             isWrongFill={bookForm[field.fieldName].isWrongFill}
