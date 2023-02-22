@@ -8,7 +8,11 @@ import { makeBookFormValidation } from "@/main/factory/validation"
 
 function AddBookPage() {
     const router = useRouter()
-    const { bookForm, setField, setWrongFillField } = useBookForm()
+    const {
+        bookForm,
+        setField,
+        setWrongFillField,
+    } = useBookForm()
 
     const formFields = [
         {
@@ -35,40 +39,47 @@ function AddBookPage() {
     }
 
     const validateForm = (): string => {
-        const fields = ['title', 'author', 'description', 'pages', 'currentPage']
+        const fields = ['title', 'author', 'description', 'pages']
         const validation = makeBookFormValidation()
         const errorList = fields.map((field: string) => {
             const fieldInput = { [field]: bookForm[field].text }
             const error = validation.validate(field, fieldInput)
-            setErrorAlert(field, error)
             return error
         })
-        return errorList.find((error: string) => error !== undefined)
+        const errorIndex = errorList.findIndex((error: string) => error !== undefined)
+        const error = errorList.find((error: string) => error !== undefined)
+        setErrorAlert(fields[errorIndex], error)
+        return error
     }
 
-    const goToCurrentPageScreen = async (event: FormEvent<HTMLFormElement>): Promise<void> => {
+    const handleSubmit = (event: FormEvent<HTMLFormElement>): void => {
         event.preventDefault()
         const error = validateForm()
         if (error) {
             return
         }
+        goToCurrentPageScreen()
+    }
+    
+    const goToCurrentPageScreen = async (): Promise<void> => {
         router.push('/book/add/current-page')
     }
 
-    const renderInputFields = (): any => formFields.map((field, index) => (
+    const renderInputFields = (): any => formFields.map((field, index) => {
+        return (
         <Input
             type="text"
             field={field.fieldName}
             placeholder={field.placeholder}
-            isWrongFill={false}
+            isWrongFill={bookForm[field.fieldName].isWrongFill}
             setState={setField}
             value={bookForm[field.fieldName].text}
             key={index}
         />
-    ))
+    )})
     
     const renderAddBookForm = () => (
-        <Form onSubmit={goToCurrentPageScreen}>
+        <Form onSubmit={handleSubmit}>
             {renderInputFields()}
             <SubmitButton text={'Next'} />
         </Form>

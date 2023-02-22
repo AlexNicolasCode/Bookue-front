@@ -32,20 +32,19 @@ export function BookFormContextProvider({ children }: BookFormContextProviderPro
     }
     const [bookForm, setBookForm] = useState<BookForm>(defaultBookForm)
 
-    const setField = (field, text: string): void => setBookForm({ 
+    const setField = (field: string, text: string): void => setBookForm({ 
         ...bookForm,
         [field]: {
-            isWrongField: bookForm[field].isWrongFill,
+            isWrongFill: false,
             text: text,
         },
     })
 
-    const setWrongFillField = (field): void => {
-        cleanAllWrongFields()
+    const setWrongFillField = (field: string): void => {
         setBookForm({ 
             ...bookForm,
             [field]: {
-                isWrongField: true,
+                isWrongFill: true,
                 text: bookForm[field].text,
             },
         })
