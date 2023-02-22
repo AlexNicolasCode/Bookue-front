@@ -48,7 +48,9 @@ function AddBookPage() {
         })
         const errorIndex = errorList.findIndex((error: string) => error !== undefined)
         const error = errorList.find((error: string) => error !== undefined)
-        setErrorAlert(fields[errorIndex], error)
+        if (error) {
+            setErrorAlert(fields[errorIndex], error)
+        }
         return error
     }
 
