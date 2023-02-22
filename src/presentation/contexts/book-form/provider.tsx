@@ -49,11 +49,7 @@ export function BookFormContextProvider({ children }: BookFormContextProviderPro
             },
         })
     }
-
-    const cleanAllWrongFields = (): void => {
-        setBookForm(defaultBookForm)
-    }
-
+    
     return (
       <BookFormContext.Provider 
         value={{ 
