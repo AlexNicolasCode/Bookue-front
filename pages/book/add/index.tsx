@@ -1,8 +1,8 @@
-import { FormEvent } from "react"
+import { FormEvent, useState } from "react"
 import { GetServerSideProps } from "next"
 import { useRouter } from "next/router"
 
-import { Header, Input, Form, Container, SubmitButton } from "@/presentation/components"
+import { Header, Input, Form, Container, SubmitButton, Alert } from "@/presentation/components"
 import { useBookForm } from "@/presentation/hooks"
 import { makeBookFormValidation } from "@/main/factory/validation"
 
@@ -13,6 +13,7 @@ function AddBookPage() {
         setField,
         setWrongFillField,
     } = useBookForm()
+    const [alert, setAlert] = useState<string>()
 
     const formFields = [
         {
@@ -36,6 +37,7 @@ function AddBookPage() {
 
     const setErrorAlert = (field: string, error: string) => {
         setWrongFillField(field)
+        setAlert(error)
     }
 
     const validateForm = (): string => {
@@ -90,9 +92,13 @@ function AddBookPage() {
     return (
         <>
             <Header/>
-
             <Container>
                 {renderAddBookForm()}
+            </Container>
+            <Container centralize>
+                {alert &&
+                    <Alert>{alert}</Alert>
+                }
             </Container>
         </>
     )
