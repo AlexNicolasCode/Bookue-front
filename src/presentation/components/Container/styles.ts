@@ -2,6 +2,7 @@ import styled from "styled-components";
 
 type ContainerProps = {
     flex?: boolean
+    centralize?: boolean
     smallMarginTop?: boolean
     mediumMarginTop?: boolean
     largeMarginTop?: boolean
@@ -18,7 +19,9 @@ const getMarginTop = (props: ContainerProps) => {
 
 const ContainerStyled = styled.section`
     margin-top: ${(props: ContainerProps) => getMarginTop(props)};
-    display: ${(props: ContainerProps) => props.flex ? 'flex' : 'block'};
+    display: ${(props: ContainerProps) => props.flex || props.centralize ? 'flex' : 'block'};
+    justify-content: ${(props: ContainerProps) => props.centralize && 'center'};
+
 `
 
 export {
