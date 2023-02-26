@@ -21,7 +21,7 @@ export class RemoteAddBook implements AddBook {
         private readonly httpClient: HttpClient<HttpResponseAddBook>,
   ) {}
 
-  async add(params: AddBook.Params): Promise<AddBook.Result | undefined> {
+  async add(params: AddBook.Params): Promise<undefined> {
     const httpResponse = await this.httpClient.request({
       url: this.url,
       method: 'post',
@@ -78,5 +78,15 @@ describe('RemoteAddBook', () => {
       expect(httpClientSpy.method).toBe('post');
       expect(httpClientSpy.headers).toStrictEqual({ 'Content-Type': 'application/json' });
     });
+
+    test('should return correct body on success', async () => {
+        const url = faker.internet.url();
+        const httpClientSpy = new HttpClientSpy<HttpResponseAddBook>();
+        const sut = new RemoteAddBook(url, httpClientSpy);
+    
+        const httpResponse = await sut.add(mockAddBookParams());
+    
+        expect(httpResponse).toEqual(undefined);
+      });
 })
 
