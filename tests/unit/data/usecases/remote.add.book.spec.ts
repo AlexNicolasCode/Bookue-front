@@ -88,5 +88,18 @@ describe('RemoteAddBook', () => {
     
         expect(httpResponse).toEqual(undefined);
       });
+
+    test('should throw when httpClient return server error', async () => {
+        const url = faker.internet.url();
+        const httpClientSpy = new HttpClientSpy<HttpResponseAddBook>();
+        const sut = new RemoteAddBook(url, httpClientSpy);
+        httpClientSpy.response = {
+            statusCode: HttpStatusCode.serverError
+        }
+
+        const promise = sut.add(mockAddBookParams());
+    
+        await expect(promise).rejects.toThrow(new UnexpectedError());
+      });
 })
 
