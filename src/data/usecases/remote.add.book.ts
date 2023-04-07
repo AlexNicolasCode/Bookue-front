@@ -1,6 +1,7 @@
 import { UnexpectedError } from "@/domain/errors";
 import { AddBook } from "@/domain/usecases";
 import { HttpClient, HttpStatusCode } from "../protocols/http";
+import { LoadCookie } from "../protocols/cookie";
 
 type HttpResponseAddBook = {
     data: {
@@ -14,14 +15,17 @@ export class RemoteAddBook implements AddBook {
     constructor(
           private readonly url: string,
           private readonly httpClient: HttpClient<HttpResponseAddBook>,
+          private readonly loadCookie: LoadCookie,
     ) {}
   
     async add(params: AddBook.Params): Promise<undefined> {
+      const bookueCookie = await this.loadCookie.load('bookue-user')
       const httpResponse = await this.httpClient.request({
         url: this.url,
         method: 'post',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${bookueCookie}` 
         },
         body: JSON.stringify({
           query: `
