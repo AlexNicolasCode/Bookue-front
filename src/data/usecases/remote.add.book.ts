@@ -20,22 +20,22 @@ export class RemoteAddBook implements AddBook {
       const httpResponse = await this.httpClient.request({
         url: this.url,
         method: 'post',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({
           query: `
               mutation Mutation(
                   $title: String!,
-                  $author: String!,
-                  $pages: String!,
-                  $accessToken: String!,
+                  $author: String,
                   $description: String,
-                  $currentPage: String
+                  $currentPage: Int,
+                  $pages: Int!
               ) {
                   addBook(
                       title: $title, 
                       author: $author, 
                       pages: $pages, 
-                      accessToken: $accessToken, 
                       description: $description, 
                       currentPage: $currentPage
                   ) {
