@@ -1,12 +1,13 @@
-import { FormEvent } from "react"
+import { FormEvent, useState } from "react"
 import { GetServerSideProps } from "next"
 
-import { Header, Input, Form, Container, SubmitButton, Text } from "@/presentation/components"
+import { Header, Input, Form, Container, SubmitButton, Text, Alert } from "@/presentation/components"
 import { useBookForm } from "@/presentation/hooks"
 import { makeRemoteAddBook } from "@/main/factory/usecases"
 
 function AddBookCurrentPagePage() {
     const { bookForm, setField } = useBookForm()
+    const [alert, setAlert] = useState<string>()
 
     const handleSubmit = async (event: FormEvent<HTMLFormElement>): Promise<void> => {
         event.preventDefault()
@@ -20,7 +21,7 @@ function AddBookCurrentPagePage() {
                 pages: Number(bookForm.pages.text),
             })
         } catch (error) {
-            
+            setAlert(error.message)
         }
     }
     
@@ -48,6 +49,12 @@ function AddBookCurrentPagePage() {
 
             <Container>
                 {renderCurrentPageForm()}
+            </Container>
+
+            <Container centralize>
+                {alert &&
+                    <Alert>{alert}</Alert>
+                }
             </Container>
         </>
     )
