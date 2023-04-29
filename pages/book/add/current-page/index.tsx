@@ -1,11 +1,13 @@
 import { FormEvent, useState } from "react"
 import { GetServerSideProps } from "next"
+import { useRouter } from "next/router"
 
 import { Header, Input, Form, Container, SubmitButton, Text, Alert } from "@/presentation/components"
 import { useBookForm } from "@/presentation/hooks"
 import { makeRemoteAddBook } from "@/main/factory/usecases"
 
 function AddBookCurrentPagePage() {
+    const router = useRouter()
     const { bookForm, setField } = useBookForm()
     const [alert, setAlert] = useState<string>()
 
@@ -20,9 +22,14 @@ function AddBookCurrentPagePage() {
                 description: bookForm.description.text,
                 pages: Number(bookForm.pages.text),
             })
+            goToHomePageScreen()
         } catch (error) {
             setAlert(error.message)
         }
+    }
+
+    const goToHomePageScreen = async (): Promise<void> => {
+        router.push('/')
     }
     
     const renderCurrentPageForm = () => (
