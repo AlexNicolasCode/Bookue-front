@@ -7,12 +7,11 @@ type InputStyledProps = {
 }
 
 const InputStyled = styled.input`
-    background-color: ${globalColors.field};
+    background-color: ${(props: InputStyledProps) => props.isWrongFill ? globalColors.warn : globalColors.field};
     border: none;
     width: 70%;
     height: 40px;
     padding: 0 1rem;
-    border: ${(props: InputStyledProps) => props.isWrongFill && `1px ${globalColors.warn} solid` };
     
     ::placeholder {
         color: ${globalColors.placeholder};
