@@ -30,4 +30,12 @@ describe('Sign in screen', () => {
 
     cy.getByTestId('sign-up-alert').contains('Required Field')
   })
+
+  it('Should show invalid email error when user fill form with an invalid email', () => {
+    cy.getByTestId('sign-in-email').type(fakeAccount.email)
+    cy.getByTestId('sign-in-password').type(fakeAccount.password)
+    cy.getByTestId('sign-in-submit-form').click()
+
+    cy.getByTestId('sign-up-alert').contains('Invalid email')
+  })
 })
