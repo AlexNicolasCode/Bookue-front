@@ -5,12 +5,13 @@ import { ButtonBorderStyled, ButtonStyled } from "./styles";
 type ButtonProps = {
     text?: string
     borded?: boolean
+    testId?: string
 }
 
-export function SubmitButton({ text, borded }: ButtonProps) {
+export function SubmitButton({ text, borded, testId }: ButtonProps) {
     const renderDefaultButton = () => {
         return (
-            <ButtonStyled type="submit">
+            <ButtonStyled type="submit" data-test-id={testId}>
                 {text}
             </ButtonStyled>
         )
@@ -18,7 +19,7 @@ export function SubmitButton({ text, borded }: ButtonProps) {
 
     const renderBorderButton = () => {
         return (
-            <ButtonBorderStyled type="submit">
+            <ButtonBorderStyled type="submit" data-test-id={testId}>
                 {text}
             </ButtonBorderStyled>
         )
