@@ -63,4 +63,14 @@ describe('Sign up screen', () => {
 
     cy.getByTestId('sign-up-alert').contains('Required Field')
   })
+
+  it('Should redirect to home screen on success', () => {
+    cy.getByTestId('sign-up-name').type(fakeAccount.name)
+    cy.getByTestId('sign-up-email').type(fakeAccount.email)
+    cy.getByTestId('sign-up-password').type(fakeAccount.password)
+    cy.getByTestId('sign-up-password-confirmation').type(fakeAccount.password)
+    cy.getByTestId('sign-up-submit-form').click()
+
+    cy.url().should('eq', Cypress.config().baseUrl + '/')
+  })
 })
