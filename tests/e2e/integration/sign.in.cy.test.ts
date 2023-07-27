@@ -1,5 +1,7 @@
 import { faker } from "@faker-js/faker";
 
+const bookueApiUrl = "http://localhost:8000/graphql"
+
 describe('Sign in screen', () => {
   let fakeAccount;
 
@@ -31,11 +33,16 @@ describe('Sign in screen', () => {
     cy.getByTestId('sign-up-alert').contains('Required Field')
   })
 
-  it('Should show invalid email error when user fill form with an invalid email', () => {
+  it('Should show invalid user error when user fill form with invalid data', () => {
+    cy.intercept(bookueApiUrl, {
+        method: 'POST',
+      }, {
+      statusCode: 401,
+    }).as('request')
     cy.getByTestId('sign-in-email').type(fakeAccount.email)
     cy.getByTestId('sign-in-password').type(fakeAccount.password)
     cy.getByTestId('sign-in-submit-form').click()
 
-    cy.getByTestId('sign-up-alert').contains('Invalid email')
+    cy.getByTestId('sign-up-alert').contains('Invalid user. Please, check if your email and password is correct.')
   })
 })
