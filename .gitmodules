@@ -1,0 +1,3 @@
+[submodule "Bookue-api"]
+	path = Bookue-api
+	url = git@github.com:AlexNicolasCode/Bookue-api.git
