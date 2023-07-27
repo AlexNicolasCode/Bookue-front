@@ -133,27 +133,29 @@ export function Login({ validation, remoteAuthentication }: LoginProps) {
                     type="email"
                     placeholder="email"
                     setState={setField}
-                    field={'email'}
+                    field={"email"}
                     isWrongFill={userForm.email.isWrongFill}
                     value={userForm.email.text}
+                    testId="sign-in-email"
                 />
                 <Input 
                     type="password"
                     placeholder="password"
                     setState={setField}
-                    field={'password'}
+                    field={"password"}
                     isWrongFill={userForm.password.isWrongFill}
                     value={userForm.password.text}
+                    testId="sign-in-password"
                 />
 
                 {
                     alert.length > 0 && 
-                    <Alert>
+                    <Alert testId="sign-up-alert">
                         {alert}
                     </Alert>
                 }
 
-                <SubmitButton text={'Login'}/>
+                <SubmitButton text={'Login'} testId="sign-in-submit-form"/>
             </Form>
         </LoginStyled>
     )

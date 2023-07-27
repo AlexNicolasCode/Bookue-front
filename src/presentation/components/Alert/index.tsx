@@ -2,7 +2,7 @@ import { AlertStyled } from "./styles";
 
 type AlertProps = {
     children: string
-    testId: string
+    testId?: string
 }
 
 function Alert({ children, testId }: AlertProps) {
