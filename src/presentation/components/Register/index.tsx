@@ -76,21 +76,18 @@ function Register({ validation }: RegisterProps) {
     const setField = (field, text: string) => setUserForm({ 
         ...userForm,
         [field]: {
-            fieldName: userForm[field].fieldName,
-            isWrongFill: userForm[field].isWrongFill,
+            ...userForm[field],
             text: text,
-            type: userForm[field].type,
-            placeholder: userForm[field].placeholder,
-            testId: userForm[field].testId,
         },
     })
 
     const validateForm = (): string => {
-        const fields = ['name', 'email', 'password', 'passwordConfirmation']
-        const errorList = fields.map((field: string) => {
+        const fieldTexts = {}
+        fieldNames.forEach((fieldName: string) => fieldTexts[fieldName] = userForm[fieldName].text)
+        const errorList = fieldNames.map((field: string) => {
             const error = validation.validate(
                 field,
-                { [field]: userForm[field].text }
+                fieldTexts,
             )
             setWrongFields(field, error)
             return error
@@ -102,8 +99,8 @@ function Register({ validation }: RegisterProps) {
         setUserForm({
             ...userForm,
             [field]: {
+                ...userForm[field],
                 isWrongFill: error ? true : false,
-                text: userForm[field].text,
             },
         })
     }
