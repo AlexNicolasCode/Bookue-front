@@ -10,7 +10,7 @@ type UnloggedHeaderProps = {
 function UnloggedHeader({ value, onClick }: UnloggedHeaderProps) {
     return (
         <HeaderStyled>
-            <ButtonBorderStyled onClick={onClick}>
+            <ButtonBorderStyled onClick={onClick} data-test-id="login-button">
                 {value}
             </ButtonBorderStyled>
         </HeaderStyled>
