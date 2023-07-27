@@ -27,6 +27,15 @@ describe('Sign up screen', () => {
 
     cy.getByTestId('sign-up-alert').contains('Invalid password fields comparation')
   })
+  
+  it('Should show password error alert when user not fill password confirmation field', () => {
+    cy.getByTestId('sign-up-name').type(fakeAccount.name)
+    cy.getByTestId('sign-up-email').type(fakeAccount.email)
+    cy.getByTestId('sign-up-password').type(fakeAccount.password)
+    cy.getByTestId('sign-up-submit-form').click()
+
+    cy.getByTestId('sign-up-alert').contains('Invalid password fields comparation')
+  })
 
   it('Should show required field error when user not fill name field', () => {
     cy.getByTestId('sign-up-email').type(fakeAccount.email)
