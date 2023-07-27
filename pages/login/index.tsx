@@ -27,6 +27,7 @@ function LoginPage({
             <UnloggedHeader 
                 value="Sign up"
                 onClick={goToSignUpPage}
+                testId="sign-up-button"
             />
 
             <Login

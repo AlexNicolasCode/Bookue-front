@@ -5,12 +5,13 @@ import { ButtonBorderStyled, HeaderStyled } from "./styles"
 type UnloggedHeaderProps = {
     value: string
     onClick: MouseEventHandler<HTMLButtonElement> 
+    testId: string
 }
 
-function UnloggedHeader({ value, onClick }: UnloggedHeaderProps) {
+function UnloggedHeader({ value, onClick, testId}: UnloggedHeaderProps) {
     return (
         <HeaderStyled>
-            <ButtonBorderStyled onClick={onClick} data-test-id="login-button">
+            <ButtonBorderStyled onClick={onClick} data-test-id={testId}>
                 {value}
             </ButtonBorderStyled>
         </HeaderStyled>
