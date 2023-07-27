@@ -34,6 +34,15 @@ describe('Sign up screen', () => {
     cy.getByTestId('sign-up-password-confirmation').type(fakeAccount.password)
     cy.getByTestId('sign-up-submit-form').click()
 
-    cy.getByTestId('sign-up-alert').contains('Required field')
+    cy.getByTestId('sign-up-alert').contains('Required Field')
+  })
+
+  it('Should show required field error when user not fill email field', () => {
+    cy.getByTestId('sign-up-name').type(fakeAccount.name)
+    cy.getByTestId('sign-up-password').type(fakeAccount.password)
+    cy.getByTestId('sign-up-password-confirmation').type(fakeAccount.password)
+    cy.getByTestId('sign-up-submit-form').click()
+
+    cy.getByTestId('sign-up-alert').contains('Required Field')
   })
 })
