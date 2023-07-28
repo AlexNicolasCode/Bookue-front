@@ -1,8 +1,10 @@
 import { faker } from '@faker-js/faker';
 
 import { LoadBooks } from '@/domain/usecases';
-import { HttpClient, HttpStatusCode } from '@/data/protocols/http';
-import { HttpClientSpy, mockBookList } from '../mocks';
+import { HttpClient } from '@/data/protocols/http';
+import { HttpClientSpy } from '../mocks';
+
+import { throwError } from 'tests/main/domain/mocks/test.helpers';
 
 type HttpResponseLoadBooks = {
   data: {
@@ -44,20 +46,26 @@ class RemoteLoadBooks implements LoadBooks {
   }
 }
 
+type SutTypes = {
+    sut: RemoteLoadBooks
+    httpClientSpy: HttpClientSpy
+}
+
+const makeSut = (url: string = faker.internet.url()): SutTypes => {
+  const httpClientSpy = new HttpClientSpy<HttpResponseLoadBooks>();
+  const sut = new RemoteLoadBooks(url, httpClientSpy);
+  return {
+    sut,
+    httpClientSpy,
+  };
+};
+
+
 describe('RemoteLoadBooks', () => {
   test('should call HttpClient with correct values', async () => {
     const url = faker.internet.url();
-    const httpClientSpy = new HttpClientSpy<HttpResponseLoadBooks>();
-    const sut = new RemoteLoadBooks(url, httpClientSpy);
+    const { sut, httpClientSpy } = makeSut(url);
     const fakeRequest = { accessToken: faker.datatype.uuid() };
-    httpClientSpy.response = {
-      statusCode: HttpStatusCode.ok,
-      body: {
-        data: {
-          loadAllBooks: mockBookList()
-        }
-      },
-    };
 
     await sut.loadBooks(fakeRequest);
 
@@ -67,5 +75,15 @@ describe('RemoteLoadBooks', () => {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${fakeRequest.accessToken}`,
     });
+  });
+
+  test('should throw if httpClient throws', async () => {
+    const { sut, httpClientSpy } = makeSut();
+    const fakeRequest = { accessToken: faker.datatype.uuid() };
+    jest.spyOn(httpClientSpy, 'request').mockImplementationOnce(throwError)
+
+    const promise = sut.loadBooks(fakeRequest);
+
+    await expect(promise).rejects.toThrow()
   });
 });
