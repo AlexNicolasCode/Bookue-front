@@ -1,10 +1,11 @@
 import { faker } from '@faker-js/faker';
 
 import { LoadBooks } from '@/domain/usecases';
-import { HttpClient } from '@/data/protocols/http';
-import { HttpClientSpy } from '../mocks';
+import { HttpClient, HttpStatusCode } from '@/data/protocols/http';
+import { HttpClientSpy, mockBookList } from '../mocks';
 
 import { throwError } from 'tests/main/domain/mocks/test.helpers';
+import { UnexpectedError } from '@/domain/errors';
 
 type HttpResponseLoadBooks = {
   data: {
@@ -42,7 +43,10 @@ class RemoteLoadBooks implements LoadBooks {
         `
       }),
     });
-    return []
+    switch (httpResponse.statusCode) {
+      case HttpStatusCode.ok: return httpResponse.body.data.loadAllBooks;
+      default: throw new UnexpectedError();
+    }
   }
 }
 
@@ -66,6 +70,14 @@ describe('RemoteLoadBooks', () => {
     const url = faker.internet.url();
     const { sut, httpClientSpy } = makeSut(url);
     const fakeRequest = { accessToken: faker.datatype.uuid() };
+    httpClientSpy.response = {
+      statusCode: HttpStatusCode.ok,
+      body: {
+        data: {
+          loadAllBooks: mockBookList()
+        }
+      },
+    };
 
     await sut.loadBooks(fakeRequest);
 
@@ -85,5 +97,22 @@ describe('RemoteLoadBooks', () => {
     const promise = sut.loadBooks(fakeRequest);
 
     await expect(promise).rejects.toThrow()
+  });
+
+  test('should return correct books on success', async () => {
+    const { sut, httpClientSpy } = makeSut();
+    const fakeRequest = { accessToken: faker.datatype.uuid() };
+    httpClientSpy.response = {
+      statusCode: HttpStatusCode.ok,
+      body: {
+        data: {
+          loadAllBooks: mockBookList()
+        }
+      },
+    };
+
+    const response = await sut.loadBooks(fakeRequest);
+
+    expect(response).toEqual(httpClientSpy.response.body.data.loadAllBooks)
   });
 });
