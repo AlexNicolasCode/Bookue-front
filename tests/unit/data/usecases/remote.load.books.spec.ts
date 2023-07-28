@@ -5,7 +5,7 @@ import { HttpClient, HttpStatusCode } from '@/data/protocols/http';
 import { HttpClientSpy, mockBookList } from '../mocks';
 
 import { throwError } from 'tests/main/domain/mocks/test.helpers';
-import { UnexpectedError } from '@/domain/errors';
+import { InvalidUserError, UnexpectedError } from '@/domain/errors';
 
 type HttpResponseLoadBooks = {
   data: {
@@ -45,6 +45,7 @@ class RemoteLoadBooks implements LoadBooks {
     });
     switch (httpResponse.statusCode) {
       case HttpStatusCode.ok: return httpResponse.body.data.loadAllBooks;
+      case HttpStatusCode.unauthorized: throw new InvalidUserError();
       default: throw new UnexpectedError();
     }
   }
@@ -150,5 +151,17 @@ describe('RemoteLoadBooks', () => {
     const response = sut.loadBooks(fakeRequest);
 
     await expect(response).rejects.toThrow(new UnexpectedError());
+  });
+
+  test('should throw InvalidUserError if HttpClient return 403', async () => {
+    const { sut, httpClientSpy } = makeSut();
+    const fakeRequest = { accessToken: faker.datatype.uuid() };
+    httpClientSpy.response = {
+      statusCode: HttpStatusCode.forbidden,
+    };
+
+    const response = sut.loadBooks(fakeRequest);
+
+    await expect(response).rejects.toThrow(new InvalidUserError());
   });
 });
