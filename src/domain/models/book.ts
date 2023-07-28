@@ -5,5 +5,5 @@ export type BookModel = {
     description?: string
     currentPage?: number
     pages: number
-    createdAt: Date
+    createdAt: string
 }
