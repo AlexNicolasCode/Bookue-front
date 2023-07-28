@@ -65,6 +65,18 @@ describe('Sign up screen', () => {
   })
 
   it('Should redirect to home screen on success', () => {
+    cy.intercept(Cypress.env("baseApiURL"), {
+      method: 'POST',
+      }, {
+      statusCode: 200,
+      body: {
+        data: {
+          signUp: {
+            accessToken: faker.datatype.string(),
+          }
+        }
+      }
+    }).as('request')
     cy.getByTestId('sign-up-name').type(fakeAccount.name)
     cy.getByTestId('sign-up-email').type(fakeAccount.email)
     cy.getByTestId('sign-up-password').type(fakeAccount.password)

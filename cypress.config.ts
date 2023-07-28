@@ -6,4 +6,7 @@ export default defineConfig({
     specPattern: "tests/e2e/integration/*.cy.test.ts",
     supportFile: "tests/e2e/support"
   },
+  env: {
+    baseApiURL: 'http://localhost:8000/graphql',
+  }
 })
