@@ -1,5 +1,6 @@
-import { BookModel } from "@/domain/models";
 import { faker } from "@faker-js/faker";
+
+import { BookModel } from "@/domain/models";
 
 export const mockBook = (): BookModel => ({
     id: faker.datatype.uuid(),
