@@ -1,55 +1,11 @@
 import { faker } from '@faker-js/faker';
 
-import { LoadBooks } from '@/domain/usecases';
-import { HttpClient, HttpStatusCode } from '@/data/protocols/http';
+import { HttpStatusCode } from '@/data/protocols/http';
+import { InvalidUserError, UnexpectedError } from '@/domain/errors'
+import { HttpResponseLoadBooks, RemoteLoadBooks } from '@/data/usecases';
+
 import { HttpClientSpy, mockBookList } from '../mocks';
-
 import { throwError } from 'tests/main/domain/mocks/test.helpers';
-import { InvalidUserError, UnexpectedError } from '@/domain/errors';
-
-type HttpResponseLoadBooks = {
-  data: {
-    loadAllBooks: LoadBooks.Result
-  }
-}
-
-class RemoteLoadBooks implements LoadBooks {
-  constructor(
-        private readonly url: string,
-        private readonly httpClient: HttpClient<HttpResponseLoadBooks>,
-  ) {}
-
-  async loadBooks (params: LoadBooks.Params): Promise<LoadBooks.Result> {
-    const httpResponse = await this.httpClient.request({
-      url: this.url,
-      method: 'post',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${params.accessToken}`,
-      },
-      body: JSON.stringify({
-        query: `
-          query LoadAllBooks {
-              loadAllBooks {
-                id
-                title
-                author
-                description
-                currentPage
-                pages
-                createdAt
-              }
-            }
-        `
-      }),
-    });
-    switch (httpResponse.statusCode) {
-      case HttpStatusCode.ok: return httpResponse.body.data.loadAllBooks;
-      case HttpStatusCode.unauthorized: throw new InvalidUserError();
-      default: throw new UnexpectedError();
-    }
-  }
-}
 
 type SutTypes = {
     sut: RemoteLoadBooks
