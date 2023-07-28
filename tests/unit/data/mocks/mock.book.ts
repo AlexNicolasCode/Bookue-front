@@ -10,3 +10,11 @@ export const mockBook = (): BookModel => ({
     pages: faker.datatype.number({ min: 20 }),
     createdAt: `${Date.now()}`,
 });
+
+export const mockBookList = (): BookModel[] => {
+    let books: BookModel[];
+    for (let i; i >= faker.datatype.number({ min: 1, max: 15 }); i++) {
+        books[i] = mockBook()
+    }
+    return books
+};
