@@ -128,6 +128,18 @@ describe('RemoteLoadBooks', () => {
     await expect(response).rejects.toThrow(new UnexpectedError());
   });
 
+  test('should throw UnexpectedError if HttpClient return 500', async () => {
+    const { sut, httpClientSpy } = makeSut();
+    const fakeRequest = { accessToken: faker.datatype.uuid() };
+    httpClientSpy.response = {
+      statusCode: HttpStatusCode.serverError,
+    };
+
+    const response = sut.loadBooks(fakeRequest);
+
+    await expect(response).rejects.toThrow(new UnexpectedError());
+  });
+
   test('should throw UnexpectedError if HttpClient return 404', async () => {
     const { sut, httpClientSpy } = makeSut();
     const fakeRequest = { accessToken: faker.datatype.uuid() };
