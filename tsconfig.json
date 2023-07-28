@@ -8,10 +8,10 @@
     "baseUrl": ".",
     "paths": {
       "@/tests/*": [
-        "../tests/*"
+        "./tests/*"
       ],
       "@/*": [
-        "src/*"
+        "./src/*"
       ]
     },
     "lib": [
@@ -30,8 +30,9 @@
   },
   "include": [
     "src",
-    "tests",
-    "pages"
+    "pages",
+    "**/*.spec.ts",
+    "**/*.test.ts"
   ],
   "exclude": [
     "node_modules",
