@@ -7,7 +7,7 @@ import {
     Logo,
     Alert,
     SubmitButton,
-} from "src/presentation/components"
+} from "@/presentation/components"
 
 import { RegisterStyled } from "./styled"
 

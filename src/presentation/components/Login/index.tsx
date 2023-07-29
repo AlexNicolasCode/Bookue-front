@@ -7,7 +7,7 @@ import {
     Input,
     Alert,
     SubmitButton,
-} from "src/presentation/components";
+} from "@/presentation/components";
 
 import { LoginStyled } from "./styles";
 
