@@ -5,13 +5,14 @@
     "jsx": "preserve",
     "moduleResolution": "node",
     "esModuleInterop": true,
-    "baseUrl": ".",
+    "rootDirs": ["src", "tests"],
+    "baseUrl": "src",
     "paths": {
       "@/tests/*": [
-        "./tests/*"
+        "../tests/*"
       ],
       "@/*": [
-        "./src/*"
+        "*"
       ]
     },
     "lib": [
@@ -31,11 +32,11 @@
   "include": [
     "src",
     "pages",
-    "**/*.spec.ts",
-    "**/*.test.ts"
+    "tests",
   ],
   "exclude": [
     "node_modules",
-    "src/env.ts"
+    "src/env.ts",
+    "tests/e2e/cypress"
   ]
 }
