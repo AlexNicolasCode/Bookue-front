@@ -5,7 +5,7 @@ services:
     container_name: front
     command: yarn start:dev
     environment: 
-        NEXT_PUBLIC_BOOKUE_API_URL: http://localhost:8000/graphql
+        NEXT_PUBLIC_BOOKUE_API_URL: http://host.docker.internal:8000/graphql
     ports:
         - 3000:3000
     volumes:
