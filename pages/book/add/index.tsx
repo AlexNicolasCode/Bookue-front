@@ -1,8 +1,8 @@
 import { GetServerSideProps } from "next"
 
 import { BookDetails, Header } from "@/presentation/components"
-import { BookModel } from "@/domain/models"
 import { makeCookieManagerAdapter } from "@/main/factory/cookie"
+import { BookModel } from "@/domain/models"
 
 export type AddBookPageProps = {
     book: BookModel
@@ -29,18 +29,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         }
     }
 
-    const book: BookModel = {
-        title: 'Scherlock Holmes',
-        author: 'Scherlock Holmes',
-        description: 'Scherlock Holmes',
-        currentPage: 10,
-        pages: 1240,
-    }
-
     return {
-        props: {
-            book,
-        },
+        props: {},
     }
 }
 
