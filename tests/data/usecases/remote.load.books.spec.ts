@@ -1,11 +1,11 @@
-import { faker } from '@faker-js/faker';
+import { faker } from "@faker-js/faker";
 
-import { HttpStatusCode } from '@/data/protocols/http';
-import { InvalidUserError, UnexpectedError } from '@/domain/errors'
-import { HttpResponseLoadBooks, RemoteLoadBooks } from '@/data/usecases';
+import { HttpResponseLoadBooks, RemoteLoadBooks } from "@/data/usecases";
+import { InvalidUserError, UnexpectedError } from "@/domain/errors";
+import { HttpStatusCode } from "@/data/protocols/http";
 
-import { HttpClientSpy, mockBookList } from '../mocks';
-import { throwError } from 'tests/main/domain/mocks/test.helpers';
+import { HttpClientSpy, mockBookList } from "@/tests/data/mocks";
+import { throwError } from "@/tests/main/domain/mocks/test.helpers";
 
 type SutTypes = {
     sut: RemoteLoadBooks
