@@ -9,7 +9,7 @@
     "lint": "next lint",
     "test": "jest --passWithNoTests --runInBand --no-cache",
     "test:unit": "npm test -- --watch -c jest.unit.config.js",
-    "cypress:open": "cypress open",
+    "cypress:open": "start-server-and-test start:dev http://localhost:3000 \"cypress open --e2e\"",
     "cypress:run": "cypress run"
   },
   "dependencies": {
