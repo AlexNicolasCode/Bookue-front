@@ -5,7 +5,7 @@ import { LoadBook } from "@/domain/usecases";
 
 import { HttpClientSpy, mockBook } from "@/tests/data/mocks";
 import { throwError } from "@/tests/main/domain/mocks/test.helpers";
-import { UnexpectedError } from "@/domain/errors";
+import { InvalidUserError, UnexpectedError } from "@/domain/errors";
 
 class RemoteLoadBook implements LoadBook {
     constructor(
@@ -39,6 +39,7 @@ class RemoteLoadBook implements LoadBook {
         })
         switch (httpResponse.statusCode) {
             case HttpStatusCode.ok: return httpResponse.body.data.loadBook;
+            case HttpStatusCode.forbidden: throw new InvalidUserError();
             default: throw new UnexpectedError();
           }
     }
@@ -153,5 +154,15 @@ describe('RemoteLoadBook', () => {
     
         await expect(response).rejects.toThrow(new UnexpectedError());
     });
+
+    test('should throw InvalidUserError if HttpClient return 403', async () => {
+        const { sut, httpClientSpy } = makeSut();
+        httpClientSpy.response = {
+          statusCode: HttpStatusCode.forbidden,
+        };
     
+        const response = sut.loadBook(fakeRequest);
+    
+        await expect(response).rejects.toThrow(new InvalidUserError());
+    });    
 })
