@@ -17,7 +17,7 @@ const HeaderStyled = styled.article`
     justify-content: space-between;
 `
 
-const TitleStyled = styled.h1`
+const TitleStyled = styled.h2`
     font-size: 1rem;
 `
 
