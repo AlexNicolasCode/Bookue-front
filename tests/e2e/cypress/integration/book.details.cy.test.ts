@@ -219,6 +219,28 @@ describe('Book details screen', () => {
             
             cy.getByTestId('book-details-current-page-field').should('have.text', fakeText)
         })
+
+        it('Should edit correctly pages field when user click in edit button, type something and click in edit button again', () => {
+            cy.task('startServer', {
+                baseUrl: '/graphql',
+                statusCode: 200,
+                body: {
+                    data: {
+                        loadBook: mockBook()
+                    }
+                }
+            })
+            const fakeText = faker.random.words()
+            const fakeBookId = faker.datatype.uuid()
+            cy.visit(`/book/${fakeBookId}/`)
+    
+            cy.getByTestId('book-details-pages-field-edit-button').click()
+            cy.getByTestId('book-details-pages-field-edit-mode').clear()
+            cy.getByTestId('book-details-pages-field-edit-mode').type(fakeText)
+            cy.getByTestId('book-details-pages-field-edit-button').click()
+            
+            cy.getByTestId('book-details-pages-field').should('have.text', fakeText)
+        })
     })
   })
 })
