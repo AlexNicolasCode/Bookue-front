@@ -12,7 +12,24 @@ describe('Book details screen', () => {
     })
 
     it('Should be redirected to sign in screen', () => {
-      cy.url().should('include', '/login')
+        cy.url().should('include', '/login')
+    })
+  })
+
+  describe('when authenticated', () => {
+    beforeEach(() => {
+        cy.setCookie('bookue-user', 'any_token')
+    })
+    
+    it('Should redirect to home screen when book was not found', () => {
+        cy.task('startServer', {
+            baseUrl: '/graphql',
+            statusCode: 404,
+            body: {}
+        })
+        const fakeBookId = faker.datatype.uuid()
+        cy.visit(`/book/${fakeBookId}/`, { failOnStatusCode: false })
+        cy.url().should('eq', Cypress.config().baseUrl + '/')
     })
   })
 })
