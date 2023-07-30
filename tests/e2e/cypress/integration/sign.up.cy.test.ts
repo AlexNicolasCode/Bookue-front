@@ -5,7 +5,6 @@ describe('Sign up screen', () => {
 
   beforeEach(() => {
     cy.viewport('iphone-x')
-    cy.visit('/sign-up')
     fakeAccount = {
       name: faker.name.firstName(),
       email: faker.internet.email(),
@@ -14,12 +13,17 @@ describe('Sign up screen', () => {
   })
   
   it('Should change to login page when click in login button', () => {
-      cy.getByTestId('login-button').click()
+    cy.visit('/sign-up')
 
-      cy.url().should('include', '/login')
+
+    cy.getByTestId('login-button').click()
+
+    cy.url().should('include', '/login')
   })
 
   it('Should show password error alert when user fill password and password confirmation field with diferent values', () => {
+    cy.visit('/sign-up')
+
     cy.getByTestId('sign-up-name').type(fakeAccount.name)
     cy.getByTestId('sign-up-email').type(fakeAccount.email)
     cy.getByTestId('sign-up-password').type(fakeAccount.password)
@@ -30,6 +34,8 @@ describe('Sign up screen', () => {
   })
   
   it('Should show password error alert when user not fill password confirmation field', () => {
+    cy.visit('/sign-up')
+    
     cy.getByTestId('sign-up-name').type(fakeAccount.name)
     cy.getByTestId('sign-up-email').type(fakeAccount.email)
     cy.getByTestId('sign-up-password').type(fakeAccount.password)
@@ -39,6 +45,8 @@ describe('Sign up screen', () => {
   })
 
   it('Should show required field error when user not fill name field', () => {
+    cy.visit('/sign-up')
+
     cy.getByTestId('sign-up-email').type(fakeAccount.email)
     cy.getByTestId('sign-up-password').type(fakeAccount.password)
     cy.getByTestId('sign-up-password-confirmation').type(fakeAccount.password)
@@ -48,6 +56,8 @@ describe('Sign up screen', () => {
   })
 
   it('Should show required field error when user not fill email field', () => {
+    cy.visit('/sign-up')
+
     cy.getByTestId('sign-up-name').type(fakeAccount.name)
     cy.getByTestId('sign-up-password').type(fakeAccount.password)
     cy.getByTestId('sign-up-password-confirmation').type(fakeAccount.password)
@@ -57,6 +67,8 @@ describe('Sign up screen', () => {
   })
 
   it('Should show required field error when user not fill password field', () => {
+    cy.visit('/sign-up')
+
     cy.getByTestId('sign-up-name').type(fakeAccount.name)
     cy.getByTestId('sign-up-email').type(fakeAccount.email)
     cy.getByTestId('sign-up-password-confirmation').type(fakeAccount.password)
@@ -66,6 +78,7 @@ describe('Sign up screen', () => {
   })
 
   it('Should redirect to home screen on success', () => {
+    cy.visit('/sign-up')
     cy.intercept(Cypress.env("baseApiURL"), {
       method: 'POST',
       }, {
@@ -78,6 +91,7 @@ describe('Sign up screen', () => {
         }
       }
     }).as('request')
+
     cy.getByTestId('sign-up-name').type(fakeAccount.name)
     cy.getByTestId('sign-up-email').type(fakeAccount.email)
     cy.getByTestId('sign-up-password').type(fakeAccount.password)

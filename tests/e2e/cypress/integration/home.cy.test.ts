@@ -6,12 +6,10 @@ describe('Home screen', () => {
     cy.viewport('iphone-x')
   })
 
-  describe('when not authenticated', () => {
-    beforeEach(() => {
-      cy.visit('/')
-    })
-
+  describe('when not authenticated', () => {    
     it('Should be redirected to sign in screen', () => {
+      cy.visit('/')
+
       cy.url().should('include', '/login')
     })
   })
@@ -32,8 +30,8 @@ describe('Home screen', () => {
         }
       })
       cy.visit('/')
+
       cy.getByTestId('home-empty-state').contains('Not found')
-      cy.task('closeServer')
     })
 
     it('Should show correct books list when access home and any book', () => {
@@ -48,6 +46,7 @@ describe('Home screen', () => {
         }
       })
       cy.visit('/')
+
       cy.getByTestId('home-book-card').each(($element, index) => {
         const card = cy.wrap($element)
         const equivalentBookFromApi = fakeBooks[index]
@@ -57,7 +56,6 @@ describe('Home screen', () => {
         )
         card.getByTestId('home-book-description').contains(equivalentBookFromApi.description)
       })
-      cy.task('closeServer')
     })
 
     it('Should redirect book details screen when user click in details button', () => {
@@ -72,9 +70,10 @@ describe('Home screen', () => {
         }
       })
       cy.visit('/')
+      
       cy.getByTestId('home-book-details-button').click()
+
       cy.url().should('include', `/book/${fakeBook.id}`)
-      cy.task('closeServer')
     })
 
     it('Should redirect add book screen when user click in add book button', () => {
@@ -88,9 +87,10 @@ describe('Home screen', () => {
         }
       })
       cy.visit('/')
+      
       cy.getByTestId('header-add-book-button').click()
+
       cy.url().should('include', '/book/add')
-      cy.task('closeServer')
     })
 
     it('Should redirect book notes screen when user click in notes button', () => {
@@ -105,9 +105,10 @@ describe('Home screen', () => {
         }
       })
       cy.visit('/')
+
       cy.getByTestId('home-book-notes-button').click()
+
       cy.url().should('include', `/book/${fakeBook.id}/note`)
-      cy.task('closeServer')
     })
   })
 })

@@ -9,12 +9,10 @@ describe('Book details screen', () => {
   })
 
   describe('when not authenticated', () => {
-    beforeEach(() => {
+    it('Should be redirected to sign in screen', () => {
         const fakeBookId = faker.datatype.uuid()
         cy.visit(`/book/${fakeBookId}/`)
-    })
 
-    it('Should be redirected to sign in screen', () => {
         cy.url().should('include', '/login')
     })
   })
@@ -32,6 +30,7 @@ describe('Book details screen', () => {
         })
         const fakeBookId = faker.datatype.uuid()
         cy.visit(`/book/${fakeBookId}/`, { failOnStatusCode: false })
+
         cy.url().should('eq', Cypress.config().baseUrl + '/')
     })
 
@@ -43,6 +42,7 @@ describe('Book details screen', () => {
         })
         const fakeBookId = faker.datatype.uuid()
         cy.visit(`/book/${fakeBookId}/`, { failOnStatusCode: false })
+
         cy.url().should('eq', Cypress.config().baseUrl + '/')
     })
     
@@ -58,7 +58,8 @@ describe('Book details screen', () => {
             }
         })
         const fakeBookId = faker.datatype.uuid()
-        cy.visit(`/book/${fakeBookId}/`, { failOnStatusCode: false })
+        cy.visit(`/book/${fakeBookId}/`)
+
         cy.getByTestId('book-details-title-field').should('have.text', book.title)
         cy.getByTestId('book-details-author-field').should('have.text', book.author)
         cy.getByTestId('book-details-description-field').should('have.text', book.description)
@@ -78,7 +79,8 @@ describe('Book details screen', () => {
             }
         })
         const fakeBookId = faker.datatype.uuid()
-        cy.visit(`/book/${fakeBookId}/`, { failOnStatusCode: false })
+        cy.visit(`/book/${fakeBookId}/`)
+
         cy.getByTestId('book-details-title').should('have.text', book.title)
     })
     
@@ -95,8 +97,9 @@ describe('Book details screen', () => {
             }
         })
         const fakeBookId = faker.datatype.uuid()
-        cy.visit(`/book/${fakeBookId}/`)
         const bookProcessPercentage = String((book.currentPage * 100) / book.pages).substring(0, 4);
+        cy.visit(`/book/${fakeBookId}/`)
+
         cy.getByTestId('book-details-process-percentage').should('have.text', `${bookProcessPercentage}%`)
     })
     
@@ -121,8 +124,8 @@ describe('Book details screen', () => {
             }
         })
         const fakeBookId = faker.datatype.uuid()
-
         cy.visit(`/book/${fakeBookId}/`)
+
         cy.getByTestId('header-back-book-button').click()
 
         cy.url().should('eq', Cypress.config().baseUrl + '/')
