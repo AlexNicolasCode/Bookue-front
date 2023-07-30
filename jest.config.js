@@ -4,6 +4,7 @@ module.exports = {
     '<rootDir>/src/**/*.ts',
     '!<rootDir>/src/main/**'
   ],
+  testPathIgnorePatterns: ["tests/e2e/cypress"],
   coverageDirectory: 'coverage',
   coverageProvider: 'babel',
   testEnvironment: 'node',

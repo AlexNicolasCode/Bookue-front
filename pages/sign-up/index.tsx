@@ -18,6 +18,7 @@ function SignUpPage({
             <UnloggedHeader 
                 value="Login"
                 onClick={goToLoginPage}
+                testId={"login-button"}
             />
 
             <Register

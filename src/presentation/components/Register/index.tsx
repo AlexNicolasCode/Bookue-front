@@ -7,7 +7,7 @@ import {
     Logo,
     Alert,
     SubmitButton,
-} from "src/presentation/components"
+} from "@/presentation/components"
 
 import { RegisterStyled } from "./styled"
 
@@ -19,63 +19,75 @@ type RegisterProps = {
     validation: ValidationComposite
 }
 
+type FieldNames = 'name' | 'email' | 'password' | 'passwordConfirmation'
+type FieldTypes = 'name' | 'email' | 'password'
+
 type RegisterFormProps = {
-    name: {
+    [field in FieldNames]: {
+        fieldName: FieldNames
         isWrongFill: boolean
         text: string
-    }
-    email: {
-        isWrongFill: boolean
-        text: string
-    }
-    password: {
-        isWrongFill: boolean
-        text: string
-    }
-    passwordConfirmation: {
-        isWrongFill: boolean
-        text: string
+        placeholder: string
+        type: FieldTypes
+        testId: string
     }
 }
 
-
 function Register({ validation }: RegisterProps) {
     const router = useRouter()
-
+    
+    const fieldNames: FieldNames[] = ['name', 'email', 'password', 'passwordConfirmation']
     const [alert, setAlert] = useState<string>("")
     const [userForm, setUserForm] = useState<RegisterFormProps>({
         name: {
+            fieldName: "name",
             isWrongFill: false,
-            text: ""
+            text: "",
+            type: "name",
+            placeholder: "First name",
+            testId: "sign-up-name",
         },
         email: {
+            fieldName: "email",
             isWrongFill: false,
-            text: ""
+            text: "",
+            type: "email",
+            placeholder: "Email",
+            testId: "sign-up-email",
         },
         password: {
+            fieldName: "password",
             isWrongFill: false,
-            text: ""
+            text: "",
+            type: "password",
+            placeholder: "Password",
+            testId: "sign-up-password",
         },
         passwordConfirmation: {
+            fieldName: "passwordConfirmation",
             isWrongFill: false,
-            text: ""
+            text: "",
+            type: "password",
+            placeholder: "Password confirmation",
+            testId: "sign-up-password-confirmation",
         },
     })
-
+    
     const setField = (field, text: string) => setUserForm({ 
         ...userForm,
         [field]: {
-            isWrongFill: userForm[field].isWrongFill,
-            text: text
+            ...userForm[field],
+            text: text,
         },
     })
 
     const validateForm = (): string => {
-        const fields = ['name', 'email', 'password', 'passwordConfirmation']
-        const errorList = fields.map((field: string) => {
+        const fieldTexts = {}
+        fieldNames.forEach((fieldName: string) => fieldTexts[fieldName] = userForm[fieldName].text)
+        const errorList = fieldNames.map((field: string) => {
             const error = validation.validate(
                 field,
-                { [field]: userForm[field].text }
+                fieldTexts,
             )
             setWrongFields(field, error)
             return error
@@ -87,8 +99,8 @@ function Register({ validation }: RegisterProps) {
         setUserForm({
             ...userForm,
             [field]: {
+                ...userForm[field],
                 isWrongFill: error ? true : false,
-                text: userForm[field].text,
             },
         })
     }
@@ -127,52 +139,37 @@ function Register({ validation }: RegisterProps) {
         router.push("/")
     }
 
+    const renderFormFields = () => {
+        const fields = fieldNames.map((field: FieldNames, index: number) => (
+            <Input 
+                type={userForm[field].type}
+                placeholder={userForm[field].placeholder}
+                setState={setField}
+                field={userForm[field].fieldName}
+                isWrongFill={userForm[field].isWrongFill}
+                testId={userForm[field].testId}
+                value={userForm[field].text}
+                key={index}
+            />
+        ))
+        return <>{fields}</>
+    }
+
+    const renderAlert = () => {
+        if (alert.length > 0) {
+            return <Alert testId="sign-up-alert">
+                {alert}                
+            </Alert>
+        }
+    }
+    
     return (
         <RegisterStyled>
             <Logo/>
-
             <Form onSubmit={handleSubmit}>
-                <Input 
-                    type="name"
-                    placeholder="Name"
-                    setState={setField}
-                    field={'name'}
-                    isWrongFill={userForm.name.isWrongFill}
-                    value={userForm.name.text}
-                />
-                <Input 
-                    type="email"
-                    placeholder="Email"
-                    setState={setField}
-                    field={'email'}
-                    isWrongFill={userForm.email.isWrongFill}
-                    value={userForm.email.text}
-                />
-                <Input
-                    type="password"
-                    placeholder="Password"
-                    setState={setField}
-                    field={'password'}
-                    isWrongFill={userForm.password.isWrongFill}
-                    value={userForm.password.text}
-                />
-                <Input 
-                    type="password"
-                    placeholder="Password confirmation"
-                    setState={setField}
-                    field={'passwordConfirmation'}
-                    isWrongFill={userForm.passwordConfirmation.isWrongFill}
-                    value={userForm.passwordConfirmation.text}
-                />
-
-                {
-                    alert.length > 0 &&
-                    <Alert>
-                        {alert}                
-                    </Alert>
-                }
-
-                <SubmitButton text={'Register'}/>
+                {renderFormFields()}
+                {renderAlert()}
+                <SubmitButton text={'Register'} testId="sign-up-submit-form"/>
             </Form>
         </RegisterStyled>
     )

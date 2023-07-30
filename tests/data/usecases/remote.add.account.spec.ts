@@ -1,11 +1,12 @@
-import { faker } from '@faker-js/faker';
+import { faker } from "@faker-js/faker"
 
-import { HttpStatusCode } from '@/data/protocols/http';
-import { mockAddAccountParams } from 'tests/unit/domain/mocks';
-import { EmailInUseError, UnexpectedError } from '@/domain/errors';
-import { HttpClientSpy } from '../mocks';
-import { RemoteAddAccount } from '@/data/usecases';
-import { AddAccount } from '@/domain/usecases';
+import { RemoteAddAccount } from "@/data/usecases"
+import { AddAccount } from "@/domain/usecases"
+import { EmailInUseError, UnexpectedError } from "@/domain/errors"
+
+import { HttpClientSpy } from "@/tests/data/mocks"
+import { mockAddAccountParams } from "@/tests/main/domain/mocks"
+import { HttpStatusCode } from "@/data/protocols/http"
 
 type SutTypes = {
     sut: RemoteAddAccount

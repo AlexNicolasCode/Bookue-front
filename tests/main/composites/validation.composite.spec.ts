@@ -1,7 +1,8 @@
 import { faker } from "@faker-js/faker";
 
 import { ValidationComposite } from "@/main/composites";
-import { FieldValidationSpy } from "tests/validation/mocks";
+
+import { FieldValidationSpy } from "@/tests/validation/mocks";
 
 type SutTypes = {
     sut: ValidationComposite

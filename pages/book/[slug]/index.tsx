@@ -1,13 +1,8 @@
 import { GetServerSideProps } from "next"
 
 import { Header } from "@/presentation/components"
-import { BookModel } from "@/domain/models"
 
-export type AddBookPageProps = {
-    book: BookModel
-}
-
-function AddBookPage({ book }: AddBookPageProps) {
+function BookPage() {
     return (
         <>
             <Header/>
@@ -25,10 +20,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             }
         }
     }
-
     return {
         props: {},
     }
 }
 
-export default AddBookPage
+export default BookPage
