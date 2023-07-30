@@ -130,27 +130,51 @@ describe('Book details screen', () => {
 
         cy.url().should('eq', Cypress.config().baseUrl + '/')
     })
-    
-    it('Should edit correctly title field when user click in edit button, type something and click in edit button again', () => {
-        cy.task('startServer', {
-            baseUrl: '/graphql',
-            statusCode: 200,
-            body: {
-                data: {
-                    loadBook: mockBook()
-                }
-            }
-        })
-        const fakeText = faker.random.words()
-        const fakeBookId = faker.datatype.uuid()
-        cy.visit(`/book/${fakeBookId}/`)
 
-        cy.getByTestId('book-details-title-field-edit-button').click()
-        cy.getByTestId('book-details-title-field-edit-mode').clear()
-        cy.getByTestId('book-details-title-field-edit-mode').type(fakeText)
-        cy.getByTestId('book-details-title-field-edit-button').click()
-        
-        cy.getByTestId('book-details-title-field').should('have.text', fakeText)
+    describe('edit mode flow', () => {
+        it('Should edit correctly title field when user click in edit button, type something and click in edit button again', () => {
+            cy.task('startServer', {
+                baseUrl: '/graphql',
+                statusCode: 200,
+                body: {
+                    data: {
+                        loadBook: mockBook()
+                    }
+                }
+            })
+            const fakeText = faker.random.words()
+            const fakeBookId = faker.datatype.uuid()
+            cy.visit(`/book/${fakeBookId}/`)
+    
+            cy.getByTestId('book-details-title-field-edit-button').click()
+            cy.getByTestId('book-details-title-field-edit-mode').clear()
+            cy.getByTestId('book-details-title-field-edit-mode').type(fakeText)
+            cy.getByTestId('book-details-title-field-edit-button').click()
+            
+            cy.getByTestId('book-details-title-field').should('have.text', fakeText)
+        })
+
+        it('Should edit correctly author field when user click in edit button, type something and click in edit button again', () => {
+            cy.task('startServer', {
+                baseUrl: '/graphql',
+                statusCode: 200,
+                body: {
+                    data: {
+                        loadBook: mockBook()
+                    }
+                }
+            })
+            const fakeText = faker.random.words()
+            const fakeBookId = faker.datatype.uuid()
+            cy.visit(`/book/${fakeBookId}/`)
+    
+            cy.getByTestId('book-details-author-field-edit-button').click()
+            cy.getByTestId('book-details-author-field-edit-mode').clear()
+            cy.getByTestId('book-details-author-field-edit-mode').type(fakeText)
+            cy.getByTestId('book-details-author-field-edit-button').click()
+            
+            cy.getByTestId('book-details-author-field').should('have.text', fakeText)
+        })
     })
   })
 })
