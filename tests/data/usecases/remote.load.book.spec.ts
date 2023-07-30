@@ -141,6 +141,17 @@ describe('RemoteLoadBook', () => {
         const response = sut.loadBook(fakeRequest);
     
         await expect(response).rejects.toThrow(new UnexpectedError());
-      });
+    });
+
+    test('should throw UnexpectedError if HttpClient return 404', async () => {
+        const { sut, httpClientSpy } = makeSut();
+        httpClientSpy.response = {
+          statusCode: HttpStatusCode.notFound,
+        };
+    
+        const response = sut.loadBook(fakeRequest);
+    
+        await expect(response).rejects.toThrow(new UnexpectedError());
+    });
     
 })
