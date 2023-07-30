@@ -1,5 +1,8 @@
 import { faker } from "@faker-js/faker"
 
+import { mockBook } from "../../../data/mocks/mock.book"
+import { BookModel } from "../../../../src/domain/models"
+
 describe('Book details screen', () => {
   beforeEach(() => {
     cy.viewport('iphone-x')
@@ -30,6 +33,26 @@ describe('Book details screen', () => {
         const fakeBookId = faker.datatype.uuid()
         cy.visit(`/book/${fakeBookId}/`, { failOnStatusCode: false })
         cy.url().should('eq', Cypress.config().baseUrl + '/')
+    })
+    
+    it('Should render correct book on success', () => {
+        const book: BookModel = mockBook()
+        cy.task('startServer', {
+            baseUrl: '/graphql',
+            statusCode: 200,
+            body: {
+                data: {
+                    loadBook: book
+                }
+            }
+        })
+        const fakeBookId = faker.datatype.uuid()
+        cy.visit(`/book/${fakeBookId}/`, { failOnStatusCode: false })
+        cy.getByTestId('book-details-title-field').should('have.text', book.title)
+        cy.getByTestId('book-details-author-field').should('have.text', book.author)
+        cy.getByTestId('book-details-description-field').should('have.text', book.description)
+        cy.getByTestId('book-details-current-page-field').should('have.text', book.currentPage)
+        cy.getByTestId('book-details-pages-field').should('have.text', book.pages)
     })
   })
 })
