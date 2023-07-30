@@ -1,9 +1,9 @@
 import { faker } from "@faker-js/faker";
 
-import { HttpClient } from "@/data/protocols/http";
+import { HttpClient, HttpStatusCode } from "@/data/protocols/http";
 import { LoadBook } from "@/domain/usecases";
 
-import { HttpClientSpy } from "@/tests/data/mocks";
+import { HttpClientSpy, mockBook } from "@/tests/data/mocks";
 import { throwError } from "@/tests/main/domain/mocks/test.helpers";
 
 class RemoteLoadBook implements LoadBook {
@@ -13,12 +13,12 @@ class RemoteLoadBook implements LoadBook {
     ) {}
 
     async loadBook (params: LoadBook.Params): Promise<LoadBook.Result> {
-        await this.httpClient.request({
+        const httpResponse = await this.httpClient.request({
             url: this.url,
             method: 'post',
             headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${params.accessToken}`,
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${params.accessToken}`,
             },
             body: JSON.stringify({
             query: `
@@ -36,7 +36,9 @@ class RemoteLoadBook implements LoadBook {
             `
             }),
         })
-        return
+        if (httpResponse.statusCode === 200) {
+            return httpResponse.body.data.loadBook
+        }
     }
 }
 
@@ -52,12 +54,12 @@ type SutTypes = {
 }
 
 const makeSut = (url: string = faker.internet.url()): SutTypes => {
-  const httpClientSpy = new HttpClientSpy<HttpResponseLoadBook>();
-  const sut = new RemoteLoadBook(url, httpClientSpy);
-  return {
-    sut,
-    httpClientSpy,
-  };
+    const httpClientSpy = new HttpClientSpy<HttpResponseLoadBook>();
+    const sut = new RemoteLoadBook(url, httpClientSpy);
+    return {
+        sut,
+        httpClientSpy,
+    };
 };
 
 describe('RemoteLoadBook', () => {
@@ -73,6 +75,14 @@ describe('RemoteLoadBook', () => {
     test('should call HttpClient with correct values', async () => {
         const url = faker.internet.url();
         const { sut, httpClientSpy } = makeSut(url);
+        httpClientSpy.response = {
+            statusCode: HttpStatusCode.ok,
+            body: {
+              data: {
+                loadBook: mockBook()
+              }
+            },
+        };
 
         await sut.loadBook(fakeRequest);
 
@@ -91,5 +101,21 @@ describe('RemoteLoadBook', () => {
         const promise = sut.loadBook(fakeRequest);
 
         await expect(promise).rejects.toThrow()
+    });
+
+    test('should return correct book on success', async () => {
+        const { sut, httpClientSpy } = makeSut();
+        httpClientSpy.response = {
+          statusCode: HttpStatusCode.ok,
+          body: {
+            data: {
+                loadBook: mockBook()
+            }
+          },
+        };
+    
+        const response = await sut.loadBook(fakeRequest);
+    
+        expect(response).toEqual(httpClientSpy.response.body.data.loadBook)
     });
 })
