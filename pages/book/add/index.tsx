@@ -1,7 +1,6 @@
 import { GetServerSideProps } from "next"
 
-import { BookDetails, Header } from "@/presentation/components"
-import { makeCookieManagerAdapter } from "@/main/factory/cookie"
+import { Header } from "@/presentation/components"
 import { BookModel } from "@/domain/models"
 
 export type AddBookPageProps = {
@@ -12,15 +11,13 @@ function AddBookPage({ book }: AddBookPageProps) {
     return (
         <>
             <Header/>
-            <BookDetails book={book} />
         </>
     )
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-    const cookieManager = makeCookieManagerAdapter()
-    const token = await cookieManager.load('bookue-user')
-    if (!token) {
+    const accessToken = context.req.cookies['bookue-user']
+    if (!accessToken) {
         return {
             props: {},
             redirect: {
