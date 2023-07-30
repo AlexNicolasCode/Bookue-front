@@ -33,6 +33,7 @@
     "src",
     "pages",
     "tests",
+    "middleware.ts",
   ],
   "exclude": [
     "node_modules",

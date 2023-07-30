@@ -39,15 +39,6 @@ function LoginPage({
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-    const accessToken = context.req.cookies['bookue-user']
-    if (accessToken) {
-        return {
-            props: {},
-            redirect: {
-                destination: '/'
-            }
-        }
-    }
     return {
         props: {},
     }
