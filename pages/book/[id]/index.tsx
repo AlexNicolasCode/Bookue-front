@@ -1,12 +1,18 @@
 import { GetServerSideProps } from "next"
 
-import { Header } from "@/presentation/components"
+import { BookModel } from "@/domain/models"
+import { BookDetails, Header } from "@/presentation/components"
 import { makeRemoteLoadBook } from "@/main/factory/usecases"
 
-function BookPage() {
+type PageProps = {
+    book: BookModel
+}
+
+function BookPage({ book }: PageProps) {
     return (
         <>
             <Header/>
+            <BookDetails book={book} />
         </>
     )
 }
