@@ -4,6 +4,7 @@ describe('Sign up screen', () => {
   let fakeAccount;
 
   beforeEach(() => {
+    cy.viewport('iphone-x')
     cy.visit('/sign-up')
     fakeAccount = {
       name: faker.name.firstName(),

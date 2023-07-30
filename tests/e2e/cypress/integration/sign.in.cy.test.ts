@@ -6,6 +6,7 @@ describe('Sign in screen', () => {
   let fakeAccount;
 
   beforeEach(() => {
+    cy.viewport('iphone-x')
     cy.visit('/login')
     fakeAccount = {
       email: faker.internet.email(),
