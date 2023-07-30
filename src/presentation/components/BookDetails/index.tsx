@@ -101,7 +101,7 @@ export function BookDetails({ book }: BookDetailsProps) {
     return (
         <ContainerStyled>
             <HeaderStyled>
-                <TitleStyled>{book.title}</TitleStyled>
+                <TitleStyled data-test-id="book-details-title">{book.title}</TitleStyled>
 
                 <LateralContainerStyled>
                     <TextStyled>Progress</TextStyled>

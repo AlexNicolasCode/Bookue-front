@@ -46,7 +46,7 @@ describe('Book details screen', () => {
         cy.url().should('eq', Cypress.config().baseUrl + '/')
     })
     
-    it('Should render correct book on success', () => {
+    it('Should render correct book fields on success', () => {
         const book: BookModel = mockBook()
         cy.task('startServer', {
             baseUrl: '/graphql',
@@ -64,6 +64,22 @@ describe('Book details screen', () => {
         cy.getByTestId('book-details-description-field').should('have.text', book.description)
         cy.getByTestId('book-details-current-page-field').should('have.text', book.currentPage)
         cy.getByTestId('book-details-pages-field').should('have.text', book.pages)
+    })
+    
+    it('Should render correct book head title on success', () => {
+        const book: BookModel = mockBook()
+        cy.task('startServer', {
+            baseUrl: '/graphql',
+            statusCode: 200,
+            body: {
+                data: {
+                    loadBook: book
+                }
+            }
+        })
+        const fakeBookId = faker.datatype.uuid()
+        cy.visit(`/book/${fakeBookId}/`, { failOnStatusCode: false })
+        cy.getByTestId('book-details-title').should('have.text', book.title)
     })
   })
 })
