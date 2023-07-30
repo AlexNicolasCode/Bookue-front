@@ -8,9 +8,7 @@ type BookListProps = {
 
 export function BookList({ books }: BookListProps) {
     const renderBooks = () => {
-        return books.map((book) => {
-            return <Card book={book} />
-        })
+        return books.map((book, index) => <Card book={book} key={index} />)
     }
     const renderEmptyState = () => {
         return <p data-test-id="home-empty-state">Not found</p>
