@@ -76,5 +76,21 @@ describe('Home screen', () => {
       cy.url().should('include', `/book/${fakeBook.id}`)
       cy.task('closeServer')
     })
+
+    it('Should redirect add book screen when user click in add book button', () => {
+      cy.task('startServer', {
+        baseUrl: '/graphql',
+        statusCode: 200,
+        body: {
+          data: {
+            loadAllBooks: []
+          }
+        }
+      })
+      cy.visit('/')
+      cy.getByTestId('header-add-book-button').click()
+      cy.url().should('include', '/book/add')
+      cy.task('closeServer')
+    })
   })
 })
