@@ -1,3 +1,5 @@
+import Link from "next/link"
+
 import { BookModel } from "@/domain/models"
 
 import {
@@ -29,7 +31,11 @@ export function Card({ book }: CardProps) {
 
             <OptionsStyled>
                 <NotesButtonStyled>Notes</NotesButtonStyled>
-                <DetailsButtonStyled>Details</DetailsButtonStyled>
+                <Link href={`/book/${book.id}`}>
+                    <DetailsButtonStyled data-test-id="home-book-details-button">
+                        Details
+                    </DetailsButtonStyled>
+                </Link>
             </OptionsStyled>
         </CardStyled>
     )
