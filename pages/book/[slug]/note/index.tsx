@@ -10,16 +10,7 @@ function BookNotesPage() {
     )
 }
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-    const accessToken = context.req.cookies['bookue-user']
-    if (!accessToken) {
-        return {
-            props: {},
-            redirect: {
-                destination: '/login'
-            }
-        }
-    }
+export const getServerSideProps: GetServerSideProps = async () => {
     return {
         props: {},
     }

@@ -19,14 +19,6 @@ function HomePage({ books }: HomePageProps) {
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
     const accessToken = context.req.cookies['bookue-user']
-    if (!accessToken) {
-        return {
-            props: {},
-            redirect: {
-                destination: '/login'
-            }
-        }
-    }
     const remoteLoadBooks = makeRemoteLoadBooks()
     const books = await remoteLoadBooks.loadBooks({ accessToken })
     return {
