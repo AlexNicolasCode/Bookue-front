@@ -65,7 +65,7 @@ export function BookDetails({ book }: BookDetailsProps) {
 
     const getBookProgressPerCent = () => {
         const perCent = String((editableBook.currentPage * 100) / editableBook.pages);
-        return perCent.substring(0, 3)
+        return perCent.substring(0, 4)
     }
 
     const getTypeByLabel = (label: string) => {
@@ -105,7 +105,9 @@ export function BookDetails({ book }: BookDetailsProps) {
 
                 <LateralContainerStyled>
                     <TextStyled>Progress</TextStyled>
-                    <ProgressBarStyled>{ getBookProgressPerCent() }%</ProgressBarStyled>
+                    <ProgressBarStyled>
+                        {getBookProgressPerCent()}%
+                    </ProgressBarStyled>
                 </LateralContainerStyled>
             </HeaderStyled>
 
