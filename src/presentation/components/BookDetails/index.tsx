@@ -122,6 +122,7 @@ export function BookDetails({ book }: BookDetailsProps) {
                                     onChange={(event) => setEditableBookContentByLabel(book.label, event.target.value)}
                                     type={getTypeByLabel(book.label)}
                                     value={ book.value }
+                                    data-test-id={`${book.testId}-edit-mode`}
                                 />
                             </FieldStyled>
                             :
@@ -131,7 +132,12 @@ export function BookDetails({ book }: BookDetailsProps) {
                             </FieldStyled>
                         }
 
-                        <EditButtonStyled onClick={() => handleEditModeByLabel(book.label)}>Edit</EditButtonStyled>
+                        <EditButtonStyled
+                            onClick={() => handleEditModeByLabel(book.label)}
+                            data-test-id={`${book.testId}-edit-button`}
+                        >
+                            Edit
+                        </EditButtonStyled>
                     </FieldContainerStyled>
                 )}
             </DetailsContainerStyled>
