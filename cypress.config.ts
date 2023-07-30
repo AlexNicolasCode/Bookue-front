@@ -12,6 +12,7 @@ export default defineConfig({
 
       on('task', {
         startServer({ baseUrl, statusCode, body }) {
+          if (server) server.close() 
           const app = express()
           app.post(baseUrl, (req, res) => {
             res.status(statusCode).send(body)
