@@ -25,6 +25,7 @@ export function Header() {
                     <FontAwesomeIcon
                         icon={faArrowLeft}
                         onClick={backToLastPage}
+                        data-test-id="header-back-book-button"
                     />
                 </BackButtonStyled>
             )

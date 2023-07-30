@@ -99,5 +99,33 @@ describe('Book details screen', () => {
         const bookProcessPercentage = String((book.currentPage * 100) / book.pages).substring(0, 4);
         cy.getByTestId('book-details-process-percentage').should('have.text', `${bookProcessPercentage}%`)
     })
+    
+    it('Should send to last screen when user click in back button', () => {
+        cy.task('startServer', {
+            baseUrl: '/graphql',
+            statusCode: 200,
+            body: {
+                data: {
+                    loadAllBooks: []
+                }
+            }
+        })
+        cy.visit('/')
+        cy.task('startServer', {
+            baseUrl: '/graphql',
+            statusCode: 200,
+            body: {
+                data: {
+                    loadBook: mockBook()
+                }
+            }
+        })
+        const fakeBookId = faker.datatype.uuid()
+
+        cy.visit(`/book/${fakeBookId}/`)
+        cy.getByTestId('header-back-book-button').click()
+
+        cy.url().should('eq', Cypress.config().baseUrl + '/')
+    })
   })
 })
