@@ -92,5 +92,22 @@ describe('Home screen', () => {
       cy.url().should('include', '/book/add')
       cy.task('closeServer')
     })
+
+    it('Should redirect book notes screen when user click in notes button', () => {
+      const fakeBook: BookModel = mockBook()
+      cy.task('startServer', {
+        baseUrl: '/graphql',
+        statusCode: 200,
+        body: {
+          data: {
+            loadAllBooks: [fakeBook]
+          }
+        }
+      })
+      cy.visit('/')
+      cy.getByTestId('home-book-notes-button').click()
+      cy.url().should('include', `/book/${fakeBook.id}/note`)
+      cy.task('closeServer')
+    })
   })
 })
