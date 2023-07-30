@@ -1,26 +1,15 @@
 describe('Home screen', () => {
   beforeEach(() => {
-    cy.setCookie('bookue-user', 'any_token')
-    cy.task('startServer', {
-      baseUrl: '/graphql',
-      statusCode: 200,
-      body: {
-        data: {
-          loadAllBooks: [{}, {}]
-        }
-      }
+    cy.viewport('iphone-x')
+  })
+
+  describe('when not authenticated', () => {
+    beforeEach(() => {
+      cy.visit('/')
     })
-  })
 
-  afterEach(() => {
-    cy.task('closeServer')
-  })
-
-  it('Should change to sign up page when click in sign up button', () => {
-    cy.visit('/')
-    
-    cy.getByTestId('sign-up-button').click()
-
-    cy.url().should('include', '/login')
+    it('should be redirected to sign in screen', () => {
+      cy.url().should('include', '/login')
+    })
   })
 })
