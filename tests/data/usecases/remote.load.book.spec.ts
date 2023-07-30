@@ -5,6 +5,7 @@ import { LoadBook } from "@/domain/usecases";
 
 import { HttpClientSpy, mockBook } from "@/tests/data/mocks";
 import { throwError } from "@/tests/main/domain/mocks/test.helpers";
+import { UnexpectedError } from "@/domain/errors";
 
 class RemoteLoadBook implements LoadBook {
     constructor(
@@ -36,9 +37,10 @@ class RemoteLoadBook implements LoadBook {
             `
             }),
         })
-        if (httpResponse.statusCode === 200) {
-            return httpResponse.body.data.loadBook
-        }
+        switch (httpResponse.statusCode) {
+            case HttpStatusCode.ok: return httpResponse.body.data.loadBook;
+            default: throw new UnexpectedError();
+          }
     }
 }
 
@@ -117,5 +119,16 @@ describe('RemoteLoadBook', () => {
         const response = await sut.loadBook(fakeRequest);
     
         expect(response).toEqual(httpClientSpy.response.body.data.loadBook)
+    });
+
+    test('should throw UnexpectedError if HttpClient return 400', async () => {
+        const { sut, httpClientSpy } = makeSut();
+        httpClientSpy.response = {
+          statusCode: HttpStatusCode.badRequest,
+        };
+    
+        const response = sut.loadBook(fakeRequest);
+    
+        await expect(response).rejects.toThrow(new UnexpectedError());
     });
 })
