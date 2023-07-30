@@ -25,6 +25,7 @@ type BookField = {
     label: string
     value: string | number
     isEditing: boolean
+    testId: string
 }
 
 export function BookDetails({ book }: BookDetailsProps) {
@@ -34,26 +35,31 @@ export function BookDetails({ book }: BookDetailsProps) {
             label: "Title",
             value: editableBook.title,
             isEditing: false,
+            testId: "book-details-title-field"
         },
         {
             label: "Author",
             value: editableBook.author,
             isEditing: false,
+            testId: "book-details-author-field"
         },
         {
             label: "Description",
             value: editableBook.description,
             isEditing: false,
+            testId: "book-details-description-field"
         },
         {
             label: "Current Page",
             value: editableBook.currentPage,
             isEditing: false,
+            testId: "book-details-current-page-field"
         },
         {
             label: "Pages",
             value: editableBook.pages,
             isEditing: false,
+            testId: "book-details-pages-field"
         },
     ])
 
@@ -118,8 +124,8 @@ export function BookDetails({ book }: BookDetailsProps) {
                             </FieldStyled>
                             :
                             <FieldStyled>
-                                <FieldLabelStyled>{ book.label }</FieldLabelStyled>
-                                <FieldContentStyled>{ book.value }</FieldContentStyled>
+                                <FieldLabelStyled data-test-id={`${book.testId}-label`}>{ book.label }</FieldLabelStyled>
+                                <FieldContentStyled data-test-id={book.testId}>{ book.value }</FieldContentStyled>
                             </FieldStyled>
                         }
 
