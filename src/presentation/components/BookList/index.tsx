@@ -7,11 +7,20 @@ type BookListProps = {
 }
 
 export function BookList({ books }: BookListProps) {
+    const renderBooks = () => {
+        return books.map((book) => {
+            return <Card book={book} />
+        })
+    }
+    const renderEmptyState = () => {
+        return <p data-test-id="home-empty-state">Not found</p>
+    }
     return (
         <ListStyled>
-            {books.map((book) => {
-                return <Card book={book} />
-            })}
+            {books.length
+                ? renderBooks()
+                : renderEmptyState()
+            }
         </ListStyled>
     )
 }

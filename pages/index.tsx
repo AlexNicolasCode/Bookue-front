@@ -2,6 +2,7 @@ import { GetServerSideProps } from "next"
 
 import { BookList, Header } from "@/presentation/components"
 import { BookModel } from "@/domain/models"
+import { makeRemoteLoadBooks } from "@/main/factory/usecases"
 
 type HomePageProps = {
     books: BookModel[]
@@ -26,38 +27,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             }
         }
     }
-
-    const books = [
-        {
-            title: 'Scherlock Holmes',
-            author: 'Scherlock Holmes',
-            description: 'Scherlock Holmes',
-            currentPage: 10,
-            pages: 100,
-        },
-        {
-            title: 'Scherlock Holmes',
-            author: 'Scherlock Holmes',
-            description: 'Scherlock Holmes',
-            currentPage: 10,
-            pages: 100,
-        },
-        {
-            title: 'Scherlock Holmes',
-            author: 'Scherlock Holmes',
-            description: 'Scherlock Holmes',
-            currentPage: 10,
-            pages: 100,
-        },
-        {
-            title: 'Scherlock Holmes',
-            author: 'Scherlock Holmes',
-            description: 'Scherlock Holmes',
-            currentPage: 10,
-            pages: 100,
-        },
-    ]
-
+    const remoteLoadBooks = makeRemoteLoadBooks()
+    const books = await remoteLoadBooks.loadBooks({ accessToken })
     return {
         props: {
             books,
