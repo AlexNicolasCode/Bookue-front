@@ -1,4 +1,5 @@
 import { mockBook } from "../../../data/mocks/mock.book"
+import { BookModel } from "../../../../src/domain/models"
 
 describe('Home screen', () => {
   beforeEach(() => {
@@ -19,10 +20,6 @@ describe('Home screen', () => {
     beforeEach(() => {
       cy.setCookie('bookue-user', 'any_token')
     })
-  
-    afterEach(() => {
-      cy.task('closeServer')
-    })
 
     it('Should show empty state when none book was found', () => {
       cy.task('startServer', {
@@ -36,6 +33,31 @@ describe('Home screen', () => {
       })
       cy.visit('/')
       cy.getByTestId('home-empty-state').contains('Not found')
+      cy.task('closeServer')
+    })
+
+    it('Should show correct books list when access home and any book', () => {
+      const fakeBooks: BookModel[] = [mockBook(), mockBook(), mockBook()]
+      cy.task('startServer', {
+        baseUrl: '/graphql',
+        statusCode: 200,
+        body: {
+          data: {
+            loadAllBooks: fakeBooks
+          }
+        }
+      })
+      cy.visit('/')
+      cy.getByTestId('home-book-card').each(($element, index) => {
+        const card = cy.wrap($element)
+        const equivalentBookFromApi = fakeBooks[index]
+        card.getByTestId('home-book-title').contains(equivalentBookFromApi.title)
+        card.getByTestId('home-book-pages').contains(
+          `${equivalentBookFromApi.currentPage} - ${equivalentBookFromApi.pages}`
+        )
+        card.getByTestId('home-book-description').contains(equivalentBookFromApi.description)
+      })
+      cy.task('closeServer')
     })
   })
 })

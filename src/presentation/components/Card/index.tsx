@@ -17,13 +17,13 @@ type CardProps = {
 
 export function Card({ book }: CardProps) {
     return (
-        <CardStyled>
+        <CardStyled data-test-id="home-book-card">
             <HeaderStyled>
-                <TitleStyled>{book.title}</TitleStyled>
-                <CountPageStyled>{book.currentPage} - {book.pages}</CountPageStyled>
+                <TitleStyled data-test-id="home-book-title">{book.title}</TitleStyled>
+                <CountPageStyled data-test-id="home-book-pages">{book.currentPage} - {book.pages}</CountPageStyled>
             </HeaderStyled>
 
-            <DescriptionStyled>
+            <DescriptionStyled data-test-id="home-book-description">
                 {book.description}
             </DescriptionStyled>
 
