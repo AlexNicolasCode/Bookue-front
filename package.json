@@ -8,7 +8,8 @@
     "build": "next build",
     "lint": "next lint",
     "test": "jest --passWithNoTests --runInBand --no-cache -c jest.config.js",
-    "test:unit": "npm test -- --watch -c jest.unit.config.js",
+    "test:unit": "jest --passWithNoTests --runInBand --no-cache -c jest.unit.config.js",
+    "test:unit:watch": "jest --passWithNoTests --runInBand --no-cache --watch -c jest.unit.config.js",
     "cypress:open": "start-server-and-test start:dev http://localhost:3000 \"cypress open --e2e\"",
     "cypress:run": "cypress run"
   },
