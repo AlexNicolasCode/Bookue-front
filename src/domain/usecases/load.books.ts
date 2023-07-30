@@ -6,7 +6,7 @@ export interface LoadBooks {
 
 export namespace LoadBooks {
     export type Params = {
-        accessToken
+        accessToken: string
     }
     export type Result = BookModel[]
 }
