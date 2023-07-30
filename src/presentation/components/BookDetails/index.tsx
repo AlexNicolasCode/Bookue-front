@@ -105,7 +105,7 @@ export function BookDetails({ book }: BookDetailsProps) {
 
                 <LateralContainerStyled>
                     <TextStyled>Progress</TextStyled>
-                    <ProgressBarStyled>
+                    <ProgressBarStyled data-test-id="book-details-process-percentage">
                         {getBookProgressPerCent()}%
                     </ProgressBarStyled>
                 </LateralContainerStyled>

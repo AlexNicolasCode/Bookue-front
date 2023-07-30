@@ -81,5 +81,23 @@ describe('Book details screen', () => {
         cy.visit(`/book/${fakeBookId}/`, { failOnStatusCode: false })
         cy.getByTestId('book-details-title').should('have.text', book.title)
     })
+    
+    it('Should render correct book progress percentage', () => {
+        const book: BookModel = mockBook()
+        book.pages = faker.datatype.number({ max: 200 })
+        cy.task('startServer', {
+            baseUrl: '/graphql',
+            statusCode: 200,
+            body: {
+                data: {
+                    loadBook: book
+                }
+            }
+        })
+        const fakeBookId = faker.datatype.uuid()
+        cy.visit(`/book/${fakeBookId}/`)
+        const bookProcessPercentage = String((book.currentPage * 100) / book.pages).substring(0, 4);
+        cy.getByTestId('book-details-process-percentage').should('have.text', `${bookProcessPercentage}%`)
+    })
   })
 })
