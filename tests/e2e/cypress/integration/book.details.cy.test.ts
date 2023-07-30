@@ -208,7 +208,7 @@ describe('Book details screen', () => {
                     }
                 }
             })
-            const fakeText = faker.random.words()
+            const fakeText = faker.datatype.number().toString()
             const fakeBookId = faker.datatype.uuid()
             cy.visit(`/book/${fakeBookId}/`)
     
@@ -230,7 +230,7 @@ describe('Book details screen', () => {
                     }
                 }
             })
-            const fakeText = faker.random.words()
+            const fakeText = faker.datatype.number().toString()
             const fakeBookId = faker.datatype.uuid()
             cy.visit(`/book/${fakeBookId}/`)
     
