@@ -34,6 +34,17 @@ describe('Book details screen', () => {
         cy.visit(`/book/${fakeBookId}/`, { failOnStatusCode: false })
         cy.url().should('eq', Cypress.config().baseUrl + '/')
     })
+
+    it('Should redirect to home screen when server side broken when try load book', () => {
+        cy.task('startServer', {
+            baseUrl: '/graphql',
+            statusCode: 500,
+            body: {}
+        })
+        const fakeBookId = faker.datatype.uuid()
+        cy.visit(`/book/${fakeBookId}/`, { failOnStatusCode: false })
+        cy.url().should('eq', Cypress.config().baseUrl + '/')
+    })
     
     it('Should render correct book on success', () => {
         const book: BookModel = mockBook()
