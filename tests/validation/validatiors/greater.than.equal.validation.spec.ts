@@ -44,4 +44,19 @@ describe('GreaterThanEqualValidation', () => {
 
     expect(error).toBeNull()
   })
+
+  test('Should return none error if first field equal the second field', () => {
+    const field = faker.random.word()
+    const fieldToCompare = faker.random.word()
+    const ramdomNumber = faker.datatype.number()
+    const input = {
+      [field]: ramdomNumber,
+      [fieldToCompare]: ramdomNumber
+    }
+    const sut = new GreaterThanEqualValidation(field, fieldToCompare)
+
+    const error = sut.validate(input)
+
+    expect(error).toBeNull()
+  })
 })
