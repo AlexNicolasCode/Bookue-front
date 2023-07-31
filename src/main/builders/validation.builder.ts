@@ -1,5 +1,10 @@
 import { FieldValidation } from "@/validation/protocols"
-import { RequiredFieldValidation, EmailValidation, CompareFieldsValidation } from "@/validation/validators"
+import {
+    RequiredFieldValidation,
+    EmailValidation,
+    CompareFieldsValidation,
+    LessThanEqualValidation,
+} from "@/validation/validators"
 
 export class ValidationBuilder {
     private constructor (
@@ -23,6 +28,11 @@ export class ValidationBuilder {
 
     sameAs (fieldToCompare: string): ValidationBuilder {
         this.validations.push(new CompareFieldsValidation(this.fieldName, fieldToCompare))
+        return this
+    }
+
+    lessThanEqual (fieldToCompare: string): ValidationBuilder {
+        this.validations.push(new LessThanEqualValidation(this.fieldName, fieldToCompare))
         return this
     }
 
