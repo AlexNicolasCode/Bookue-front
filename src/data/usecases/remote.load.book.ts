@@ -20,13 +20,11 @@ export class RemoteLoadBook implements LoadBook {
             query: `
                 query LoadBook {
                     loadBook {
-                    id
-                    title
-                    author
-                    description
-                    currentPage
-                    pages
-                    createdAt
+                        title
+                        author
+                        description
+                        currentPage
+                        pages
                     }
                 }
             `
