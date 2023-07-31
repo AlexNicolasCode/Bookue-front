@@ -30,4 +30,18 @@ describe('LessThanEqualValidation', () => {
 
     expect(error).toEqual(new GreaterThanFieldError(field, fieldToCompare))
   })
+
+  test('Should return none error if first field less than or equal the second field', () => {
+    const field = faker.random.word()
+    const fieldToCompare = faker.random.word()
+    const input = {
+      [field]: faker.datatype.number({ max: 99  }),
+      [fieldToCompare]: faker.datatype.number({ min: 100 })
+    }
+    const sut = new LessThanEqualValidation(field, fieldToCompare)
+
+    const error = sut.validate(input)
+
+    expect(error).toBeNull()
+  })
 })
