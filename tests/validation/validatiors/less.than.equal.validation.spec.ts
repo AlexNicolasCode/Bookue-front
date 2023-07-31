@@ -1,20 +1,7 @@
 import { faker } from "@faker-js/faker"
 
 import { GreaterThanFieldError } from "@/validation/errors"
-import { FieldValidation } from "../protocols"
-
-export class LessThanEqualValidation implements FieldValidation {
-    constructor (
-      readonly field: string,
-      private readonly fieldToCompare: string
-    ) {}
-  
-    validate (input: object): Error {
-      return input[this.field] <= input[this.fieldToCompare] ?
-      null :
-      new GreaterThanFieldError(this.field, this.fieldToCompare)
-    }
-}
+import { LessThanEqualValidation } from "@/validation/validators"
 
 describe('LessThanEqualValidation', () => {
   test('Should return error if first field is greater than second field', () => {
