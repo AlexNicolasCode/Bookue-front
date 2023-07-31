@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 import { BookModel } from "@/domain/models";
 import {
@@ -25,52 +25,33 @@ type BookField = {
     label: string
     value: string | number
     isEditing: boolean
+    fieldType: string
     testId: string
 }
 
+const convertToCapitalizeCase = (text: string) => {
+    const textD = text.replace(/([A-Z])/g, " $1")
+    return textD.charAt(0).toUpperCase() + textD.slice(1).toLowerCase();
+}
+
 export function BookDetails({ book }: BookDetailsProps) {
+    const fieldsNames = Object.keys(book)
     const [editableBook, setEditableBook] = useState<BookModel>(book)
-    const [bookFields, setBookFields] = useState<BookField[]>([
-        {
-            label: "Title",
-            value: editableBook.title,
+    const [bookFields, setBookFields] = useState<BookField[]>(
+        fieldsNames.map((fieldName: string) => ({
+            label: convertToCapitalizeCase(fieldName),
+            value: editableBook[fieldName],
             isEditing: false,
-            testId: "book-details-title-field"
-        },
-        {
-            label: "Author",
-            value: editableBook.author,
-            isEditing: false,
-            testId: "book-details-author-field"
-        },
-        {
-            label: "Description",
-            value: editableBook.description,
-            isEditing: false,
-            testId: "book-details-description-field"
-        },
-        {
-            label: "Current Page",
-            value: editableBook.currentPage,
-            isEditing: false,
-            testId: "book-details-current-page-field"
-        },
-        {
-            label: "Pages",
-            value: editableBook.pages,
-            isEditing: false,
-            testId: "book-details-pages-field"
-        },
-    ])
+            fieldType: 'text',
+            testId: `book-details-${fieldName}-field`,
+        }))
+    )
 
-    const getBookProgressPerCent = () => {
-        const perCent = String((editableBook.currentPage * 100) / editableBook.pages);
-        return perCent.substring(0, 4)
-    }
+    const bookProgressPercentage = useMemo(() => {
+        const percentage = String((editableBook.currentPage * 100) / editableBook.pages);
+        return `${percentage.substring(0, 4)}%`
+    }, [editableBook.currentPage, editableBook.pages])
 
-    const getTypeByLabel = (label: string) => {
-        return label === "Current Page" || label === "Pages" ? "number" : "text"
-    }
 
     const setBookFieldByLabel = (label: string, targetLabel: string, value: string | boolean) => {
         const bookFiedlsEditted = bookFields.map((bookField: BookField) => {
@@ -90,12 +71,12 @@ export function BookDetails({ book }: BookDetailsProps) {
             ...editableBook,
             [label]: value,
         })
-        setBookFieldByLabel(label, "value", value)
+        setBookFieldByLabel(label, 'value', value)
     }
 
     const handleEditModeByLabel = (label: string) => {
         const bookField = bookFields.find((field) => field.label === label)
-        setBookFieldByLabel(label, "isEditing", !bookField.isEditing)
+        setBookFieldByLabel(label, 'isEditing', !bookField.isEditing)
     }
 
     return (
@@ -106,7 +87,7 @@ export function BookDetails({ book }: BookDetailsProps) {
                 <LateralContainerStyled>
                     <TextStyled>Progress</TextStyled>
                     <ProgressBarStyled data-test-id="book-details-process-percentage">
-                        {getBookProgressPerCent()}%
+                        {bookProgressPercentage}
                     </ProgressBarStyled>
                 </LateralContainerStyled>
             </HeaderStyled>
@@ -117,18 +98,18 @@ export function BookDetails({ book }: BookDetailsProps) {
                         {book.isEditing
                             ?
                             <FieldStyled>
-                                <FieldLabelStyled>{ book.label }</FieldLabelStyled>
+                                <FieldLabelStyled>{book.label}</FieldLabelStyled>
                                 <FieldContentEditingModeStyled
                                     onChange={(event) => setEditableBookContentByLabel(book.label, event.target.value)}
-                                    type={getTypeByLabel(book.label)}
-                                    value={ book.value }
+                                    type={book.fieldType}
+                                    value={book.value}
                                     data-test-id={`${book.testId}-edit-mode`}
                                 />
                             </FieldStyled>
                             :
                             <FieldStyled>
-                                <FieldLabelStyled data-test-id={`${book.testId}-label`}>{ book.label }</FieldLabelStyled>
-                                <FieldContentStyled data-test-id={book.testId}>{ book.value }</FieldContentStyled>
+                                <FieldLabelStyled data-test-id={`${book.testId}-label`}>{book.label}</FieldLabelStyled>
+                                <FieldContentStyled data-test-id={book.testId}>{book.value}</FieldContentStyled>
                             </FieldStyled>
                         }
 
