@@ -4,6 +4,7 @@ import {
     EmailValidation,
     CompareFieldsValidation,
     LessThanEqualValidation,
+    GreaterThanEqualValidation,
 } from "@/validation/validators"
 
 export class ValidationBuilder {
@@ -33,6 +34,11 @@ export class ValidationBuilder {
 
     lessThanEqual (fieldToCompare: string): ValidationBuilder {
         this.validations.push(new LessThanEqualValidation(this.fieldName, fieldToCompare))
+        return this
+    }
+
+    greaterThanEqual (fieldToCompare: string): ValidationBuilder {
+        this.validations.push(new GreaterThanEqualValidation(this.fieldName, fieldToCompare))
         return this
     }
 
