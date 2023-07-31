@@ -4,6 +4,7 @@ import { ValidationBuilder as sut } from "@/main/builders/validation.builder";
 import {
     CompareFieldsValidation,
     EmailValidation,
+    GreaterThanEqualValidation,
     LessThanEqualValidation,
     RequiredFieldValidation,
 } from "@/validation/validators";
@@ -40,6 +41,15 @@ describe('ValidationBuilder', () => {
         const validations = sut.field(field).lessThanEqual(fieldToCompare).build()
 
         expect(validations).toEqual([new LessThanEqualValidation(field, fieldToCompare)])
+    })
+
+    test('Should return GreaterThanEqualValidation', () => {
+        const field = faker.database.column()
+        const fieldToCompare = faker.database.column()
+
+        const validations = sut.field(field).greaterThanEqual(fieldToCompare).build()
+
+        expect(validations).toEqual([new GreaterThanEqualValidation(field, fieldToCompare)])
     })
 
     test('Should return a list of validations', () => {
