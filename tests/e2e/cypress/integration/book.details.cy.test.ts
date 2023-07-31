@@ -1,6 +1,5 @@
 import { faker } from "@faker-js/faker"
 
-import { mockBook } from "../../../data/mocks/mock.book"
 import { BookModel } from "../../../../src/domain/models"
 
 describe('Book details screen', () => {
@@ -18,7 +17,16 @@ describe('Book details screen', () => {
   })
 
   describe('when authenticated', () => {
+    let fakeBook: Partial<BookModel>
+
     beforeEach(() => {
+        fakeBook = {
+            title: faker.random.words(),
+            author: faker.random.words(),
+            description: faker.random.words(),
+            currentPage: faker.datatype.number(),
+            pages: faker.datatype.number(),
+        }
         cy.setCookie('bookue-user', 'any_token')
     })
     
@@ -47,57 +55,54 @@ describe('Book details screen', () => {
     })
     
     it('Should render correct book fields on success', () => {
-        const book: BookModel = mockBook()
         cy.task('startServer', {
             baseUrl: '/graphql',
             statusCode: 200,
             body: {
                 data: {
-                    loadBook: book
+                    loadBook: fakeBook
                 }
             }
         })
         const fakeBookId = faker.datatype.uuid()
         cy.visit(`/book/${fakeBookId}/`)
 
-        cy.getByTestId('book-details-title-field').should('have.text', book.title)
-        cy.getByTestId('book-details-author-field').should('have.text', book.author)
-        cy.getByTestId('book-details-description-field').should('have.text', book.description)
-        cy.getByTestId('book-details-current-page-field').should('have.text', book.currentPage)
-        cy.getByTestId('book-details-pages-field').should('have.text', book.pages)
+        cy.getByTestId('book-details-title-field').should('have.text', fakeBook.title)
+        cy.getByTestId('book-details-author-field').should('have.text', fakeBook.author)
+        cy.getByTestId('book-details-description-field').should('have.text', fakeBook.description)
+        cy.getByTestId('book-details-currentPage-field').should('have.text', fakeBook.currentPage)
+        cy.getByTestId('book-details-pages-field').should('have.text', fakeBook.pages)
     })
     
     it('Should render correct book head title on success', () => {
-        const book: BookModel = mockBook()
         cy.task('startServer', {
             baseUrl: '/graphql',
             statusCode: 200,
             body: {
                 data: {
-                    loadBook: book
+                    loadBook: fakeBook
                 }
             }
         })
         const fakeBookId = faker.datatype.uuid()
         cy.visit(`/book/${fakeBookId}/`)
 
-        cy.getByTestId('book-details-title').should('have.text', book.title)
+        cy.getByTestId('book-details-title').should('have.text', fakeBook.title)
     })
     
     it('Should render correct book progress percentage', () => {
-        const book: BookModel = mockBook()
-        book.pages = faker.datatype.number({ max: 200 })
+        fakeBook.pages = faker.datatype.number({ max: 200 })
         cy.task('startServer', {
             baseUrl: '/graphql',
             statusCode: 200,
             body: {
                 data: {
-                    loadBook: book
+                    loadBook: fakeBook
                 }
             }
         })
         const fakeBookId = faker.datatype.uuid()
-        const bookProcessPercentage = String((book.currentPage * 100) / book.pages).substring(0, 4);
+        const bookProcessPercentage = String((fakeBook.currentPage * 100) / fakeBook.pages).substring(0, 4);
         cy.visit(`/book/${fakeBookId}/`)
 
         cy.getByTestId('book-details-process-percentage').should('have.text', `${bookProcessPercentage}%`)
@@ -119,7 +124,7 @@ describe('Book details screen', () => {
             statusCode: 200,
             body: {
                 data: {
-                    loadBook: mockBook()
+                    loadBook: fakeBook
                 }
             }
         })
@@ -138,7 +143,7 @@ describe('Book details screen', () => {
                 statusCode: 200,
                 body: {
                     data: {
-                        loadBook: mockBook()
+                        loadBook: fakeBook
                     }
                 }
             })
@@ -160,7 +165,7 @@ describe('Book details screen', () => {
                 statusCode: 200,
                 body: {
                     data: {
-                        loadBook: mockBook()
+                        loadBook: fakeBook
                     }
                 }
             })
@@ -182,7 +187,7 @@ describe('Book details screen', () => {
                 statusCode: 200,
                 body: {
                     data: {
-                        loadBook: mockBook()
+                        loadBook: fakeBook
                     }
                 }
             })
@@ -204,7 +209,7 @@ describe('Book details screen', () => {
                 statusCode: 200,
                 body: {
                     data: {
-                        loadBook: mockBook()
+                        loadBook: fakeBook
                     }
                 }
             })
@@ -212,12 +217,12 @@ describe('Book details screen', () => {
             const fakeBookId = faker.datatype.uuid()
             cy.visit(`/book/${fakeBookId}/`)
     
-            cy.getByTestId('book-details-current-page-field-edit-button').click()
-            cy.getByTestId('book-details-current-page-field-edit-mode').clear()
-            cy.getByTestId('book-details-current-page-field-edit-mode').type(fakeText)
-            cy.getByTestId('book-details-current-page-field-edit-button').click()
+            cy.getByTestId('book-details-currentPage-field-edit-button').click()
+            cy.getByTestId('book-details-currentPage-field-edit-mode').clear()
+            cy.getByTestId('book-details-currentPage-field-edit-mode').type(fakeText)
+            cy.getByTestId('book-details-currentPage-field-edit-button').click()
             
-            cy.getByTestId('book-details-current-page-field').should('have.text', fakeText)
+            cy.getByTestId('book-details-currentPage-field').should('have.text', fakeText)
         })
 
         it('Should edit correctly pages field when user click in edit button, type something and click in edit button again', () => {
@@ -226,7 +231,7 @@ describe('Book details screen', () => {
                 statusCode: 200,
                 body: {
                     data: {
-                        loadBook: mockBook()
+                        loadBook: fakeBook
                     }
                 }
             })
