@@ -11,7 +11,7 @@ describe('Book details screen', () => {
   describe('when not authenticated', () => {
     it('Should be redirected to sign in screen', () => {
         const fakeBookId = faker.datatype.uuid()
-        cy.visit(`/book/${fakeBookId}/`)
+        cy.visit(`/book/${fakeBookId}/`, { failOnStatusCode: false })
 
         cy.url().should('include', '/login')
     })

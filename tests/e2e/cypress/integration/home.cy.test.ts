@@ -8,7 +8,7 @@ describe('Home screen', () => {
 
   describe('when not authenticated', () => {    
     it('Should be redirected to sign in screen', () => {
-      cy.visit('/')
+      cy.visit('/', { failOnStatusCode: false })
 
       cy.url().should('include', '/login')
     })
