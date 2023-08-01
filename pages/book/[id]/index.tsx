@@ -3,19 +3,16 @@ import { GetServerSideProps } from "next"
 import { BookModel } from "@/domain/models"
 import { BookDetails, Header } from "@/presentation/components"
 import { makeRemoteLoadBook } from "@/main/factory/usecases"
-import { makeEditBookValidation } from "@/main/factory/validation"
-import { ValidationComposite } from "@/main/composites"
 
 type PageProps = {
     book: BookModel
-    validator: ValidationComposite
 }
 
-function BookPage({ book, validator = makeEditBookValidation() }: PageProps) {
+function BookPage({ book }: PageProps) {
     return (
         <>
             <Header/>
-            <BookDetails book={book} validator={validator} />
+            <BookDetails book={book}/>
         </>
     )
 }

@@ -2,11 +2,8 @@ import { useRouter } from "next/router"
 import { GetServerSideProps } from "next"
 
 import { UnloggedHeader, Register } from "@/presentation/components"
-import { makeRegisterValidation } from "@/main/factory/validation"
 
-function SignUpPage({
-    validation = makeRegisterValidation()
-}) {
+function SignUpPage() {
     const router = useRouter()
 
     const goToLoginPage = () => {
@@ -20,10 +17,7 @@ function SignUpPage({
                 onClick={goToLoginPage}
                 testId={"login-button"}
             />
-
-            <Register
-                validation={validation}
-            />
+            <Register/>
         </>
     )
 }

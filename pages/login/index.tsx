@@ -2,20 +2,8 @@ import { GetServerSideProps } from "next"
 import { useRouter } from "next/router"
 
 import { UnloggedHeader, Login } from "@/presentation/components"
-import { makeLoginValidation } from "@/main/factory/validation"
-import { ValidationComposite } from "@/main/composites"
-import { makeRemoteAuthentication } from "@/main/factory/usecases"
-import { Authentication } from "@/domain/usecases"
 
-export type LoginPageProps = {
-    validation: ValidationComposite
-    remoteAuthentication: Authentication
-}
-
-function LoginPage({
-    validation = makeLoginValidation(),
-    remoteAuthentication = makeRemoteAuthentication(),
-}: LoginPageProps) {
+function LoginPage() {
     const router = useRouter()
 
     const goToSignUpPage = () => {
@@ -29,11 +17,7 @@ function LoginPage({
                 onClick={goToSignUpPage}
                 testId="sign-up-button"
             />
-
-            <Login
-                validation={validation}
-                remoteAuthentication={remoteAuthentication}
-            />
+            <Login />
         </>
     )
 }

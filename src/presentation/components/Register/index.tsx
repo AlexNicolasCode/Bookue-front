@@ -1,6 +1,9 @@
 import { useRouter } from "next/router"
 import { FormEvent, useState } from "react"
 
+import { makeRemoteAddAccount } from "@/main/factory/usecases"
+import { makeCookieManagerAdapter } from "@/main/factory/cookie"
+import { makeRegisterValidation } from "@/main/factory/validation"
 import {
     Form,
     Input,
@@ -10,14 +13,6 @@ import {
 } from "@/presentation/components"
 
 import { RegisterStyled } from "./styled"
-
-import { makeRemoteAddAccount } from "@/main/factory/usecases"
-import { makeCookieManagerAdapter } from "@/main/factory/cookie"
-import { ValidationComposite } from "@/main/composites"
-
-type RegisterProps = {
-    validation: ValidationComposite
-}
 
 type FieldNames = 'name' | 'email' | 'password' | 'passwordConfirmation'
 type FieldTypes = 'name' | 'email' | 'password'
@@ -33,7 +28,7 @@ type RegisterFormProps = {
     }
 }
 
-function Register({ validation }: RegisterProps) {
+function Register() {
     const router = useRouter()
     
     const fieldNames: FieldNames[] = ['name', 'email', 'password', 'passwordConfirmation']
@@ -84,8 +79,9 @@ function Register({ validation }: RegisterProps) {
     const validateForm = (): string => {
         const fieldTexts = {}
         fieldNames.forEach((fieldName: string) => fieldTexts[fieldName] = userForm[fieldName].text)
+        const validator = makeRegisterValidation()
         const errorList = fieldNames.map((field: string) => {
-            const error = validation.validate(
+            const error = validator.validate(
                 field,
                 fieldTexts,
             )

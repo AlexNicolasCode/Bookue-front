@@ -1,6 +1,9 @@
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/router";
 
+import { makeCookieManagerAdapter } from "@/main/factory/cookie";
+import { makeLoginValidation } from "@/main/factory/validation";
+import { makeRemoteAuthentication } from "@/main/factory/usecases";
 import { 
     Form,
     Logo,
@@ -11,14 +14,6 @@ import {
 
 import { LoginStyled } from "./styles";
 
-import { makeCookieManagerAdapter } from "@/main/factory/cookie";
-import { ValidationComposite } from "@/main/composites";
-import { Authentication } from "@/domain/usecases";
-
-export type LoginProps = {
-    validation: ValidationComposite
-    remoteAuthentication: Authentication
-}
 
 type UserFormProps = {
     email: {
@@ -31,7 +26,7 @@ type UserFormProps = {
     }
 }
 
-export function Login({ validation, remoteAuthentication }: LoginProps) {
+export function Login() {
     const router = useRouter()
     const [alert, setAlert] = useState<string>("")
     const [userForm, setUserForm] = useState<UserFormProps>({
@@ -55,6 +50,7 @@ export function Login({ validation, remoteAuthentication }: LoginProps) {
 
 
     const validateForm = (): string => {
+        const validation = makeLoginValidation()
         const emailValidationError = validation.validate('email', { email: userForm.email.text })
         const passwordValidationError = validation.validate('password', { password: userForm.password.text })
         setWrongFields(emailValidationError, passwordValidationError)
@@ -89,6 +85,7 @@ export function Login({ validation, remoteAuthentication }: LoginProps) {
                 setAlert(error)
                 return
             }
+            const remoteAuthentication = makeRemoteAuthentication()
             const account = await remoteAuthentication.auth({
                 email: userForm.email.text,
                 password: userForm.password.text,

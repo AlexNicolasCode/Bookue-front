@@ -1,7 +1,6 @@
 import { useMemo, useState } from "react";
 
 import { BookModel } from "@/domain/models";
-import { ValidationComposite } from "@/main/composites";
 
 import {
     ContainerStyled,
@@ -19,10 +18,10 @@ import {
     TitleStyled,
 } from "./styles";
 import { Alert } from "../Alert";
+import { makeEditBookValidation } from "@/main/factory/validation";
 
 type BookDetailsProps = {
     book: BookModel
-    validator: ValidationComposite
 }
 
 type BookField = {
@@ -39,7 +38,7 @@ const convertToCapitalizeCase = (text: string) => {
     return convertedText.charAt(0).toUpperCase().trim() + convertedText.slice(1).toLowerCase();
 }
 
-export function BookDetails({ book, validator }: BookDetailsProps) {
+export function BookDetails({ book }: BookDetailsProps) {
     const fieldNames = Object.keys(book)
     const [error, setError] = useState<string>()
     const [editableBook, setEditableBook] = useState<BookModel>(book)
@@ -86,6 +85,7 @@ export function BookDetails({ book, validator }: BookDetailsProps) {
             (fieldName: string) =>
             fieldTexts[fieldName] = bookFields.find((field) => field.fieldName === fieldName).value
         )
+        const validator = makeEditBookValidation()
         const error = validator.validate(
             fieldName,
             fieldTexts,
