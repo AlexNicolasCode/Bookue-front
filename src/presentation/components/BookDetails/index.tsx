@@ -1,6 +1,8 @@
 import { useMemo, useState } from "react";
 
 import { BookModel } from "@/domain/models";
+import { ValidationComposite } from "@/main/composites";
+
 import {
     ContainerStyled,
     DetailsContainerStyled,
@@ -16,12 +18,15 @@ import {
     TextStyled,
     TitleStyled,
 } from "./styles";
+import { Alert } from "../Alert";
 
 type BookDetailsProps = {
     book: BookModel
+    validator: ValidationComposite
 }
 
 type BookField = {
+    fieldName: string
     label: string
     value: string | number
     isEditing: boolean
@@ -30,15 +35,17 @@ type BookField = {
 }
 
 const convertToCapitalizeCase = (text: string) => {
-    const textD = text.replace(/([A-Z])/g, " $1")
-    return textD.charAt(0).toUpperCase() + textD.slice(1).toLowerCase();
+    const convertedText = text.replace(/([A-Z])/g, " $1")
+    return convertedText.charAt(0).toUpperCase().trim() + convertedText.slice(1).toLowerCase();
 }
 
-export function BookDetails({ book }: BookDetailsProps) {
-    const fieldsNames = Object.keys(book)
+export function BookDetails({ book, validator }: BookDetailsProps) {
+    const fieldNames = Object.keys(book)
+    const [error, setError] = useState<string>()
     const [editableBook, setEditableBook] = useState<BookModel>(book)
     const [bookFields, setBookFields] = useState<BookField[]>(
-        fieldsNames.map((fieldName: string) => ({
+        fieldNames.map((fieldName: string) => ({
+            fieldName: fieldName,
             label: convertToCapitalizeCase(fieldName),
             value: editableBook[fieldName],
             isEditing: false,
@@ -52,13 +59,12 @@ export function BookDetails({ book }: BookDetailsProps) {
         return `${percentage.substring(0, 4)}%`
     }, [editableBook.currentPage, editableBook.pages])
 
-
-    const setBookFieldByLabel = (label: string, targetLabel: string, value: string | boolean) => {
+    const setBookFieldByFieldName = (fieldName: string, targetKey: string, value: string | boolean) => {
         const bookFiedlsEditted = bookFields.map((bookField: BookField) => {
-            if (bookField.label === label) {
+            if (bookField.fieldName === fieldName) {
                 return {
                     ...bookField,
-                    [targetLabel]: value,
+                    [targetKey]: value,
                 }
             }
             return bookField
@@ -66,21 +72,49 @@ export function BookDetails({ book }: BookDetailsProps) {
         setBookFields(bookFiedlsEditted)
     }
 
-    const setEditableBookContentByLabel = (label: string, value: string) => {
+    const setEditableBookContentByFieldName = (fieldName: string, value: string) => {
         setEditableBook({
             ...editableBook,
-            [label]: value,
+            [fieldName]: value,
         })
-        setBookFieldByLabel(label, 'value', value)
+        setBookFieldByFieldName(fieldName, 'value', value)
     }
 
-    const handleEditModeByLabel = (label: string) => {
-        const bookField = bookFields.find((field) => field.label === label)
-        setBookFieldByLabel(label, 'isEditing', !bookField.isEditing)
+    const validateEditableField = (fieldName: string): string => {
+        const fieldTexts = {}
+        fieldNames.forEach(
+            (fieldName: string) =>
+            fieldTexts[fieldName] = bookFields.find((field) => field.fieldName === fieldName).value
+        )
+        const error = validator.validate(
+            fieldName,
+            fieldTexts,
+        )
+        return error
+    }
+
+    const handleEditModeByFieldName = (fieldName: string) => {
+        const bookField = bookFields.find((field) => field.fieldName === fieldName)
+        const isSaveFieldFlow = bookField.isEditing
+        if (isSaveFieldFlow) {
+            const error = validateEditableField(fieldName)
+            if (error) return setError(error)
+        }
+        setBookFieldByFieldName(fieldName, 'isEditing', !bookField.isEditing)
+    }
+
+    const renderError = (error: string) => {
+        return (
+            <Alert testId="book-details-error-warn">
+                {convertToCapitalizeCase(error)}
+            </Alert>
+        )
     }
 
     return (
         <ContainerStyled>
+            {error && renderError(error)}
+
             <HeaderStyled>
                 <TitleStyled data-test-id="book-details-title">{book.title}</TitleStyled>
 
@@ -100,7 +134,7 @@ export function BookDetails({ book }: BookDetailsProps) {
                             <FieldStyled>
                                 <FieldLabelStyled>{book.label}</FieldLabelStyled>
                                 <FieldContentEditingModeStyled
-                                    onChange={(event) => setEditableBookContentByLabel(book.label, event.target.value)}
+                                    onChange={(event) => setEditableBookContentByFieldName(book.fieldName, event.target.value)}
                                     type={book.fieldType}
                                     value={book.value}
                                     data-test-id={`${book.testId}-edit-mode`}
@@ -114,7 +148,7 @@ export function BookDetails({ book }: BookDetailsProps) {
                         }
 
                         <EditButtonStyled
-                            onClick={() => handleEditModeByLabel(book.label)}
+                            onClick={() => handleEditModeByFieldName(book.fieldName)}
                             data-test-id={`${book.testId}-edit-button`}
                         >
                             Edit
