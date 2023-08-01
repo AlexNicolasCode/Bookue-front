@@ -1,6 +1,7 @@
 import { faker } from "@faker-js/faker"
 
 import { BookModel } from "../../../../src/domain/models"
+import { GreaterThanFieldError } from "../../../../src/validation/errors"
 
 describe('Book details screen', () => {
   beforeEach(() => {
@@ -24,8 +25,8 @@ describe('Book details screen', () => {
             title: faker.random.words(),
             author: faker.random.words(),
             description: faker.random.words(),
-            currentPage: faker.datatype.number(),
-            pages: faker.datatype.number(),
+            currentPage: faker.datatype.number({ max: 10 }),
+            pages: faker.datatype.number({ min: 50 }),
         }
         cy.setCookie('bookue-user', 'any_token')
     })
@@ -213,7 +214,7 @@ describe('Book details screen', () => {
                     }
                 }
             })
-            const fakeText = faker.datatype.number().toString()
+            const fakeText = `${fakeBook.pages - faker.datatype.number({ max: fakeBook.pages })}`
             const fakeBookId = faker.datatype.uuid()
             cy.visit(`/book/${fakeBookId}/`)
     
@@ -245,6 +246,29 @@ describe('Book details screen', () => {
             cy.getByTestId('book-details-pages-field-edit-button').click()
             
             cy.getByTestId('book-details-pages-field').should('have.text', fakeText)
+        })
+
+        it('Should show greater than error when user try save current page field greater than pages field', () => {
+            cy.task('startServer', {
+                baseUrl: '/graphql',
+                statusCode: 200,
+                body: {
+                    data: {
+                        loadBook: fakeBook
+                    }
+                }
+            })
+            const fakeText = `${fakeBook.pages + faker.datatype.number()}`
+            const fakeBookId = faker.datatype.uuid()
+            const fakeError = new GreaterThanFieldError('current page', 'pages').message.toLowerCase()
+            cy.visit(`/book/${fakeBookId}/`)
+
+            cy.getByTestId('book-details-currentPage-field-edit-button').click()
+            cy.getByTestId('book-details-currentPage-field-edit-mode').clear()
+            cy.getByTestId('book-details-currentPage-field-edit-mode').type(fakeText)
+            cy.getByTestId('book-details-currentPage-field-edit-button').click()
+            
+            cy.getByTestId('book-details-error-warn').should('have.text', fakeError)
         })
     })
   })
