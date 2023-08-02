@@ -7,6 +7,7 @@ export default defineConfig({
     specPattern: "tests/e2e/cypress/integration/*.cy.test.ts",
     supportFile: "tests/e2e/cypress/support",
     fixturesFolder: "tests/e2e/cypress/fixtures",
+    video: false,
     setupNodeEvents(on, config) {      
       let server
 

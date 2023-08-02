@@ -11,7 +11,7 @@
     "test:unit": "jest --passWithNoTests --runInBand --no-cache -c jest.unit.config.js",
     "test:unit:watch": "jest --passWithNoTests --runInBand --no-cache --watch -c jest.unit.config.js",
     "cypress:open": "start-server-and-test start:dev http://localhost:3000 \"cypress open --e2e\"",
-    "cypress:run": "cypress run"
+    "cypress:run": "start-server-and-test start:dev http://localhost:3000 \"cypress run --e2e\""
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.1.2",
