@@ -9,6 +9,7 @@ type InputProps = {
     field: string
     testId?: string
     value: string
+    max?: string
 }
 
 function InputComponent({ 
@@ -19,6 +20,7 @@ function InputComponent({
     field,
     testId,
     value,
+    max,
 }: InputProps) {
     return (
         <InputStyled 
@@ -28,6 +30,7 @@ function InputComponent({
             data-test-id={testId}
             onChange={(event) => setState(field, event.target.value)}
             value={value}
+            max={max}
         />
     )
 }
