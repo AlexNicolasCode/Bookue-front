@@ -14,6 +14,14 @@ export const Error = {
   }
 }
 
+export const Warn = {
+  args: {
+    children: 'Testing this alert!',
+    isActive: true,
+    type: 'warn',
+  }
+}
+
 export const Succeds = {
   args: {
     children: 'Testing this alert!',
