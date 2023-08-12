@@ -1,14 +1,15 @@
-import { Alert } from "@/presentation/components"
 import { ReactNode, useEffect, useState } from "react"
 
+import { Alert } from "@/presentation/components"
 import { AlertContext } from "./context"
+import { AlertProps } from "./type"
 
-type AlertProps = {
+type AlertProviderProps = {
     children: ReactNode
 }
 
-export const AlertProvider = ({ children }: AlertProps) => {
-    const [alert, setAlert] = useState<string>("") 
+export const AlertProvider = ({ children }: AlertProviderProps) => {
+    const [alert, setAlert] = useState<AlertProps>() 
     const [isActiveAlert, setIsActiveAlert] = useState<boolean>(false)
     
     useEffect(() => {
@@ -25,8 +26,8 @@ export const AlertProvider = ({ children }: AlertProps) => {
 
     const renderAlert = (): JSX.Element => {
         return (
-            <Alert isActive={isActiveAlert}>
-                {alert}
+            <Alert isActive={isActiveAlert} type={alert.type}>
+                {alert.text}
             </Alert>
         )
     }
