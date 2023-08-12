@@ -27,6 +27,7 @@ const AlertStyled = styled.p`
 const backgroundColorMapper = {
     succeds: globalColors.succeds,
     error: globalColors.alert,
+    warn: globalColors.warn,
 }
 
 const AlertContainerStyled = styled.footer<ContainerProps>`

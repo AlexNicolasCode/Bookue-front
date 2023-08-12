@@ -7,6 +7,7 @@ const globalColors = {
     field: '#f9f9f9',
     placeholder: '#535353',
     succeds: '#50f719',
+    warn: '#f7dd19',
 }
 
 export { globalColors }
