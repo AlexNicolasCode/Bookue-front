@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState } from "react"
+import { ReactNode, useEffect, useMemo, useState } from "react"
 
 import { Alert } from "@/presentation/components"
 import { AlertContext } from "./context"
@@ -11,6 +11,7 @@ type AlertProviderProps = {
 export const AlertProvider = ({ children }: AlertProviderProps) => {
     const [alert, setAlert] = useState<AlertProps>() 
     const [isActiveAlert, setIsActiveAlert] = useState<boolean>(false)
+    const isValidAlertState = useMemo(() => alert && alert.text && alert.type, [alert])
     
     useEffect(() => {
         if (isActiveAlert) {
@@ -25,6 +26,7 @@ export const AlertProvider = ({ children }: AlertProviderProps) => {
     }, [alert])
 
     const renderAlert = (): JSX.Element => {
+        if (!isValidAlertState) return
         return (
             <Alert isActive={isActiveAlert} type={alert.type}>
                 {alert.text}
@@ -36,9 +38,9 @@ export const AlertProvider = ({ children }: AlertProviderProps) => {
         <AlertContext.Provider value={{
             setAlert,
             setIsActiveAlert,
-            renderAlert,
         }}>
             {children}
+            {isActiveAlert && renderAlert()}
         </AlertContext.Provider>
     )
 }
