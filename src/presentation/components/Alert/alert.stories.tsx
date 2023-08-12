@@ -6,9 +6,18 @@ export default {
   tags: ['autodocs'],
 };
 
-export const Default = {
+export const Error = {
   args: {
     children: 'Testing this alert!',
     isActive: true,
+    type: 'error',
+  }
+}
+
+export const Succeds = {
+  args: {
+    children: 'Testing this alert!',
+    isActive: true,
+    type: 'succeds',
   }
 }
