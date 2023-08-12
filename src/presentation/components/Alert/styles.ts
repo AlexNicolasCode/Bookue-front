@@ -9,8 +9,8 @@ const popup = keyframes`
 `
 
 const popout = keyframes`
-    100% { opacity: 1; transform: translateY(10rem) }
-    0% { opacity: 0; transform: translateY(0) }
+    0% { opacity: 1; transform: translateY(0) }
+    100% { opacity: 0; transform: translateY(10rem) }
 `
 
 const AlertStyled = styled.p`
