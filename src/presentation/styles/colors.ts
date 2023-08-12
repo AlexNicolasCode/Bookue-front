@@ -6,6 +6,7 @@ const globalColors = {
     dark: '#0c0c0c',
     field: '#f9f9f9',
     placeholder: '#535353',
+    succeds: '#50f719',
 }
 
 export { globalColors }
