@@ -90,7 +90,7 @@ function Register() {
             return { field, error }
         })
         const firstError = errorList.find((error) => error.error !== undefined)
-        if (firstError.error) {
+        if (firstError && firstError.error) {
             setWrongFields(firstError.field)
             return firstError.error
         } 
