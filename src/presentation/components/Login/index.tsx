@@ -4,11 +4,12 @@ import { useRouter } from "next/router";
 import { makeCookieManagerAdapter } from "@/main/factory/cookie";
 import { makeLoginValidation } from "@/main/factory/validation";
 import { makeRemoteAuthentication } from "@/main/factory/usecases";
+import { useAlert } from "@/presentation/hook";
+import { AlertType } from "@/presentation/contexts";
 import { 
     Form,
     Logo,
     Input,
-    Alert,
     SubmitButton,
 } from "@/presentation/components";
 
@@ -28,7 +29,7 @@ type UserFormProps = {
 
 export function Login() {
     const router = useRouter()
-    const [alert, setAlert] = useState<string>("")
+    const { setNewAlert } = useAlert()
     const [userForm, setUserForm] = useState<UserFormProps>({
         email: {
             isWrongFill: false,
@@ -82,7 +83,7 @@ export function Login() {
         try {
             const error = validateForm()
             if (error) {
-                setAlert(error)
+                setNewAlert({ text: error, type: AlertType.error })
                 return
             }
             const remoteAuthentication = makeRemoteAuthentication()
@@ -101,15 +102,12 @@ export function Login() {
             if (error.message.includes('email')) {
                 setWrongFields(error.message)
             }
-            setAlert(error.message)
+            setNewAlert(error.message)
         }
     }
 
     const alertUserNotFound = () => {
-        setAlert("User not found!")
-        setTimeout(() => {
-            setAlert("")
-        }, 5000)
+        setNewAlert({ text: "User not found!", type: AlertType.error })
     }
 
     const setJwtLocaly = async (accessToken: string): Promise<void> => {
@@ -144,13 +142,6 @@ export function Login() {
                     value={userForm.password.text}
                     testId="sign-in-password"
                 />
-
-                {
-                    alert.length > 0 && 
-                    <Alert testId="sign-up-alert">
-                        {alert}
-                    </Alert>
-                }
 
                 <SubmitButton text={'Login'} testId="sign-in-submit-form"/>
             </Form>
