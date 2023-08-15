@@ -15,15 +15,16 @@ import {
 
 import { LoginStyled } from "./styles";
 
+type FieldNames = 'email' | 'password'
 
 type UserFormProps = {
-    email: {
+    [field in FieldNames]: {
+        fieldName: FieldNames
         isWrongFill: boolean
         text: string
-    }
-    password: {
-        isWrongFill: boolean
-        text: string
+        placeholder: string
+        type: FieldNames
+        testId: string
     }
 }
 
@@ -33,21 +34,29 @@ export function Login() {
 
     const [userForm, setUserForm] = useState<UserFormProps>({
         email: {
+            fieldName: "email",
+            type: "email",
+            placeholder: "email",
             isWrongFill: false,
-            text: ""
+            text: "",
+            testId: "sign-in-email",
         },
         password: {
+            fieldName: "password",
+            type: "password",
+            placeholder: "password",
             isWrongFill: false,
-            text: ""
+            text: "",
+            testId: "sign-in-password"
         },
     })
-    const fieldNames = Object.keys(userForm)
+    const fieldNames = Object.keys(userForm) as FieldNames[]
     
     const setField = (field, text: string) => setUserForm({ 
         ...userForm,
         [field]: {
-            isWrongFill: userForm[field].isWrongFill,
-            text: text
+            ...userForm[field],
+            text: text,
         },
     })
 
@@ -137,30 +146,28 @@ export function Login() {
         router.push("/")
     }
 
+    const renderFormFields = () => {
+        const fields = fieldNames.map((field: FieldNames, index: number) => (
+            <Input 
+                type={userForm[field].type}
+                placeholder={userForm[field].placeholder}
+                setState={setField}
+                field={userForm[field].fieldName}
+                isWrongFill={userForm[field].isWrongFill}
+                testId={userForm[field].testId}
+                value={userForm[field].text}
+                key={index}
+            />
+        ))
+        return <>{fields}</>
+    }
+
     return (
         <LoginStyled>
             <Logo/>
 
             <Form onSubmit={handleSubmit}>
-                <Input 
-                    type="email"
-                    placeholder="email"
-                    setState={setField}
-                    field={"email"}
-                    isWrongFill={userForm.email.isWrongFill}
-                    value={userForm.email.text}
-                    testId="sign-in-email"
-                />
-                <Input 
-                    type="password"
-                    placeholder="password"
-                    setState={setField}
-                    field={"password"}
-                    isWrongFill={userForm.password.isWrongFill}
-                    value={userForm.password.text}
-                    testId="sign-in-password"
-                />
-
+                {renderFormFields()}
                 <SubmitButton text={'Login'} testId="sign-in-submit-form"/>
             </Form>
         </LoginStyled>
