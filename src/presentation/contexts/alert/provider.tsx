@@ -9,10 +9,25 @@ type AlertProviderProps = {
 }
 
 export const AlertProvider = ({ children }: AlertProviderProps) => {
-    const [alerts, setAlerts] = useState<AlertProps[]>([]) 
+    const [alerts, setAlerts] = useState<AlertProps[]>([])
 
     const setNewAlert = (alert: AlertProps): void => {
-        setAlerts([...alerts, alert])
+        const hasEqualAlert = alerts.some(
+            (alertMapped) =>
+            alertMapped.text === alert.text && alertMapped.type === alert.type
+        );
+        if (!hasEqualAlert) {
+            setAlerts([...alerts, alert])
+            setAlertTimeout(alert)
+        }
+    }
+
+    const setAlertTimeout = (alert: AlertProps): void => {
+        const animationTime = 15000
+        setTimeout(() => {
+            const filteredAlerts = alerts.filter((alertMapped) => alertMapped != alert);
+            setAlerts(filteredAlerts)
+        }, animationTime)
     }
 
     const renderAlert = (alert: AlertProps, key: number): JSX.Element => {
