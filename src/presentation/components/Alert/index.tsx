@@ -1,4 +1,4 @@
-import { AlertContainerStyled, AlertStyled } from "./styles";
+import { AlertContainerStyled, AlertFooterStyled, AlertStyled } from "./styles";
 
 type AlertProps = {
     children: string
@@ -8,11 +8,13 @@ type AlertProps = {
 
 function Alert({ children, type, testId }: AlertProps) {
     return (
-        <AlertContainerStyled type={type}>
-            <AlertStyled data-test-id={testId}>
-                {children}
-            </AlertStyled>
-        </AlertContainerStyled>
+        <AlertFooterStyled>
+            <AlertContainerStyled type={type}>
+                <AlertStyled data-test-id={testId}>
+                    {children}
+                </AlertStyled>
+            </AlertContainerStyled>
+        </AlertFooterStyled>
     )
 }
 

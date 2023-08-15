@@ -13,7 +13,7 @@ const backgroundColorMapper = {
     warn: globalColors.warn,
 }
 
-export const AlertContainerStyled = styled.footer<ContainerProps>`
+export const AlertContainerStyled = styled.section<ContainerProps>`
     animation-name: ${popup};
     animation-duration: 15s;
     animation-iteration-count: 1;
@@ -23,7 +23,6 @@ export const AlertContainerStyled = styled.footer<ContainerProps>`
     padding: 0.25rem 1rem;
     position: fixed;
     bottom: 1rem;
-    right: 1rem;
     width: 70%;
     z-index: 1000;
 `
