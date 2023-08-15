@@ -41,6 +41,7 @@ export function Login() {
             text: ""
         },
     })
+    const fieldNames = Object.keys(userForm)
     
     const setField = (field, text: string) => setUserForm({ 
         ...userForm,
@@ -50,34 +51,49 @@ export function Login() {
         },
     })
 
+    const getFieldsTexts = () => {
+        const fieldTexts = {}
+        fieldNames.forEach((fieldName: string) => fieldTexts[fieldName] = userForm[fieldName].text)
+        return fieldTexts
+    }
 
     const validateForm = (): string => {
-        const validation = makeLoginValidation()
-        const emailValidationError = validation.validate('email', { email: userForm.email.text })
-        const passwordValidationError = validation.validate('password', { password: userForm.password.text })
-        setWrongFields(emailValidationError, passwordValidationError)
-        return emailValidationError || passwordValidationError
+        const fieldTexts = getFieldsTexts()
+        const validator = makeLoginValidation()
+        const errorList = fieldNames.map((field: string) => {
+            const error = validator.validate(
+                field,
+                fieldTexts,
+            )
+            return { field, error }
+        })
+        const firstError = errorList.find((error) => error.error !== undefined)
+        if (firstError && firstError.error) {
+            setWrongFields(firstError.field)
+            return firstError.error
+        } 
     }
 
-    const setWrongFields = (
-        emailValidationError?: string, 
-        passwordValidationError?: string
-    ) => {
-        if (emailValidationError || passwordValidationError) {
-            setUserForm({
-                email: {
-                    isWrongFill: emailValidationError ? true : false,
-                    text: userForm.email.text,
-                },
-                password: {
-                    isWrongFill: passwordValidationError ? true : false,
-                    text: userForm.password.text,
-                },
-            })
-        }
+    const setWrongFields = (field: string) => {
+        const cleanUserForm = getCleanUserForm()
+        setUserForm({
+            ...cleanUserForm,
+            [field]: {
+                ...cleanUserForm[field],
+                isWrongFill: true,
+            },
+        })
     }
 
-    const cleanWrongField = (): void => setWrongFields()
+    const getCleanUserForm = () => {
+        let cleannedUserForm: UserFormProps = { ...userForm }
+        fieldNames.forEach((fieldName) => {
+            if (cleannedUserForm[fieldName].isWrongFill) {
+                cleannedUserForm[fieldName].isWrongFill = false
+            }
+        })
+        return cleannedUserForm
+    }
     
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
@@ -92,7 +108,6 @@ export function Login() {
                 email: userForm.email.text,
                 password: userForm.password.text,
             })
-            cleanWrongField()
             if (!account) {
                 alertUserNotFound()
                 return
@@ -101,7 +116,9 @@ export function Login() {
             goToFeedPage()
         } catch (error) {
             if (error.message.includes('email')) {
-                setWrongFields(error.message)
+                setWrongFields('email')
+                setNewAlert({ text: error.message, type: AlertType.warn })
+                return
             }
             setNewAlert({ text: "Internal server Error", type: AlertType.error })
         }
