@@ -3,8 +3,7 @@ import { Dispatch, createContext } from "react";
 import { AlertProps } from "./type";
 
 type AlertContextData = {
-    setAlert: Dispatch<AlertProps>
-    setIsActiveAlert: Dispatch<boolean>
+    setNewAlert: Dispatch<AlertProps>
 }
 
 export const AlertContext = createContext({} as AlertContextData)
