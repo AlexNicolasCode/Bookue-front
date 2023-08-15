@@ -4,6 +4,9 @@ import { FormEvent, useState } from "react"
 import { makeRemoteAddAccount } from "@/main/factory/usecases"
 import { makeCookieManagerAdapter } from "@/main/factory/cookie"
 import { makeRegisterValidation } from "@/main/factory/validation"
+import { useAlert } from "@/presentation/hook"
+import { AlertType } from "@/presentation/contexts"
+
 import {
     Form,
     Input,
@@ -30,9 +33,9 @@ type RegisterFormProps = {
 
 function Register() {
     const router = useRouter()
-    
+    const { setNewAlert } = useAlert()
+
     const fieldNames: FieldNames[] = ['name', 'email', 'password', 'passwordConfirmation']
-    const [alert, setAlert] = useState<string>("")
     const [userForm, setUserForm] = useState<RegisterFormProps>({
         name: {
             fieldName: "name",
@@ -106,7 +109,7 @@ function Register() {
         try {
             const error = validateForm()
             if (error) {
-                setAlert(error)
+                setNewAlert({ text: error, type: AlertType.error })
                 return
             }
             const remoteAddAccount = makeRemoteAddAccount()
@@ -122,7 +125,7 @@ function Register() {
             if (error.message.includes('email')) {
                 setWrongFields('email', error.message)
             }
-            setAlert(error.message)
+            setNewAlert({ text: 'Internal Server Error', type: AlertType.error })
         }
     }
 
@@ -150,21 +153,12 @@ function Register() {
         ))
         return <>{fields}</>
     }
-
-    const renderAlert = () => {
-        if (alert.length > 0) {
-            return <Alert testId="sign-up-alert">
-                {alert}                
-            </Alert>
-        }
-    }
     
     return (
         <RegisterStyled>
             <Logo/>
             <Form onSubmit={handleSubmit}>
                 {renderFormFields()}
-                {renderAlert()}
                 <SubmitButton text={'Register'} testId="sign-up-submit-form"/>
             </Form>
         </RegisterStyled>
