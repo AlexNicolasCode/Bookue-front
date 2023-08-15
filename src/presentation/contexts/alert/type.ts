@@ -1,7 +1,7 @@
 export enum AlertType {
-    error = 'alert',
+    error = 'error',
     warn = 'warn',
-    succeds = 'warn',
+    succeds = 'succeds',
 }
 
 export type AlertProps = {
