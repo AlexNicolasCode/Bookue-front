@@ -12,7 +12,7 @@ const InputStyled = styled.input`
     width: 70%;
     height: 40px;
     padding: 0 1rem;
-    border: ${(props: InputStyledProps) => props.isWrongFill && `1px ${globalColors.warn} solid` };
+    border: ${(props: InputStyledProps) => props.isWrongFill && `1px ${globalColors.alert} solid` };
     
     ::placeholder {
         color: ${globalColors.placeholder};
