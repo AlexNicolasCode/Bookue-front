@@ -30,6 +30,7 @@ type UserFormProps = {
 export function Login() {
     const router = useRouter()
     const { setNewAlert } = useAlert()
+
     const [userForm, setUserForm] = useState<UserFormProps>({
         email: {
             isWrongFill: false,
@@ -102,7 +103,7 @@ export function Login() {
             if (error.message.includes('email')) {
                 setWrongFields(error.message)
             }
-            setNewAlert(error.message)
+            setNewAlert({ text: "Internal server Error", type: AlertType.error })
         }
     }
 
