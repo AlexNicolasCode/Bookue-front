@@ -1,10 +1,9 @@
 import styled from "styled-components"
 
 import { globalColors } from "@/presentation/styles/colors"
-import { popout, popup } from "./animation"
+import { popup } from "./animation"
 
 type ContainerProps = {
-    isActive: boolean
     type: string
 }
 
@@ -15,10 +14,16 @@ const backgroundColorMapper = {
 }
 
 export const AlertContainerStyled = styled.footer<ContainerProps>`
-    background-color: ${({ type }) => backgroundColorMapper[type]};
-    padding: 0.25rem 1rem;
-    border-radius: 7.5px;
-    animation-name: ${(props) => props.isActive ? popup : popout };
-    animation-duration: 1.5s;
+    animation-name: ${popup};
+    animation-duration: 15s;
     animation-iteration-count: 1;
+    background-color: ${({ type }) => backgroundColorMapper[type]};
+    border-radius: 5px;
+    text-align: center;
+    padding: 0.25rem 1rem;
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    width: 70%;
+    z-index: 1000;
 `
