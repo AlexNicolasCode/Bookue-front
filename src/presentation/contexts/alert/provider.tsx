@@ -1,4 +1,5 @@
 import { ReactNode, useEffect, useState } from "react"
+import { useRouter } from "next/router"
 
 import { Alert } from "@/presentation/components"
 import { AlertContext } from "./context"
@@ -9,7 +10,16 @@ type AlertProviderProps = {
 }
 
 export const AlertProvider = ({ children }: AlertProviderProps) => {
+    const router = useRouter()
     const [alerts, setAlerts] = useState<AlertProps[]>([])
+
+    useEffect(() => {
+        cleanAlerts()
+    }, [router.pathname])
+
+    const cleanAlerts = (): void => {
+        setAlerts([])
+    }
 
     const setNewAlert = (alert: AlertProps): void => {
         const hasEqualAlert = alerts.some(
