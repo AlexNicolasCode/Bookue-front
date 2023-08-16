@@ -33,7 +33,7 @@ export const AlertProvider = ({ children }: AlertProviderProps) => {
     }
 
     const setAlertTimeout = (alert: AlertProps): void => {
-        const animationTime = 15000
+        const animationTime = 14500
         setTimeout(() => {
             const filteredAlerts = alerts.filter((alertMapped) => alertMapped != alert);
             setAlerts(filteredAlerts)
