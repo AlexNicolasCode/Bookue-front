@@ -27,7 +27,7 @@ describe('Sign in screen', () => {
     cy.getByTestId('sign-in-email').type(fakeAccount.email)
     cy.getByTestId('sign-in-submit-form').click()
 
-    cy.getByTestId('sign-up-alert').contains('Required Field')
+    cy.getByTestId('alert-message').contains('Required Field')
   })
 
   it('Should show required field error when user not fill email field', () => {
@@ -36,7 +36,7 @@ describe('Sign in screen', () => {
     cy.getByTestId('sign-in-password').type(fakeAccount.password)
     cy.getByTestId('sign-in-submit-form').click()
 
-    cy.getByTestId('sign-up-alert').contains('Required Field')
+    cy.getByTestId('alert-message').contains('Required Field')
   })
 
   it('Should show invalid user error when user fill form with invalid data', () => {
@@ -51,7 +51,7 @@ describe('Sign in screen', () => {
     cy.getByTestId('sign-in-password').type(fakeAccount.password)
     cy.getByTestId('sign-in-submit-form').click()
 
-    cy.getByTestId('sign-up-alert').contains('Invalid user. Please, check if your email and password is correct.')
+    cy.getByTestId('alert-message').contains('Invalid user. Please, check if your email and password is correct.')
   })
 
   it('Should redirect to home screen on success', () => {
