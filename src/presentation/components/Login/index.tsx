@@ -15,15 +15,16 @@ import {
 
 import { LoginStyled } from "./styles";
 
+type FieldNames = 'email' | 'password'
 
 type UserFormProps = {
-    email: {
+    [field in FieldNames]: {
+        fieldName: FieldNames
         isWrongFill: boolean
         text: string
-    }
-    password: {
-        isWrongFill: boolean
-        text: string
+        placeholder: string
+        type: FieldNames
+        testId: string
     }
 }
 
@@ -33,51 +34,75 @@ export function Login() {
 
     const [userForm, setUserForm] = useState<UserFormProps>({
         email: {
+            fieldName: "email",
+            type: "email",
+            placeholder: "email",
             isWrongFill: false,
-            text: ""
+            text: "",
+            testId: "sign-in-email",
         },
         password: {
+            fieldName: "password",
+            type: "password",
+            placeholder: "password",
             isWrongFill: false,
-            text: ""
+            text: "",
+            testId: "sign-in-password"
         },
     })
+    const fieldNames = Object.keys(userForm) as FieldNames[]
     
     const setField = (field, text: string) => setUserForm({ 
         ...userForm,
         [field]: {
-            isWrongFill: userForm[field].isWrongFill,
-            text: text
+            ...userForm[field],
+            text: text,
         },
     })
 
+    const getFieldsTexts = () => {
+        const fieldTexts = {}
+        fieldNames.forEach((fieldName: string) => fieldTexts[fieldName] = userForm[fieldName].text)
+        return fieldTexts
+    }
 
     const validateForm = (): string => {
-        const validation = makeLoginValidation()
-        const emailValidationError = validation.validate('email', { email: userForm.email.text })
-        const passwordValidationError = validation.validate('password', { password: userForm.password.text })
-        setWrongFields(emailValidationError, passwordValidationError)
-        return emailValidationError || passwordValidationError
+        const fieldTexts = getFieldsTexts()
+        const validator = makeLoginValidation()
+        const errorList = fieldNames.map((field: string) => {
+            const error = validator.validate(
+                field,
+                fieldTexts,
+            )
+            return { field, error }
+        })
+        const firstError = errorList.find((error) => error.error !== undefined)
+        if (firstError && firstError.error) {
+            setWrongFields(firstError.field)
+            return firstError.error
+        } 
     }
 
-    const setWrongFields = (
-        emailValidationError?: string, 
-        passwordValidationError?: string
-    ) => {
-        if (emailValidationError || passwordValidationError) {
-            setUserForm({
-                email: {
-                    isWrongFill: emailValidationError ? true : false,
-                    text: userForm.email.text,
-                },
-                password: {
-                    isWrongFill: passwordValidationError ? true : false,
-                    text: userForm.password.text,
-                },
-            })
-        }
+    const setWrongFields = (field: string) => {
+        const cleanUserForm = getCleanUserForm()
+        setUserForm({
+            ...cleanUserForm,
+            [field]: {
+                ...cleanUserForm[field],
+                isWrongFill: true,
+            },
+        })
     }
 
-    const cleanWrongField = (): void => setWrongFields()
+    const getCleanUserForm = () => {
+        let cleannedUserForm: UserFormProps = { ...userForm }
+        fieldNames.forEach((fieldName) => {
+            if (cleannedUserForm[fieldName].isWrongFill) {
+                cleannedUserForm[fieldName].isWrongFill = false
+            }
+        })
+        return cleannedUserForm
+    }
     
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
@@ -92,7 +117,6 @@ export function Login() {
                 email: userForm.email.text,
                 password: userForm.password.text,
             })
-            cleanWrongField()
             if (!account) {
                 alertUserNotFound()
                 return
@@ -101,7 +125,9 @@ export function Login() {
             goToFeedPage()
         } catch (error) {
             if (error.message.includes('email')) {
-                setWrongFields(error.message)
+                setWrongFields('email')
+                setNewAlert({ text: error.message, type: AlertType.warn })
+                return
             }
             setNewAlert({ text: "Internal server Error", type: AlertType.error })
         }
@@ -120,30 +146,28 @@ export function Login() {
         router.push("/")
     }
 
+    const renderFormFields = () => {
+        const fields = fieldNames.map((field: FieldNames, index: number) => (
+            <Input 
+                type={userForm[field].type}
+                placeholder={userForm[field].placeholder}
+                setState={setField}
+                field={userForm[field].fieldName}
+                isWrongFill={userForm[field].isWrongFill}
+                testId={userForm[field].testId}
+                value={userForm[field].text}
+                key={index}
+            />
+        ))
+        return <>{fields}</>
+    }
+
     return (
         <LoginStyled>
             <Logo/>
 
             <Form onSubmit={handleSubmit}>
-                <Input 
-                    type="email"
-                    placeholder="email"
-                    setState={setField}
-                    field={"email"}
-                    isWrongFill={userForm.email.isWrongFill}
-                    value={userForm.email.text}
-                    testId="sign-in-email"
-                />
-                <Input 
-                    type="password"
-                    placeholder="password"
-                    setState={setField}
-                    field={"password"}
-                    isWrongFill={userForm.password.isWrongFill}
-                    value={userForm.password.text}
-                    testId="sign-in-password"
-                />
-
+                {renderFormFields()}
                 <SubmitButton text={'Login'} testId="sign-in-submit-form"/>
             </Form>
         </LoginStyled>

@@ -11,7 +11,6 @@ import {
     Form,
     Input,
     Logo,
-    Alert,
     SubmitButton,
 } from "@/presentation/components"
 
@@ -88,20 +87,34 @@ function Register() {
                 field,
                 fieldTexts,
             )
-            setWrongFields(field, error)
-            return error
+            return { field, error }
         })
-        return errorList.find((error: string) => error !== undefined)
+        const firstError = errorList.find((error) => error.error !== undefined)
+        if (firstError && firstError.error) {
+            setWrongFields(firstError.field)
+            return firstError.error
+        } 
     }
 
-    const setWrongFields = (field: string, error: string) => {
+    const setWrongFields = (field: string) => {
+        const cleanUserForm = getCleanUserForm()
         setUserForm({
-            ...userForm,
+            ...cleanUserForm,
             [field]: {
-                ...userForm[field],
-                isWrongFill: error ? true : false,
+                ...cleanUserForm[field],
+                isWrongFill: true,
             },
         })
+    }
+
+    const getCleanUserForm = () => {
+        let cleannedUserForm: RegisterFormProps = { ...userForm }
+        fieldNames.forEach((fieldName) => {
+            if (cleannedUserForm[fieldName].isWrongFill) {
+                cleannedUserForm[fieldName].isWrongFill = false
+            }
+        })
+        return cleannedUserForm
     }
 
     const handleSubmit = async (event: FormEvent<HTMLFormElement>): Promise<void> => {
@@ -123,7 +136,7 @@ function Register() {
             goToFeedPage()
         } catch (error) {
             if (error.message.includes('email')) {
-                setWrongFields('email', error.message)
+                setWrongFields('email')
             }
             setNewAlert({ text: 'Internal Server Error', type: AlertType.error })
         }
