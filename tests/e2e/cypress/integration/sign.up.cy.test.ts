@@ -30,7 +30,7 @@ describe('Sign up screen', () => {
     cy.getByTestId('sign-up-password-confirmation').type(faker.internet.password())
     cy.getByTestId('sign-up-submit-form').click()
 
-    cy.getByTestId('sign-up-alert').contains('Invalid password fields comparation')
+    cy.getByTestId('alert-message').contains('Invalid password fields comparation')
   })
   
   it('Should show password error alert when user not fill password confirmation field', () => {
@@ -41,7 +41,7 @@ describe('Sign up screen', () => {
     cy.getByTestId('sign-up-password').type(fakeAccount.password)
     cy.getByTestId('sign-up-submit-form').click()
 
-    cy.getByTestId('sign-up-alert').contains('Invalid password fields comparation')
+    cy.getByTestId('alert-message').contains('Invalid password fields comparation')
   })
 
   it('Should show required field error when user not fill name field', () => {
@@ -52,7 +52,7 @@ describe('Sign up screen', () => {
     cy.getByTestId('sign-up-password-confirmation').type(fakeAccount.password)
     cy.getByTestId('sign-up-submit-form').click()
 
-    cy.getByTestId('sign-up-alert').contains('Required Field')
+    cy.getByTestId('alert-message').contains('Required Field')
   })
 
   it('Should show required field error when user not fill email field', () => {
@@ -63,7 +63,7 @@ describe('Sign up screen', () => {
     cy.getByTestId('sign-up-password-confirmation').type(fakeAccount.password)
     cy.getByTestId('sign-up-submit-form').click()
 
-    cy.getByTestId('sign-up-alert').contains('Required Field')
+    cy.getByTestId('alert-message').contains('Required Field')
   })
 
   it('Should show required field error when user not fill password field', () => {
@@ -74,7 +74,7 @@ describe('Sign up screen', () => {
     cy.getByTestId('sign-up-password-confirmation').type(fakeAccount.password)
     cy.getByTestId('sign-up-submit-form').click()
 
-    cy.getByTestId('sign-up-alert').contains('Required Field')
+    cy.getByTestId('alert-message').contains('Required Field')
   })
 
   it('Should redirect to home screen on success', () => {
