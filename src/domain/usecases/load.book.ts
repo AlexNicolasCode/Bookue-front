@@ -1,7 +1,7 @@
 import { BookModel } from "../models"
 
 export interface LoadBook {
-    loadBook: (params: LoadBook.Params) => Promise<LoadBook.Result | []>
+    loadBook: (params: LoadBook.Params) => Promise<LoadBook.Result>
 }
 
 export namespace LoadBook {
