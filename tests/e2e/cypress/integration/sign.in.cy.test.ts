@@ -71,6 +71,15 @@ describe('Sign in screen', () => {
 
     cy.getByTestId('sign-in-email').type(fakeAccount.email)
     cy.getByTestId('sign-in-password').type(fakeAccount.password)
+    cy.task('startServer', {
+      baseUrl: '/graphql',
+      statusCode: 200,
+      body: {
+        data: {
+          loadAllBooks: []
+        }
+      }
+    })
     cy.getByTestId('sign-in-submit-form').click()
 
     cy.url().should('eq', Cypress.config().baseUrl + '/')

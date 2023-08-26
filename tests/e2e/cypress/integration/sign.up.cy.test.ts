@@ -15,7 +15,6 @@ describe('Sign up screen', () => {
   it('Should change to login page when click in login button', () => {
     cy.visit('/sign-up')
 
-
     cy.getByTestId('login-button').click()
 
     cy.url().should('include', '/login')
@@ -96,6 +95,15 @@ describe('Sign up screen', () => {
     cy.getByTestId('sign-up-email').type(fakeAccount.email)
     cy.getByTestId('sign-up-password').type(fakeAccount.password)
     cy.getByTestId('sign-up-password-confirmation').type(fakeAccount.password)
+    cy.task('startServer', {
+      baseUrl: '/graphql',
+      statusCode: 200,
+      body: {
+        data: {
+          loadAllBooks: []
+        }
+      }
+    })
     cy.getByTestId('sign-up-submit-form').click()
 
     cy.url().should('eq', Cypress.config().baseUrl + '/')
