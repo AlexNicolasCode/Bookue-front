@@ -1,5 +1,7 @@
 import { faker } from "@faker-js/faker"
 
+import { mockLoadAllBooksEndpoint } from "../utils/start.fake.server";
+
 describe('Sign up screen', () => {
   let fakeAccount;
 
@@ -14,7 +16,6 @@ describe('Sign up screen', () => {
   
   it('Should change to login page when click in login button', () => {
     cy.visit('/sign-up')
-
 
     cy.getByTestId('login-button').click()
 
@@ -98,6 +99,7 @@ describe('Sign up screen', () => {
     cy.getByTestId('sign-up-password-confirmation').type(fakeAccount.password)
     cy.getByTestId('sign-up-submit-form').click()
 
+    mockLoadAllBooksEndpoint()
     cy.url().should('eq', Cypress.config().baseUrl + '/')
   })
 })
