@@ -183,7 +183,7 @@ describe('Book details screen', () => {
             cy.getByTestId('book-details-currentPage-field-edit-mode').type(fakeText)
             cy.getByTestId('book-details-currentPage-field-edit-button').click()
             
-            cy.getByTestId('book-details-error-warn').should('have.text', fakeError)
+            cy.getByTestId('alert-message').should('have.text', fakeError)
         })
     })
   })
