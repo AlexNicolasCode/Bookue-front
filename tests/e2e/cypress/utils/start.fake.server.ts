@@ -20,3 +20,8 @@ export const mockLoadAllBooksEndpoint = (fakeBook?: Partial<BookModel>): void =>
     const fakeBookFallback = mockBook()
     mockCustomEndpoint({ loadAllBooks: fakeBook ? [fakeBook] : [fakeBookFallback] })
 }
+
+export const mockLoadBookEndpoint = (fakeBook?: Partial<BookModel>): void => {
+    const fakeBookFallback = mockBook()
+    mockCustomEndpoint({ loadBook: fakeBook ?? fakeBookFallback })
+}
