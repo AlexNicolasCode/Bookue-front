@@ -2,6 +2,7 @@ import { faker } from "@faker-js/faker"
 
 import { BookModel } from "../../../../src/domain/models"
 import { GreaterThanFieldError } from "../../../../src/validation/errors"
+import { mockCustomEndpoint, mockLoadBookEndpoint } from "../utils/start.fake.server"
 
 describe('Book details screen', () => {
   beforeEach(() => {
@@ -56,15 +57,7 @@ describe('Book details screen', () => {
     })
     
     it('Should render correct book fields on success', () => {
-        cy.task('startServer', {
-            baseUrl: '/graphql',
-            statusCode: 200,
-            body: {
-                data: {
-                    loadBook: fakeBook
-                }
-            }
-        })
+        mockLoadBookEndpoint(fakeBook)
         const fakeBookId = faker.datatype.uuid()
         cy.visit(`/book/${fakeBookId}/`)
 
@@ -76,15 +69,7 @@ describe('Book details screen', () => {
     })
     
     it('Should render correct book head title on success', () => {
-        cy.task('startServer', {
-            baseUrl: '/graphql',
-            statusCode: 200,
-            body: {
-                data: {
-                    loadBook: fakeBook
-                }
-            }
-        })
+        mockLoadBookEndpoint(fakeBook)
         const fakeBookId = faker.datatype.uuid()
         cy.visit(`/book/${fakeBookId}/`)
 
@@ -93,15 +78,7 @@ describe('Book details screen', () => {
     
     it('Should render correct book progress percentage', () => {
         fakeBook.pages = faker.datatype.number({ max: 200 })
-        cy.task('startServer', {
-            baseUrl: '/graphql',
-            statusCode: 200,
-            body: {
-                data: {
-                    loadBook: fakeBook
-                }
-            }
-        })
+        mockLoadBookEndpoint(fakeBook)
         const fakeBookId = faker.datatype.uuid()
         const bookProcessPercentage = String((fakeBook.currentPage * 100) / fakeBook.pages).substring(0, 4);
         cy.visit(`/book/${fakeBookId}/`)
@@ -110,25 +87,11 @@ describe('Book details screen', () => {
     })
     
     it('Should send to last screen when user click in back button', () => {
-        cy.task('startServer', {
-            baseUrl: '/graphql',
-            statusCode: 200,
-            body: {
-                data: {
-                    loadAllBooks: []
-                }
-            }
+        mockCustomEndpoint({
+            loadAllBooks: [fakeBook],
+            loadBook: fakeBook,
         })
         cy.visit('/')
-        cy.task('startServer', {
-            baseUrl: '/graphql',
-            statusCode: 200,
-            body: {
-                data: {
-                    loadBook: fakeBook
-                }
-            }
-        })
         const fakeBookId = faker.datatype.uuid()
         cy.visit(`/book/${fakeBookId}/`)
 
@@ -139,15 +102,7 @@ describe('Book details screen', () => {
 
     describe('edit mode flow', () => {
         it('Should edit correctly title field when user click in edit button, type something and click in edit button again', () => {
-            cy.task('startServer', {
-                baseUrl: '/graphql',
-                statusCode: 200,
-                body: {
-                    data: {
-                        loadBook: fakeBook
-                    }
-                }
-            })
+            mockLoadBookEndpoint()
             const fakeText = faker.random.words()
             const fakeBookId = faker.datatype.uuid()
             cy.visit(`/book/${fakeBookId}/`)
@@ -161,15 +116,7 @@ describe('Book details screen', () => {
         })
 
         it('Should edit correctly author field when user click in edit button, type something and click in edit button again', () => {
-            cy.task('startServer', {
-                baseUrl: '/graphql',
-                statusCode: 200,
-                body: {
-                    data: {
-                        loadBook: fakeBook
-                    }
-                }
-            })
+            mockLoadBookEndpoint()
             const fakeText = faker.random.words()
             const fakeBookId = faker.datatype.uuid()
             cy.visit(`/book/${fakeBookId}/`)
@@ -183,15 +130,7 @@ describe('Book details screen', () => {
         })
 
         it('Should edit correctly description field when user click in edit button, type something and click in edit button again', () => {
-            cy.task('startServer', {
-                baseUrl: '/graphql',
-                statusCode: 200,
-                body: {
-                    data: {
-                        loadBook: fakeBook
-                    }
-                }
-            })
+            mockLoadBookEndpoint()
             const fakeText = faker.random.words()
             const fakeBookId = faker.datatype.uuid()
             cy.visit(`/book/${fakeBookId}/`)
@@ -205,15 +144,7 @@ describe('Book details screen', () => {
         })
 
         it('Should edit correctly current page field when user click in edit button, type something and click in edit button again', () => {
-            cy.task('startServer', {
-                baseUrl: '/graphql',
-                statusCode: 200,
-                body: {
-                    data: {
-                        loadBook: fakeBook
-                    }
-                }
-            })
+            mockLoadBookEndpoint()
             const fakeText = `${fakeBook.pages - faker.datatype.number({ max: fakeBook.pages })}`
             const fakeBookId = faker.datatype.uuid()
             cy.visit(`/book/${fakeBookId}/`)
@@ -227,15 +158,7 @@ describe('Book details screen', () => {
         })
 
         it('Should edit correctly pages field when user click in edit button, type something and click in edit button again', () => {
-            cy.task('startServer', {
-                baseUrl: '/graphql',
-                statusCode: 200,
-                body: {
-                    data: {
-                        loadBook: fakeBook
-                    }
-                }
-            })
+            mockLoadBookEndpoint()
             const fakeText = faker.datatype.number().toString()
             const fakeBookId = faker.datatype.uuid()
             cy.visit(`/book/${fakeBookId}/`)
@@ -249,15 +172,7 @@ describe('Book details screen', () => {
         })
 
         it('Should show greater than error when user try save current page field greater than pages field', () => {
-            cy.task('startServer', {
-                baseUrl: '/graphql',
-                statusCode: 200,
-                body: {
-                    data: {
-                        loadBook: fakeBook
-                    }
-                }
-            })
+            mockLoadBookEndpoint()
             const fakeText = `${fakeBook.pages + faker.datatype.number()}`
             const fakeBookId = faker.datatype.uuid()
             const fakeError = new GreaterThanFieldError('current page', 'pages').message.toLowerCase()
@@ -268,7 +183,7 @@ describe('Book details screen', () => {
             cy.getByTestId('book-details-currentPage-field-edit-mode').type(fakeText)
             cy.getByTestId('book-details-currentPage-field-edit-button').click()
             
-            cy.getByTestId('book-details-error-warn').should('have.text', fakeError)
+            cy.getByTestId('alert-message').should('have.text', fakeError)
         })
     })
   })

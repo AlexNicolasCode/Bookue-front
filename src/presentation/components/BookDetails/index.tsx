@@ -1,6 +1,9 @@
 import { useMemo, useState } from "react";
 
 import { BookModel } from "@/domain/models";
+import { makeEditBookValidation } from "@/main/factory/validation";
+import { useAlert } from "@/presentation/hook";
+import { AlertType } from "@/presentation/contexts";
 
 import {
     ContainerStyled,
@@ -17,8 +20,6 @@ import {
     TextStyled,
     TitleStyled,
 } from "./styles";
-import { Alert } from "../Alert";
-import { makeEditBookValidation } from "@/main/factory/validation";
 
 type BookDetailsProps = {
     book: BookModel
@@ -39,8 +40,8 @@ const convertToCapitalizeCase = (text: string) => {
 }
 
 export function BookDetails({ book }: BookDetailsProps) {
+    const { setNewAlert } = useAlert()
     const fieldNames = Object.keys(book)
-    const [error, setError] = useState<string>()
     const [editableBook, setEditableBook] = useState<BookModel>(book)
     const [bookFields, setBookFields] = useState<BookField[]>(
         fieldNames.map((fieldName: string) => ({
@@ -98,23 +99,19 @@ export function BookDetails({ book }: BookDetailsProps) {
         const isSaveFieldFlow = bookField.isEditing
         if (isSaveFieldFlow) {
             const error = validateEditableField(fieldName)
-            if (error) return setError(error)
+            if (error) {
+                setNewAlert({
+                    text: convertToCapitalizeCase(error),
+                    type: AlertType.error,
+                })
+                return
+            }
         }
         setBookFieldByFieldName(fieldName, 'isEditing', !bookField.isEditing)
     }
 
-    const renderError = (error: string) => {
-        return (
-            <Alert testId="book-details-error-warn">
-                {convertToCapitalizeCase(error)}
-            </Alert>
-        )
-    }
-
     return (
         <ContainerStyled>
-            {error && renderError(error)}
-
             <HeaderStyled>
                 <TitleStyled data-test-id="book-details-title">{book.title}</TitleStyled>
 

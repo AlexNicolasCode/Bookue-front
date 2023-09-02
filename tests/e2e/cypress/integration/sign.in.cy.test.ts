@@ -1,5 +1,7 @@
 import { faker } from "@faker-js/faker";
 
+import { mockLoadAllBooksEndpoint } from "../utils/start.fake.server";
+
 const bookueApiUrl = "http://localhost:8000/graphql"
 
 describe('Sign in screen', () => {
@@ -73,6 +75,7 @@ describe('Sign in screen', () => {
     cy.getByTestId('sign-in-password').type(fakeAccount.password)
     cy.getByTestId('sign-in-submit-form').click()
 
+    mockLoadAllBooksEndpoint()
     cy.url().should('eq', Cypress.config().baseUrl + '/')
   })
 })
