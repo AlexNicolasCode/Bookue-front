@@ -96,22 +96,33 @@ describe('RemoteAddBook', () => {
     })
 
     test('should throw if HttpClient throws', async () => {
-        const { sut, httpClientSpy } = makeSut();
+        const { sut, httpClientSpy } = makeSut()
         jest.spyOn(httpClientSpy, 'request').mockImplementationOnce(throwError)
 
-        const promise = sut.add(fakeRequest);
+        const promise = sut.add(fakeRequest)
 
         await expect(promise).rejects.toThrow()
-    });
+    })
 
     test('should throw UnexpectedError if HttpClient return status code different 200', async () => {
-        const { sut, httpClientSpy } = makeSut();
+        const { sut, httpClientSpy } = makeSut()
         httpClientSpy.response = {
           statusCode: faker.internet.httpStatusCode({ types: ['clientError', 'serverError', 'informational'] }),
-        };
+        }
     
-        const response = sut.add(fakeRequest);
+        const response = sut.add(fakeRequest)
     
-        await expect(response).rejects.toThrow(new UnexpectedError());
-    });
+        await expect(response).rejects.toThrow(new UnexpectedError())
+    })
+
+    test('should return undefined on success', async () => {
+        const { sut, httpClientSpy } = makeSut()
+        httpClientSpy.response = {
+          statusCode: HttpStatusCode.ok,
+        }
+    
+        const response = await sut.add(fakeRequest)
+    
+        expect(response).toBeUndefined()
+    })
 })
