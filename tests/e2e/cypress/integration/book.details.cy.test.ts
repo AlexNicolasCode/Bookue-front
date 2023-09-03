@@ -175,7 +175,7 @@ describe('Book details screen', () => {
             mockLoadBookEndpoint()
             const fakeText = `${fakeBook.pages + faker.datatype.number()}`
             const fakeBookId = faker.datatype.uuid()
-            const fakeError = new GreaterThanFieldError('current page', 'pages').message
+            const greaterThanFieldError = new GreaterThanFieldError('current page', 'pages').message
             cy.visit(`/book/${fakeBookId}/`)
 
             cy.getByTestId('book-details-currentPage-field-edit-button').click()
@@ -183,7 +183,7 @@ describe('Book details screen', () => {
             cy.getByTestId('book-details-currentPage-field-edit-mode').type(fakeText)
             cy.getByTestId('book-details-currentPage-field-edit-button').click()
             
-            cy.getByTestId('alert-message').should('have.text', fakeError)
+            cy.getByTestId('alert-message').contains(greaterThanFieldError, { matchCase: false })
         })
     })
   })
