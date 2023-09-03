@@ -5,7 +5,7 @@ import { makeCookieManagerAdapter } from "@/main/factory/cookie";
 import { makeLoginValidation } from "@/main/factory/validation";
 import { makeRemoteAuthentication } from "@/main/factory/usecases";
 import { useAlert } from "@/presentation/hook";
-import { AlertType } from "@/presentation/contexts";
+import { AlertMessage, AlertType } from "@/presentation/contexts";
 import { 
     Form,
     Logo,
@@ -109,7 +109,7 @@ export function Login() {
         try {
             const error = validateForm()
             if (error) {
-                setNewAlert({ text: error, type: AlertType.error })
+                setNewAlert({ text: error, type: AlertType.Error })
                 return
             }
             const remoteAuthentication = makeRemoteAuthentication()
@@ -126,15 +126,15 @@ export function Login() {
         } catch (error) {
             if (error.message.includes('email')) {
                 setWrongFields('email')
-                setNewAlert({ text: error.message, type: AlertType.warn })
+                setNewAlert({ text: error.message, type: AlertType.Warn })
                 return
             }
-            setNewAlert({ text: "Internal server Error", type: AlertType.error })
+            setNewAlert({ text: AlertMessage.GenericError, type: AlertType.Error })
         }
     }
 
     const alertUserNotFound = () => {
-        setNewAlert({ text: "User not found!", type: AlertType.error })
+        setNewAlert({ text: "User not found!", type: AlertType.Error })
     }
 
     const setJwtLocaly = async (accessToken: string): Promise<void> => {

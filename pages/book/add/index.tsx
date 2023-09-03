@@ -4,7 +4,7 @@ import { useRouter } from "next/router"
 import { Form, Header, Input, SubmitButton } from "@/presentation/components"
 import { makeAddBookValidation } from "@/main/factory/validation"
 import { useAlert } from "@/presentation/hook"
-import { AlertType } from "@/presentation/contexts"
+import { AlertMessage, AlertType } from "@/presentation/contexts"
 import { makeRemoteAddBook } from "@/main/factory/usecases"
 import { AddBook } from "@/domain/usecases"
 
@@ -107,7 +107,7 @@ export default function AddBookPage() {
             const error = validateForm()
             if (error) {
                 activeFieldIsWrongFill(error.fieldName)
-                setNewAlert({ text: error.message, type: AlertType.error })
+                setNewAlert({ text: error.message, type: AlertType.Error })
                 return
             }
             const remoteAddBook = makeRemoteAddBook()
@@ -122,7 +122,7 @@ export default function AddBookPage() {
             if (error.message.includes('email')) {
                 activeFieldIsWrongFill('email')
             }
-            setNewAlert({ text: 'Internal Server Error', type: AlertType.error })
+            setNewAlert({ text: AlertMessage.GenericError, type: AlertType.Error })
         }
     }
 

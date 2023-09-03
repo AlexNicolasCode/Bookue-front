@@ -1,6 +1,7 @@
 import { faker } from "@faker-js/faker"
 
 import { GreaterThanFieldError, RequiredFieldError } from "../../../../src/validation/errors"
+import { AlertMessage } from "../../../../src/presentation/contexts"
 import { mockLoadAllBooksEndpoint } from "../utils/start.fake.server"
 
 describe('Add Book screen', () => {
@@ -88,7 +89,7 @@ describe('Add Book screen', () => {
       cy.getByTestId('book-add-description-field').type(fakeBook.description)
       cy.getByTestId('book-add-submit-form').click()
 
-      cy.getByTestId('alert-message').contains('internal server error', { matchCase: false })
+      cy.getByTestId('alert-message').contains(AlertMessage.GenericError, { matchCase: false })
     })
 
     it('Should return to home after save book', () => {

@@ -5,7 +5,7 @@ import { makeRemoteAddAccount } from "@/main/factory/usecases"
 import { makeCookieManagerAdapter } from "@/main/factory/cookie"
 import { makeRegisterValidation } from "@/main/factory/validation"
 import { useAlert } from "@/presentation/hook"
-import { AlertType } from "@/presentation/contexts"
+import { AlertMessage, AlertType } from "@/presentation/contexts"
 
 import {
     Form,
@@ -122,7 +122,7 @@ function Register() {
         try {
             const error = validateForm()
             if (error) {
-                setNewAlert({ text: error, type: AlertType.error })
+                setNewAlert({ text: error, type: AlertType.Error })
                 return
             }
             const remoteAddAccount = makeRemoteAddAccount()
@@ -138,7 +138,7 @@ function Register() {
             if (error.message.includes('email')) {
                 setWrongFields('email')
             }
-            setNewAlert({ text: 'Internal Server Error', type: AlertType.error })
+            setNewAlert({ text: AlertMessage.GenericError, type: AlertType.Error })
         }
     }
 
