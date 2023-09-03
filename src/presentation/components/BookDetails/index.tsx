@@ -99,7 +99,7 @@ export function BookDetails({ book }: BookDetailsProps) {
             if (error) {
                 setNewAlert({
                     text: error,
-                    type: AlertType.error,
+                    type: AlertType.Error,
                 })
                 return
             }
