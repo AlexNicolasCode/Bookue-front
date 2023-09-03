@@ -9,6 +9,5 @@ export namespace AddBook {
         description: string
         currentPage: string
         pages: string
-        accessToken: string
     }
 }
