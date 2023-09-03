@@ -4,6 +4,10 @@ import { Form, Header, Input, SubmitButton } from "@/presentation/components"
 import { makeAddBookValidation } from "@/main/factory/validation"
 import { useAlert } from "@/presentation/hook"
 import { AlertType } from "@/presentation/contexts"
+import { makeRemoteAddBook } from "@/main/factory/usecases"
+import { makeCookieManagerAdapter } from "@/main/factory/cookie"
+import { AddBook } from "@/domain/usecases"
+import { useRouter } from "next/router"
 
 type BookField = {
     fieldName: string
@@ -16,6 +20,7 @@ type BookField = {
 const fieldNames = ['title', 'author', 'currentPage', 'pages', 'description']
 
 export default function AddBookPage() {
+    const router = useRouter()
     const { setNewAlert } = useAlert()
     const [form, setForm] = useState<BookField[]>(
         fieldNames.map((fieldName) => ({
@@ -99,12 +104,22 @@ export default function AddBookPage() {
 
     const handleForm = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
-        const error = validateForm()
-        if (error) {
-            activeFieldIsWrongFill(error.fieldName)
-            setNewAlert({ text: error.message, type: AlertType.error })
-            return            
-        }
+        try {
+            const error = validateForm()
+            if (error) {
+                activeFieldIsWrongFill(error.fieldName)
+                setNewAlert({ text: error.message, type: AlertType.error })
+                return
+            }
+            const remoteAddBook = makeRemoteAddBook()
+            const fieldTexts = {} as AddBook.Params
+            form.forEach(
+                (field) =>
+                fieldTexts[field.fieldName] = field.value
+            )
+            await remoteAddBook.add(fieldTexts)
+            router.push('/')
+        } catch (error) {}
     }
 
     return (

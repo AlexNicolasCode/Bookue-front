@@ -1,6 +1,7 @@
 import { faker } from "@faker-js/faker"
 
 import { GreaterThanFieldError, RequiredFieldError } from "../../../../src/validation/errors"
+import { mockLoadAllBooksEndpoint } from "../utils/start.fake.server"
 
 describe('Add Book screen', () => {
   beforeEach(() => {
@@ -71,6 +72,23 @@ describe('Add Book screen', () => {
       cy.getByTestId('book-add-submit-form').click()
 
       cy.getByTestId('alert-message').contains(greaterThanFieldError, { matchCase: false })
+    })
+
+    it('Should return to home after save book', () => {
+      mockLoadAllBooksEndpoint()
+      cy.intercept(Cypress.env().baseApiURL, {
+          method: 'POST',
+        }, {
+        statusCode: 200,
+      }).as('request')
+      cy.visit('/book/add/')
+
+      cy.getByTestId('book-add-title-field').type(fakeBook.title)
+      cy.getByTestId('book-add-pages-field').type(fakeBook.pages)
+      cy.getByTestId('book-add-description-field').type(fakeBook.description)
+      cy.getByTestId('book-add-submit-form').click()
+
+      cy.url().should('eq', Cypress.config().baseUrl + '/')
     })
   })
 })
