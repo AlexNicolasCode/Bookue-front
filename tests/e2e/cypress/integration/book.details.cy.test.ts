@@ -175,7 +175,7 @@ describe('Book details screen', () => {
             mockLoadBookEndpoint()
             const fakeText = `${fakeBook.pages + faker.datatype.number()}`
             const fakeBookId = faker.datatype.uuid()
-            const fakeError = new GreaterThanFieldError('current page', 'pages').message.toLowerCase()
+            const fakeError = new GreaterThanFieldError('current page', 'pages').message
             cy.visit(`/book/${fakeBookId}/`)
 
             cy.getByTestId('book-details-currentPage-field-edit-button').click()
