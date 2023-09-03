@@ -74,6 +74,23 @@ describe('Add Book screen', () => {
       cy.getByTestId('alert-message').contains(greaterThanFieldError, { matchCase: false })
     })
 
+    it('Should show generic error alert when some problem happen when requests was did', () => {
+      mockLoadAllBooksEndpoint()
+      cy.intercept(Cypress.env().baseApiURL, {
+          method: 'POST',
+        }, {
+        statusCode: 500,
+      }).as('request')
+      cy.visit('/book/add/')
+
+      cy.getByTestId('book-add-title-field').type(fakeBook.title)
+      cy.getByTestId('book-add-pages-field').type(fakeBook.pages)
+      cy.getByTestId('book-add-description-field').type(fakeBook.description)
+      cy.getByTestId('book-add-submit-form').click()
+
+      cy.getByTestId('alert-message').contains('internal server error', { matchCase: false })
+    })
+
     it('Should return to home after save book', () => {
       mockLoadAllBooksEndpoint()
       cy.intercept(Cypress.env().baseApiURL, {

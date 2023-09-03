@@ -1,13 +1,12 @@
 import { FormEvent, useState } from "react"
+import { useRouter } from "next/router"
 
 import { Form, Header, Input, SubmitButton } from "@/presentation/components"
 import { makeAddBookValidation } from "@/main/factory/validation"
 import { useAlert } from "@/presentation/hook"
 import { AlertType } from "@/presentation/contexts"
 import { makeRemoteAddBook } from "@/main/factory/usecases"
-import { makeCookieManagerAdapter } from "@/main/factory/cookie"
 import { AddBook } from "@/domain/usecases"
-import { useRouter } from "next/router"
 
 type BookField = {
     fieldName: string
@@ -119,7 +118,12 @@ export default function AddBookPage() {
             )
             await remoteAddBook.add(fieldTexts)
             router.push('/')
-        } catch (error) {}
+        } catch (error) {
+            if (error.message.includes('email')) {
+                activeFieldIsWrongFill('email')
+            }
+            setNewAlert({ text: 'Internal Server Error', type: AlertType.error })
+        }
     }
 
     return (
