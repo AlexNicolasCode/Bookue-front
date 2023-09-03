@@ -4,6 +4,7 @@ import { useRouter } from "next/router"
 import { Alert } from "@/presentation/components"
 import { AlertContext } from "./context"
 import { AlertProps } from "./type"
+import { useTextConverter } from "@/presentation/hook"
 
 type AlertProviderProps = {
     children: ReactNode
@@ -11,6 +12,7 @@ type AlertProviderProps = {
 
 export const AlertProvider = ({ children }: AlertProviderProps) => {
     const router = useRouter()
+    const { normalizeContent } = useTextConverter()
     const [alerts, setAlerts] = useState<AlertProps[]>([])
 
     useEffect(() => {
@@ -44,7 +46,7 @@ export const AlertProvider = ({ children }: AlertProviderProps) => {
         if (!alert) return
         return (
             <Alert type={alert.type} key={key}>
-                {alert.text}
+                {normalizeContent(alert.text)}
             </Alert>
         )
     }
