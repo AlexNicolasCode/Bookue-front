@@ -38,7 +38,8 @@ describe('RemoteAddBook', () => {
     })
 
     test('should call HttpClient with correct values', async () => {
-        const { sut, url, httpClientSpy } = makeSut()
+        const { sut, url, cookieManagerAdapterSpy, httpClientSpy } = makeSut()
+        const accessToken = cookieManagerAdapterSpy.result
         httpClientSpy.response = {
             statusCode: HttpStatusCode.ok,
         }
@@ -49,7 +50,7 @@ describe('RemoteAddBook', () => {
         expect(httpClientSpy.method).toBe('post')
         expect(httpClientSpy.headers).toStrictEqual({
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${fakeRequest.accessToken}`,
+            'Authorization': `Bearer ${accessToken}`,
         })
     })
 
