@@ -4,6 +4,7 @@ import { AddBook } from '@/domain/usecases'
 import { UnexpectedError } from '@/domain/errors'
 import { HttpClient, HttpStatusCode } from '@/data/protocols/http'
 import { HttpClientSpy } from '../mocks'
+import { throwError } from '@/tests/main/domain/mocks/test.helpers'
 
 type HttpResponseAddBook = {
   data: {
@@ -52,6 +53,23 @@ export class RemoteAddBook implements AddBook {
   }
 }
 
+type SutTypes = {
+    sut: RemoteAddBook
+    url: string
+    httpClientSpy: HttpClientSpy
+}
+
+const makeSut = (): SutTypes => {
+    const url = faker.internet.url()
+    const httpClientSpy = new HttpClientSpy()
+    const sut = new RemoteAddBook(url, httpClientSpy)
+    return {
+        sut,
+        url,
+        httpClientSpy
+    }
+}
+
 describe('RemoteAddBook', () => {
     let fakeRequest
 
@@ -62,9 +80,7 @@ describe('RemoteAddBook', () => {
     })
 
     test('should call HttpClient with correct values', async () => {
-        const url = faker.internet.url()
-        const httpClientSpy = new HttpClientSpy()
-        const sut = new RemoteAddBook(url, httpClientSpy)
+        const { sut, url, httpClientSpy } = makeSut()
         httpClientSpy.response = {
             statusCode: HttpStatusCode.ok,
         }
@@ -78,4 +94,14 @@ describe('RemoteAddBook', () => {
             'Authorization': `Bearer ${fakeRequest.accessToken}`,
         })
     })
+
+    test('should throw if HttpClient throws', async () => {
+        const { sut, httpClientSpy } = makeSut();
+        jest.spyOn(httpClientSpy, 'request').mockImplementationOnce(throwError)
+
+        const promise = sut.add(fakeRequest);
+
+        await expect(promise).rejects.toThrow()
+    });
+
 })
