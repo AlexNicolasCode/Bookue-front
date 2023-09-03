@@ -36,5 +36,15 @@ describe('Add Book screen', () => {
 
       cy.getByTestId('alert-message').contains(requiredFieldError, { matchCase: false })
     })
+
+    it('Should see required field error alert when submit form without fill pages field', () => {
+      const requiredFieldError = new RequiredFieldError().message
+      cy.visit('/book/add/')
+
+      cy.getByTestId('book-add-title-field').type(fakeBook.title)
+      cy.getByTestId('book-add-submit-form').click()
+
+      cy.getByTestId('alert-message').contains(requiredFieldError, { matchCase: false })
+    })
   })
 })
