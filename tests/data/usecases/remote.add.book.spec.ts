@@ -104,4 +104,14 @@ describe('RemoteAddBook', () => {
         await expect(promise).rejects.toThrow()
     });
 
+    test('should throw UnexpectedError if HttpClient return status code different 200', async () => {
+        const { sut, httpClientSpy } = makeSut();
+        httpClientSpy.response = {
+          statusCode: faker.internet.httpStatusCode({ types: ['clientError', 'serverError', 'informational'] }),
+        };
+    
+        const response = sut.add(fakeRequest);
+    
+        await expect(response).rejects.toThrow(new UnexpectedError());
+    });
 })
