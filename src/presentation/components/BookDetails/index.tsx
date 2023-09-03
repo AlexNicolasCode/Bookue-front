@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 
 import { BookModel } from "@/domain/models";
 import { makeEditBookValidation } from "@/main/factory/validation";
-import { useAlert } from "@/presentation/hook";
+import { useAlert, useTextConverter } from "@/presentation/hook";
 import { AlertType } from "@/presentation/contexts";
 
 import {
@@ -37,12 +37,13 @@ type BookField = {
 const fieldNames = ['id', 'title', 'author', 'description', 'currentPage', 'pages', 'createdAt']
 
 export function BookDetails({ book }: BookDetailsProps) {
+    const { normalizeContent } = useTextConverter()
     const { setNewAlert } = useAlert()
     const [editableBook, setEditableBook] = useState<BookModel>(book)
     const [bookFields, setBookFields] = useState<BookField[]>(
         fieldNames.map((fieldName: string) => ({
             fieldName: fieldName,
-            label: fieldName,
+            label: normalizeContent(fieldName),
             value: editableBook[fieldName],
             isEditing: false,
             fieldType: 'text',
