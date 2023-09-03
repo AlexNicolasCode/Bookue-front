@@ -1,6 +1,7 @@
 import { faker } from "@faker-js/faker"
 
 import { mockLoadAllBooksEndpoint } from "../utils/start.fake.server";
+import { InvalidFieldError, RequiredFieldError } from "../../../../src/validation/errors";
 
 describe('Sign up screen', () => {
   let fakeAccount;
@@ -23,6 +24,7 @@ describe('Sign up screen', () => {
   })
 
   it('Should show password error alert when user fill password and password confirmation field with diferent values', () => {
+    const invalidPasswordComparationError = new InvalidFieldError('password fields comparation').message
     cy.visit('/sign-up')
 
     cy.getByTestId('sign-up-name').type(fakeAccount.name)
@@ -31,7 +33,7 @@ describe('Sign up screen', () => {
     cy.getByTestId('sign-up-password-confirmation').type(faker.internet.password())
     cy.getByTestId('sign-up-submit-form').click()
 
-    cy.getByTestId('alert-message').contains('Invalid password fields comparation')
+    cy.getByTestId('alert-message').contains(invalidPasswordComparationError, { matchCase: false })
   })
   
   it('Should show password error alert when user not fill password confirmation field', () => {
@@ -46,6 +48,7 @@ describe('Sign up screen', () => {
   })
 
   it('Should show required field error when user not fill name field', () => {
+    const requiredFieldError = new RequiredFieldError().message
     cy.visit('/sign-up')
 
     cy.getByTestId('sign-up-email').type(fakeAccount.email)
@@ -53,10 +56,11 @@ describe('Sign up screen', () => {
     cy.getByTestId('sign-up-password-confirmation').type(fakeAccount.password)
     cy.getByTestId('sign-up-submit-form').click()
 
-    cy.getByTestId('alert-message').contains('Required Field')
+    cy.getByTestId('alert-message').contains(requiredFieldError, { matchCase: false })
   })
 
   it('Should show required field error when user not fill email field', () => {
+    const requiredFieldError = new RequiredFieldError().message
     cy.visit('/sign-up')
 
     cy.getByTestId('sign-up-name').type(fakeAccount.name)
@@ -64,10 +68,11 @@ describe('Sign up screen', () => {
     cy.getByTestId('sign-up-password-confirmation').type(fakeAccount.password)
     cy.getByTestId('sign-up-submit-form').click()
 
-    cy.getByTestId('alert-message').contains('Required Field')
+    cy.getByTestId('alert-message').contains(requiredFieldError, { matchCase: false })
   })
 
   it('Should show required field error when user not fill password field', () => {
+    const requiredFieldError = new RequiredFieldError().message
     cy.visit('/sign-up')
 
     cy.getByTestId('sign-up-name').type(fakeAccount.name)
@@ -75,7 +80,7 @@ describe('Sign up screen', () => {
     cy.getByTestId('sign-up-password-confirmation').type(fakeAccount.password)
     cy.getByTestId('sign-up-submit-form').click()
 
-    cy.getByTestId('alert-message').contains('Required Field')
+    cy.getByTestId('alert-message').contains(requiredFieldError, { matchCase: false })
   })
 
   it('Should redirect to home screen on success', () => {
