@@ -6,137 +6,55 @@ import { makeCookieManagerAdapter } from "@/main/factory/cookie"
 import { makeRegisterValidation } from "@/main/factory/validation"
 import { useAlert } from "@/presentation/hook"
 import { AlertMessage, AlertType } from "@/presentation/contexts"
-
-import {
-    Form,
-    Input,
-    Logo,
-    SubmitButton,
-} from "@/presentation/components"
+import { Form, Logo } from "@/presentation/components"
 
 import { RegisterStyled } from "./styled"
 
-type FieldNames = 'name' | 'email' | 'password' | 'passwordConfirmation'
-type FieldTypes = 'name' | 'email' | 'password'
-
-type RegisterFormProps = {
-    [field in FieldNames]: {
-        fieldName: FieldNames
-        isWrongFill: boolean
-        text: string
-        placeholder: string
-        type: FieldTypes
-        testId: string
-    }
+type Form = {
+    name: string
+    email: string
+    password: string
+    passwordConfirmation: string
 }
 
-function Register() {
+export function Register() {
     const router = useRouter()
     const { setNewAlert } = useAlert()
+    const [wrongField, setWrongField] = useState<string>()
 
-    const fieldNames: FieldNames[] = ['name', 'email', 'password', 'passwordConfirmation']
-    const [userForm, setUserForm] = useState<RegisterFormProps>({
-        name: {
-            fieldName: "name",
-            isWrongFill: false,
-            text: "",
-            type: "name",
-            placeholder: "First name",
-            testId: "sign-up-name",
-        },
-        email: {
-            fieldName: "email",
-            isWrongFill: false,
-            text: "",
-            type: "email",
-            placeholder: "Email",
-            testId: "sign-up-email",
-        },
-        password: {
-            fieldName: "password",
-            isWrongFill: false,
-            text: "",
-            type: "password",
-            placeholder: "Password",
-            testId: "sign-up-password",
-        },
-        passwordConfirmation: {
-            fieldName: "passwordConfirmation",
-            isWrongFill: false,
-            text: "",
-            type: "password",
-            placeholder: "Password confirmation",
-            testId: "sign-up-password-confirmation",
-        },
-    })
-    
-    const setField = (field, text: string) => setUserForm({ 
-        ...userForm,
-        [field]: {
-            ...userForm[field],
-            text: text,
-        },
-    })
+    const formFields = ['name', 'email', 'password', 'passwordConfirmation']
 
-    const validateForm = (): string => {
-        const fieldTexts = {}
-        fieldNames.forEach((fieldName: string) => fieldTexts[fieldName] = userForm[fieldName].text)
+    const validateForm = (form: Form): string => {
         const validator = makeRegisterValidation()
-        const errorList = fieldNames.map((field: string) => {
+        const errorList = formFields.map((fieldName) => {
             const error = validator.validate(
-                field,
-                fieldTexts,
+                fieldName,
+                form,
             )
-            return { field, error }
+            return { fieldName, error }
         })
         const firstError = errorList.find((error) => error.error !== undefined)
         if (firstError && firstError.error) {
-            setWrongFields(firstError.field)
+            setWrongField(firstError.fieldName)
             return firstError.error
         } 
     }
 
-    const setWrongFields = (field: string) => {
-        const cleanUserForm = getCleanUserForm()
-        setUserForm({
-            ...cleanUserForm,
-            [field]: {
-                ...cleanUserForm[field],
-                isWrongFill: true,
-            },
-        })
-    }
-
-    const getCleanUserForm = () => {
-        let cleannedUserForm: RegisterFormProps = { ...userForm }
-        fieldNames.forEach((fieldName) => {
-            if (cleannedUserForm[fieldName].isWrongFill) {
-                cleannedUserForm[fieldName].isWrongFill = false
-            }
-        })
-        return cleannedUserForm
-    }
-
-    const handleSubmit = async (event: FormEvent<HTMLFormElement>): Promise<void> => {
+    const handleSubmit = async (event: FormEvent<HTMLFormElement>, form: Form): Promise<void> => {
         event.preventDefault()
         try {
-            const error = validateForm()
+            const error = validateForm(form)
             if (error) {
                 setNewAlert({ text: error, type: AlertType.Error })
                 return
             }
             const remoteAddAccount = makeRemoteAddAccount()
-            const { accessToken } = await remoteAddAccount.add({
-                name: userForm.name.text,
-                email: userForm.email.text,
-                password: userForm.password.text,
-                passwordConfirmation: userForm.passwordConfirmation.text,
-            })
+            const { accessToken } = await remoteAddAccount.add(form)
             await setJwtLocaly(accessToken)
             goToFeedPage()
         } catch (error) {
             if (error.message.includes('email')) {
-                setWrongFields('email')
+                setWrongField('email')
             }
             setNewAlert({ text: AlertMessage.GenericError, type: AlertType.Error })
         }
@@ -151,31 +69,14 @@ function Register() {
         router.push("/")
     }
 
-    const renderFormFields = () => {
-        const fields = fieldNames.map((field: FieldNames, index: number) => (
-            <Input 
-                type={userForm[field].type}
-                placeholder={userForm[field].placeholder}
-                setState={setField}
-                field={userForm[field].fieldName}
-                isWrongFill={userForm[field].isWrongFill}
-                testId={userForm[field].testId}
-                value={userForm[field].text}
-                key={index}
-            />
-        ))
-        return <>{fields}</>
-    }
-    
     return (
         <RegisterStyled>
             <Logo/>
-            <Form onSubmit={handleSubmit}>
-                {renderFormFields()}
-                <SubmitButton text={'Register'} testId="sign-up-submit-form"/>
-            </Form>
+            <Form
+                handleSubmit={handleSubmit}
+                fields={formFields}
+                wrongField={wrongField}
+            />
         </RegisterStyled>
     )
 }
-
-export { Register }
