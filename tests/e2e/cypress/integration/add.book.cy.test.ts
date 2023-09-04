@@ -34,7 +34,7 @@ describe('Add Book screen', () => {
       const requiredFieldError = new RequiredFieldError().message
       cy.visit('/book/add/')
 
-      cy.getByTestId('book-add-submit-form').click()
+      cy.getByTestId('submit-form-button').click()
 
       cy.getByTestId('alert-message').contains(requiredFieldError, { matchCase: false })
     })
@@ -43,8 +43,8 @@ describe('Add Book screen', () => {
       const requiredFieldError = new RequiredFieldError().message
       cy.visit('/book/add/')
 
-      cy.getByTestId('book-add-title-field').type(fakeBook.title)
-      cy.getByTestId('book-add-submit-form').click()
+      cy.getByTestId('title-field').type(fakeBook.title)
+      cy.getByTestId('submit-form-button').click()
 
       cy.getByTestId('alert-message').contains(requiredFieldError, { matchCase: false })
     })
@@ -53,9 +53,9 @@ describe('Add Book screen', () => {
       const requiredFieldError = new RequiredFieldError().message
       cy.visit('/book/add/')
 
-      cy.getByTestId('book-add-title-field').type(fakeBook.title)
-      cy.getByTestId('book-add-pages-field').type(fakeBook.pages)
-      cy.getByTestId('book-add-submit-form').click()
+      cy.getByTestId('title-field').type(fakeBook.title)
+      cy.getByTestId('pages-field').type(fakeBook.pages)
+      cy.getByTestId('submit-form-button').click()
 
       cy.getByTestId('alert-message').contains(requiredFieldError, { matchCase: false })
     })
@@ -65,11 +65,11 @@ describe('Add Book screen', () => {
       fakeBook.currentPage = fakeBook.pages + faker.datatype.number({ min: 1 })
       cy.visit('/book/add/')
 
-      cy.getByTestId('book-add-title-field').type(fakeBook.title)
-      cy.getByTestId('book-add-pages-field').type(fakeBook.pages)
-      cy.getByTestId('book-add-description-field').type(fakeBook.description)
-      cy.getByTestId('book-add-currentPage-field').type(fakeBook.currentPage)
-      cy.getByTestId('book-add-submit-form').click()
+      cy.getByTestId('title-field').type(fakeBook.title)
+      cy.getByTestId('pages-field').type(fakeBook.pages)
+      cy.getByTestId('description-field').type(fakeBook.description)
+      cy.getByTestId('currentPage-field').type(fakeBook.currentPage)
+      cy.getByTestId('submit-form-button').click()
 
       cy.getByTestId('alert-message').contains(greaterThanFieldError, { matchCase: false })
     })
@@ -84,10 +84,10 @@ describe('Add Book screen', () => {
       }).as('request')
       cy.visit('/book/add/')
 
-      cy.getByTestId('book-add-title-field').type(fakeBook.title)
-      cy.getByTestId('book-add-pages-field').type(fakeBook.pages)
-      cy.getByTestId('book-add-description-field').type(fakeBook.description)
-      cy.getByTestId('book-add-submit-form').click()
+      cy.getByTestId('title-field').type(fakeBook.title)
+      cy.getByTestId('pages-field').type(fakeBook.pages)
+      cy.getByTestId('description-field').type(fakeBook.description)
+      cy.getByTestId('submit-form-button').click()
 
       cy.getByTestId('alert-message').contains(genericError, { matchCase: false })
     })
@@ -101,10 +101,10 @@ describe('Add Book screen', () => {
       }).as('request')
       cy.visit('/book/add/')
 
-      cy.getByTestId('book-add-title-field').type(fakeBook.title)
-      cy.getByTestId('book-add-pages-field').type(fakeBook.pages)
-      cy.getByTestId('book-add-description-field').type(fakeBook.description)
-      cy.getByTestId('book-add-submit-form').click()
+      cy.getByTestId('title-field').type(fakeBook.title)
+      cy.getByTestId('pages-field').type(fakeBook.pages)
+      cy.getByTestId('description-field').type(fakeBook.description)
+      cy.getByTestId('submit-form-button').click()
 
       cy.url().should('eq', Cypress.config().baseUrl + '/')
     })

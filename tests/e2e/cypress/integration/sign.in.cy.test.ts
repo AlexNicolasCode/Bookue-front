@@ -29,8 +29,8 @@ describe('Sign in screen', () => {
     const requiredFieldError = new RequiredFieldError().message
     cy.visit('/login')
 
-    cy.getByTestId('sign-in-email').type(fakeAccount.email)
-    cy.getByTestId('sign-in-submit-form').click()
+    cy.getByTestId('email-field').type(fakeAccount.email)
+    cy.getByTestId('submit-form-button').click()
 
     cy.getByTestId('alert-message').contains(requiredFieldError, { matchCase: false })
   })
@@ -39,8 +39,8 @@ describe('Sign in screen', () => {
     const requiredFieldError = new RequiredFieldError().message
     cy.visit('/login')
     
-    cy.getByTestId('sign-in-password').type(fakeAccount.password)
-    cy.getByTestId('sign-in-submit-form').click()
+    cy.getByTestId('password-field').type(fakeAccount.password)
+    cy.getByTestId('submit-form-button').click()
 
     cy.getByTestId('alert-message').contains(requiredFieldError, { matchCase: false })
   })
@@ -54,9 +54,9 @@ describe('Sign in screen', () => {
       statusCode: 401,
     }).as('request')
     
-    cy.getByTestId('sign-in-email').type(fakeAccount.email)
-    cy.getByTestId('sign-in-password').type(fakeAccount.password)
-    cy.getByTestId('sign-in-submit-form').click()
+    cy.getByTestId('email-field').type(fakeAccount.email)
+    cy.getByTestId('password-field').type(fakeAccount.password)
+    cy.getByTestId('submit-form-button').click()
 
     cy.getByTestId('alert-message').contains(requiredFieldError, { matchCase: false })
   })
@@ -76,9 +76,9 @@ describe('Sign in screen', () => {
       }
     }).as('request')
 
-    cy.getByTestId('sign-in-email').type(fakeAccount.email)
-    cy.getByTestId('sign-in-password').type(fakeAccount.password)
-    cy.getByTestId('sign-in-submit-form').click()
+    cy.getByTestId('email-field').type(fakeAccount.email)
+    cy.getByTestId('password-field').type(fakeAccount.password)
+    cy.getByTestId('submit-form-button').click()
 
     mockLoadAllBooksEndpoint()
     cy.url().should('eq', Cypress.config().baseUrl + '/')
