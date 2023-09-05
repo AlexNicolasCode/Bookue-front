@@ -1,4 +1,3 @@
-import { globalColors } from "@/presentation/styles/colors"
 import styled from "styled-components"
 
 const LoginStyled = styled.section`
