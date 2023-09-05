@@ -30,7 +30,7 @@ describe('Sign up screen', () => {
     cy.getByTestId('name-field').type(fakeAccount.name)
     cy.getByTestId('email-field').type(fakeAccount.email)
     cy.getByTestId('password-field').type(fakeAccount.password)
-    cy.getByTestId('password-confirmation-field').type(faker.internet.password())
+    cy.getByTestId('passwordConfirmation-field').type(faker.internet.password())
     cy.getByTestId('submit-form-button').click()
 
     cy.getByTestId('alert-message').contains(invalidPasswordComparationError, { matchCase: false })
@@ -53,7 +53,7 @@ describe('Sign up screen', () => {
 
     cy.getByTestId('email-field').type(fakeAccount.email)
     cy.getByTestId('password-field').type(fakeAccount.password)
-    cy.getByTestId('password-confirmation-field').type(fakeAccount.password)
+    cy.getByTestId('passwordConfirmation-field').type(fakeAccount.password)
     cy.getByTestId('submit-form-button').click()
 
     cy.getByTestId('alert-message').contains(requiredFieldError, { matchCase: false })
@@ -65,7 +65,7 @@ describe('Sign up screen', () => {
 
     cy.getByTestId('name-field').type(fakeAccount.name)
     cy.getByTestId('password-field').type(fakeAccount.password)
-    cy.getByTestId('password-confirmation-field').type(fakeAccount.password)
+    cy.getByTestId('passwordConfirmation-field').type(fakeAccount.password)
     cy.getByTestId('submit-form-button').click()
 
     cy.getByTestId('alert-message').contains(requiredFieldError, { matchCase: false })
@@ -77,7 +77,7 @@ describe('Sign up screen', () => {
 
     cy.getByTestId('name-field').type(fakeAccount.name)
     cy.getByTestId('email-field').type(fakeAccount.email)
-    cy.getByTestId('password-confirmation-field').type(fakeAccount.password)
+    cy.getByTestId('passwordConfirmation-field').type(fakeAccount.password)
     cy.getByTestId('submit-form-button').click()
 
     cy.getByTestId('alert-message').contains(requiredFieldError, { matchCase: false })
@@ -101,7 +101,7 @@ describe('Sign up screen', () => {
     cy.getByTestId('name-field').type(fakeAccount.name)
     cy.getByTestId('email-field').type(fakeAccount.email)
     cy.getByTestId('password-field').type(fakeAccount.password)
-    cy.getByTestId('password-confirmation-field').type(fakeAccount.password)
+    cy.getByTestId('passwordConfirmation-field').type(fakeAccount.password)
     cy.getByTestId('submit-form-button').click()
 
     mockLoadAllBooksEndpoint()
