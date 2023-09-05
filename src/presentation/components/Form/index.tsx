@@ -4,19 +4,22 @@ import { Input, SubmitButton } from "@/presentation/components"
 
 import { FormStyled } from "./styles"
 
-type FormProps = {
+type FormProp = {
     [fieldName: string]: string
 }
 
 type FormComponentProps = {
-    handleSubmit: (event: FormEvent<HTMLFormElement>, form: FormProps) => Promise<void>
+    handleSubmit: (event: FormEvent<HTMLFormElement>, form: FormProp) => Promise<void>
     fields: string[]
     wrongField?: string
-    submitButtonText: string
+    submitButtonText: string | {
+        align: 'left' | 'right'
+        text: string
+    }
 }
 
 export const Form = ({ handleSubmit, fields, wrongField, submitButtonText }: FormComponentProps) => {
-    const [form, setForm] = useState<FormProps>({})
+    const [form, setForm] = useState<FormProp>({})
     const [formFields, setFormFields] = useState(
         fields.map((fieldName) => ({
             fieldName,
@@ -94,6 +97,10 @@ export const Form = ({ handleSubmit, fields, wrongField, submitButtonText }: For
         })
     }
 
+    const getSubmitButtonText = () => typeof submitButtonText === 'string' ? submitButtonText : submitButtonText.text
+    
+    const getSubmitButtonAlign = () => typeof submitButtonText !== 'string' ? submitButtonText.align : null
+
     const renderFields = (): JSX.Element => {
         const inputFields = formFields.map((field, index) => 
             <Input
@@ -111,7 +118,11 @@ export const Form = ({ handleSubmit, fields, wrongField, submitButtonText }: For
     }
 
     const renderSubmit = () => 
-        <SubmitButton text={submitButtonText} testId='submit-form-button'/>
+        <SubmitButton
+            align={getSubmitButtonAlign()}
+            text={getSubmitButtonText()}
+            testId='submit-form-button'
+        />
 
     return (
         <FormStyled onSubmit={(event) => handleSubmit(event, form)}>

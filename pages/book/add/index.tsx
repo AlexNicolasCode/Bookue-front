@@ -66,7 +66,10 @@ export default function AddBookPage() {
                     handleSubmit={handleSubmit}
                     fields={formFields}
                     wrongField={wrongField}
-                    submitButtonText='Save'
+                    submitButtonText={{
+                        align: 'right',
+                        text: 'Save',
+                    }}
                 />
             </MainContent>
         </>
