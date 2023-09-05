@@ -50,9 +50,7 @@ export function Header() {
     return (
         <HeaderStyled>
             {renderBackButton()}
-
             <Logo/>
-
             {renderAddBookButton()}
         </HeaderStyled>
     )

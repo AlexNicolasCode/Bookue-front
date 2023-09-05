@@ -1,7 +1,6 @@
 import { faker } from "@faker-js/faker"
 
 import { GreaterThanFieldError, RequiredFieldError } from "../../../../src/validation/errors"
-import { AlertMessage } from "../../../../src/presentation/contexts"
 import { mockLoadAllBooksEndpoint } from "../utils/start.fake.server"
 
 describe('Add Book screen', () => {
@@ -35,7 +34,7 @@ describe('Add Book screen', () => {
       const requiredFieldError = new RequiredFieldError().message
       cy.visit('/book/add/')
 
-      cy.getByTestId('book-add-submit-form').click()
+      cy.getByTestId('submit-form-button').click()
 
       cy.getByTestId('alert-message').contains(requiredFieldError, { matchCase: false })
     })
@@ -44,8 +43,8 @@ describe('Add Book screen', () => {
       const requiredFieldError = new RequiredFieldError().message
       cy.visit('/book/add/')
 
-      cy.getByTestId('book-add-title-field').type(fakeBook.title)
-      cy.getByTestId('book-add-submit-form').click()
+      cy.getByTestId('title-field').type(fakeBook.title)
+      cy.getByTestId('submit-form-button').click()
 
       cy.getByTestId('alert-message').contains(requiredFieldError, { matchCase: false })
     })
@@ -54,9 +53,9 @@ describe('Add Book screen', () => {
       const requiredFieldError = new RequiredFieldError().message
       cy.visit('/book/add/')
 
-      cy.getByTestId('book-add-title-field').type(fakeBook.title)
-      cy.getByTestId('book-add-pages-field').type(fakeBook.pages)
-      cy.getByTestId('book-add-submit-form').click()
+      cy.getByTestId('title-field').type(fakeBook.title)
+      cy.getByTestId('pages-field').type(fakeBook.pages)
+      cy.getByTestId('submit-form-button').click()
 
       cy.getByTestId('alert-message').contains(requiredFieldError, { matchCase: false })
     })
@@ -66,17 +65,18 @@ describe('Add Book screen', () => {
       fakeBook.currentPage = fakeBook.pages + faker.datatype.number({ min: 1 })
       cy.visit('/book/add/')
 
-      cy.getByTestId('book-add-title-field').type(fakeBook.title)
-      cy.getByTestId('book-add-pages-field').type(fakeBook.pages)
-      cy.getByTestId('book-add-description-field').type(fakeBook.description)
-      cy.getByTestId('book-add-currentPage-field').type(fakeBook.currentPage)
-      cy.getByTestId('book-add-submit-form').click()
+      cy.getByTestId('title-field').type(fakeBook.title)
+      cy.getByTestId('pages-field').type(fakeBook.pages)
+      cy.getByTestId('description-field').type(fakeBook.description)
+      cy.getByTestId('currentPage-field').type(fakeBook.currentPage)
+      cy.getByTestId('submit-form-button').click()
 
       cy.getByTestId('alert-message').contains(greaterThanFieldError, { matchCase: false })
     })
 
     it('Should show generic error alert when some problem happen when requests was did', () => {
       mockLoadAllBooksEndpoint()
+      const genericError = 'internal error. Please, try again later'
       cy.intercept(Cypress.env().baseApiURL, {
           method: 'POST',
         }, {
@@ -84,12 +84,12 @@ describe('Add Book screen', () => {
       }).as('request')
       cy.visit('/book/add/')
 
-      cy.getByTestId('book-add-title-field').type(fakeBook.title)
-      cy.getByTestId('book-add-pages-field').type(fakeBook.pages)
-      cy.getByTestId('book-add-description-field').type(fakeBook.description)
-      cy.getByTestId('book-add-submit-form').click()
+      cy.getByTestId('title-field').type(fakeBook.title)
+      cy.getByTestId('pages-field').type(fakeBook.pages)
+      cy.getByTestId('description-field').type(fakeBook.description)
+      cy.getByTestId('submit-form-button').click()
 
-      cy.getByTestId('alert-message').contains(AlertMessage.GenericError, { matchCase: false })
+      cy.getByTestId('alert-message').contains(genericError, { matchCase: false })
     })
 
     it('Should return to home after save book', () => {
@@ -101,10 +101,10 @@ describe('Add Book screen', () => {
       }).as('request')
       cy.visit('/book/add/')
 
-      cy.getByTestId('book-add-title-field').type(fakeBook.title)
-      cy.getByTestId('book-add-pages-field').type(fakeBook.pages)
-      cy.getByTestId('book-add-description-field').type(fakeBook.description)
-      cy.getByTestId('book-add-submit-form').click()
+      cy.getByTestId('title-field').type(fakeBook.title)
+      cy.getByTestId('pages-field').type(fakeBook.pages)
+      cy.getByTestId('description-field').type(fakeBook.description)
+      cy.getByTestId('submit-form-button').click()
 
       cy.url().should('eq', Cypress.config().baseUrl + '/')
     })
