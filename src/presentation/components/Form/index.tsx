@@ -37,6 +37,11 @@ export const Form = ({ handleSubmit, fields, wrongField }: FormComponentProps) =
             'email': 'Ex: bookue@gmail.com',
             'password': 'Ex: BookueLovePotato',
             'passwordConfirmation': 'Ex: BookueLovePotato',
+            'title': 'Ex: Welcome to the Bookue',
+            'author': 'Ex: Bookue Lispector',
+            'currentPage': 'Ex: 10',
+            'pages': 'Ex: 100',
+            'description': 'Ex: This is a Bookue book',
         }
         return placeholderMapper[fieldName]
     }
