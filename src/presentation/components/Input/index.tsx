@@ -6,6 +6,7 @@ type InputProps = {
     placeholder: string
     isWrongFill: boolean 
     setState: (field: string, text: string) => void
+    min?: number
     field: string
     testId?: string
     value: string
@@ -16,6 +17,7 @@ function InputComponent({
     placeholder,
     isWrongFill,
     setState,
+    min,
     field,
     testId,
     value,
@@ -26,6 +28,7 @@ function InputComponent({
             placeholder={placeholder}
             isWrongFill={isWrongFill}
             data-test-id={testId}
+            min={min}
             onChange={(event) => setState(field, event.target.value)}
             value={value}
         />
