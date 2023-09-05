@@ -12,9 +12,10 @@ type FormComponentProps = {
     handleSubmit: (event: FormEvent<HTMLFormElement>, form: FormProps) => Promise<void>
     fields: string[]
     wrongField?: string
+    submitButtonText: string
 }
 
-export const Form = ({ handleSubmit, fields, wrongField }: FormComponentProps) => {
+export const Form = ({ handleSubmit, fields, wrongField, submitButtonText }: FormComponentProps) => {
     const [form, setForm] = useState<FormProps>({})
     const [formFields, setFormFields] = useState(
         fields.map((fieldName) => ({
@@ -110,7 +111,7 @@ export const Form = ({ handleSubmit, fields, wrongField }: FormComponentProps) =
     }
 
     const renderSubmit = () => 
-        <SubmitButton text={'Save'} testId='submit-form-button'/>
+        <SubmitButton text={submitButtonText} testId='submit-form-button'/>
 
     return (
         <FormStyled onSubmit={(event) => handleSubmit(event, form)}>

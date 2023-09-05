@@ -76,6 +76,7 @@ export function Register() {
                 handleSubmit={handleSubmit}
                 fields={formFields}
                 wrongField={wrongField}
+                submitButtonText='Sign up'
             />
         </RegisterStyled>
     )

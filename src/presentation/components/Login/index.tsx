@@ -84,6 +84,7 @@ export function Login() {
                 handleSubmit={handleSubmit}
                 fields={formFields}
                 wrongField={wrongField}
+                submitButtonText='Sign in'
             />
         </LoginStyled>
     )
