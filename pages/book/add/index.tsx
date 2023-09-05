@@ -6,6 +6,7 @@ import { makeAddBookValidation } from "@/main/factory/validation"
 import { useAlert } from "@/presentation/hook"
 import { AlertMessage, AlertType } from "@/presentation/contexts"
 import { makeRemoteAddBook } from "@/main/factory/usecases"
+import { MainContent } from "@/presentation/components"
 
 type Form = {
     title: string
@@ -60,11 +61,14 @@ export default function AddBookPage() {
     return (
         <>
             <Header/>
-            <Form
-                handleSubmit={handleSubmit}
-                fields={formFields}
-                wrongField={wrongField}
-            />
+            <MainContent>
+                <Form
+                    handleSubmit={handleSubmit}
+                    fields={formFields}
+                    wrongField={wrongField}
+                    submitButtonText='Save'
+                />
+            </MainContent>
         </>
     )
 }
