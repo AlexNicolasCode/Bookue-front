@@ -8,8 +8,12 @@ export class GreaterThanEqualValidation implements FieldValidation {
     ) {}
   
     validate (input: object): Error {
-      return input[this.field] >= input[this.fieldToCompare] ?
-      null :
-      new GreaterThanFieldError(this.fieldToCompare, this.field)
+      const isValidTargetField = input[this.field] && input[this.field] !== ''
+      const isValidFieldToCompare = input[this.fieldToCompare] && input[this.fieldToCompare] !== ''
+      if (isValidTargetField && isValidFieldToCompare) {
+        return input[this.field] >= input[this.fieldToCompare] ?
+        null :
+        new GreaterThanFieldError(this.fieldToCompare, this.field)
+      }
     }
 }
