@@ -49,11 +49,11 @@ export const Form = ({ handleSubmit, fields, wrongField }: FormComponentProps) =
         }
         const isPasswordField = /password/.test(fieldNameLowCase)
         if (isPasswordField) {
-            return 'number'
+            return 'password'
         }
         const isEmailField = /email/.test(fieldNameLowCase)
         if (isEmailField) {
-            return 'number'
+            return 'email'
         }
         return 'text'
     }
