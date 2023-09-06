@@ -107,4 +107,14 @@ describe('Sign up screen', () => {
     mockLoadAllBooksEndpoint()
     cy.url().should('eq', Cypress.config().baseUrl + '/')
   })
+
+  it('Should show password when user click in show password icon', () => {
+    cy.visit('/sign-up')
+    const passwordField = cy.getByTestId('password-field')
+
+    passwordField.type(fakeAccount.password)
+    cy.getByTestId('password-icon-view').click()
+
+    passwordField.invoke('attr', 'type').should('eq', 'text')
+  })
 })
