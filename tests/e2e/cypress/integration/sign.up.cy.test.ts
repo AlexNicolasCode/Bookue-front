@@ -117,4 +117,14 @@ describe('Sign up screen', () => {
 
     passwordField.invoke('attr', 'type').should('eq', 'text')
   })
+
+  it('Should show password confirmation when user click in show password icon', () => {
+    cy.visit('/sign-up')
+    const passwordField = cy.getByTestId('passwordConfirmation-field')
+
+    passwordField.type(fakeAccount.password)
+    cy.getByTestId('passwordConfirmation-icon-view').click()
+
+    passwordField.invoke('attr', 'type').should('eq', 'text')
+  })
 })
