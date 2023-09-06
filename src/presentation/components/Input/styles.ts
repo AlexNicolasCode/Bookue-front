@@ -3,15 +3,20 @@ import styled from "styled-components";
 import { globalColors } from "@/presentation/styles/colors";
 
 type InputStyledProps = {
-    isWrongFill: boolean 
+    isWrongFill?: boolean 
+    isPasswordField?: boolean
 }
 
-const InputStyled = styled.input`
+export const InputStyled = styled.input`
     background-color: ${globalColors.field};
     border: none;
-    width: 70%;
     height: 40px;
-    padding: 0 1rem;
+    width: ${({ isPasswordField }: InputStyledProps) => 
+        isPasswordField ? '14rem' : '15rem'
+    };;
+    padding: ${({ isPasswordField }: InputStyledProps) => 
+        isPasswordField ? '0 0 0 1rem' : '0 1rem'
+    };
     border: ${(props: InputStyledProps) => props.isWrongFill && `1px ${globalColors.alert} solid` };
     
     ::placeholder {
@@ -19,6 +24,25 @@ const InputStyled = styled.input`
     }
 `
 
-export {
-    InputStyled
+type PasswordContainerStyledProps = {
+    isWrongFill: boolean
 }
+
+export const PasswordContainerStyled = styled.section`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: ${({ isWrongFill }: PasswordContainerStyledProps) =>
+        isWrongFill && `1px ${globalColors.alert} solid`
+    };
+`
+
+export const IconStyled = styled.i`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: ${globalColors.primary};
+    background-color: ${globalColors.field};
+    width: 2rem;
+    height: 40px;
+`

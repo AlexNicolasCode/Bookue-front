@@ -83,4 +83,25 @@ describe('Sign in screen', () => {
     mockLoadAllBooksEndpoint()
     cy.url().should('eq', Cypress.config().baseUrl + '/')
   })
+
+  it('Should show password when user click in show password icon', () => {
+    cy.visit('/login')
+    const passwordField = cy.getByTestId('password-field')
+
+    passwordField.type(fakeAccount.password)
+    cy.getByTestId('password-icon-view').click()
+
+    passwordField.invoke('attr', 'type').should('eq', 'text')
+  })
+  
+  it('Should hide password when user click in hide password icon', () => {
+    cy.visit('/login')
+    const passwordField = cy.getByTestId('password-field')
+    
+    cy.getByTestId('password-icon-view').click()
+    passwordField.type(fakeAccount.password)
+    cy.getByTestId('password-icon-view').click()
+
+    passwordField.invoke('attr', 'type').should('eq', 'password')
+  })
 })
