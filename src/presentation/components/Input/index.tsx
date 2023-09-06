@@ -2,9 +2,7 @@ import { memo, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
-import { globalColors } from "@/presentation/styles/colors";
-
-import { InputStyled } from "./styles";
+import { IconStyled, InputStyled, PasswordContainerStyled } from "./styles";
 
 type InputProps = {
     type: string
@@ -39,28 +37,44 @@ function InputComponent({
 
     const renderLateralIcon = () => {
         const icon = isShowingPassword ? faEyeSlash : faEye
-        return <FontAwesomeIcon
-            color={globalColors.primary}
-            icon={icon}
-            onClick={handlePasswordView}
-            data-test-id={`${fieldName}-icon-view`}
-        />
+        return (
+            <IconStyled onClick={handlePasswordView}>
+                <FontAwesomeIcon
+                    icon={icon}
+                    data-test-id={`${fieldName}-icon-view`}
+                />
+            </IconStyled>
+        )
     }
 
-    return (
-        <>
+    const renderPasswordInput = () => (
+        <PasswordContainerStyled isWrongFill={isWrongFill}>
             <InputStyled
                 type={fieldType.current}
                 placeholder={placeholder}
-                isWrongFill={isWrongFill}
                 data-test-id={testId}
                 min={min}
                 onChange={(event) => setState(fieldName, event.target.value)}
                 value={value}
+                isPasswordField={isPasswordField}
             />
-            {isPasswordField && renderLateralIcon()}
-        </>
+            {renderLateralIcon()}
+        </PasswordContainerStyled>
     )
+
+    const renderDefaultInput = () => (
+        <InputStyled
+            type={fieldType.current}
+            placeholder={placeholder}
+            isWrongFill={isWrongFill}
+            data-test-id={testId}
+            min={min}
+            onChange={(event) => setState(fieldName, event.target.value)}
+            value={value}
+        />
+    )
+
+    return isPasswordField ? renderPasswordInput() : renderDefaultInput()
 }
 
 const Input = memo(InputComponent)
