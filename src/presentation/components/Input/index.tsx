@@ -10,9 +10,9 @@ type InputProps = {
     type: string
     placeholder: string
     isWrongFill: boolean 
-    setState: (field: string, text: string) => void
+    setState: (fieldName: string, text: string) => void
     min?: number
-    field: string
+    fieldName: string
     testId?: string
     value: string
 }
@@ -23,14 +23,14 @@ function InputComponent({
     isWrongFill,
     setState,
     min,
-    field,
+    fieldName,
     testId,
     value,
 }: InputProps) {
     const [isShowingPassword, setIsShowingPassword] = useState<boolean>()
     const fieldType = useRef(type)
     
-    const isPasswordField = /password/.test(field)
+    const isPasswordField = /password/.test(fieldName)
 
     const handlePasswordView = () => {
         isShowingPassword ? fieldType.current = 'password' : fieldType.current = 'text'
@@ -43,7 +43,7 @@ function InputComponent({
             color={globalColors.primary}
             icon={icon}
             onClick={handlePasswordView}
-            data-test-id={`${field}-icon-view`}
+            data-test-id={`${fieldName}-icon-view`}
         />
     }
 
@@ -55,7 +55,7 @@ function InputComponent({
                 isWrongFill={isWrongFill}
                 data-test-id={testId}
                 min={min}
-                onChange={(event) => setState(field, event.target.value)}
+                onChange={(event) => setState(fieldName, event.target.value)}
                 value={value}
             />
             {isPasswordField && renderLateralIcon()}

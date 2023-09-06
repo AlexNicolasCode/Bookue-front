@@ -102,19 +102,19 @@ export const Form = ({ handleSubmit, fields, wrongField, submitButtonText }: For
     const getSubmitButtonAlign = () => typeof submitButtonText !== 'string' ? submitButtonText.align : null
 
     const renderFields = (): JSX.Element => {
-        const inputFields = formFields.map((field, index) => {
-            const fieldType = getFieldType(field.fieldName)
-            const fieldPlaceholder = getFieldPlaceholder(field.fieldName)
+        const inputFields = formFields.map(({ fieldName, isWrongFill }, index) => {
+            const fieldType = getFieldType(fieldName)
+            const fieldPlaceholder = getFieldPlaceholder(fieldName)
             const min = fieldType === 'number' ? 0 : null
             return <Input
                 type={fieldType}
                 placeholder={fieldPlaceholder}
                 setState={setFieldValue}
-                field={field.fieldName}
+                fieldName={fieldName}
                 min={min}
-                isWrongFill={field.isWrongFill}
-                testId={`${field.fieldName}-field`}
-                value={form[field.fieldName] ?? ''}
+                isWrongFill={isWrongFill}
+                testId={`${fieldName}-field`}
+                value={form[fieldName] ?? ''}
                 key={index}
             />
     })
