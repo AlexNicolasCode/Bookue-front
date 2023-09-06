@@ -93,4 +93,15 @@ describe('Sign in screen', () => {
 
     passwordField.invoke('attr', 'type').should('eq', 'text')
   })
+  
+  it('Should hide password when user click in hide password icon', () => {
+    cy.visit('/login')
+    const passwordField = cy.getByTestId('password-field')
+    
+    cy.getByTestId('password-icon-view').click()
+    passwordField.type(fakeAccount.password)
+    cy.getByTestId('password-icon-view').click()
+
+    passwordField.invoke('attr', 'type').should('eq', 'password')
+  })
 })
