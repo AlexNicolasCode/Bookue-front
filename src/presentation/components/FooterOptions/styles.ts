@@ -18,8 +18,14 @@ const defaultButtonStyles = css`
     margin: 0 0 0 1rem;
 `;
 
-export const DeleteModeOptionStyled = styled.button`
-    color: ${globalColors.gray};
+type DeleteModeOptionProps = {
+    isActive: boolean
+}
+
+export const DeleteModeOptionStyled = styled.button<DeleteModeOptionProps>`
+    color: ${({ isActive }) =>
+        isActive ? globalColors.alert : globalColors.gray
+    };
     ${defaultButtonStyles}
 `
 
