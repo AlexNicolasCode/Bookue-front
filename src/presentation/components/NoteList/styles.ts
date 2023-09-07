@@ -17,6 +17,12 @@ export const NoteStyled = styled.li`
     margin: 0 0 1rem 0;
 `
 
+export const OptionsStyled = styled.section`
+    display: flex;
+    justify-content: center;
+    width: 100%;
+`
+
 export const AddNoteOptionStyled = styled.button`
     color: ${globalColors.white};
     width: 2rem;

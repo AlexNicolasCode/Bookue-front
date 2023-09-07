@@ -3,13 +3,14 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons";
 
 import { NoteModel } from "@/domain/models";
 
-import { AddNoteOptionStyled, NoteListStyled, NoteStyled } from "./styles";
+import { AddNoteOptionStyled, NoteListStyled, NoteStyled, OptionsStyled } from "./styles";
 
 type NoteListProps = {
     notes: NoteModel[]
+    isActiveAddNoteButton: boolean
 }
 
-export function NoteList ({ notes }: NoteListProps) {
+export function NoteList ({ notes, isActiveAddNoteButton }: NoteListProps) {
     const getCuttedText = (text: string) => {
         const maxChar = 750
         if (text.length > maxChar) {
@@ -37,9 +38,13 @@ export function NoteList ({ notes }: NoteListProps) {
     return (
         <>
             {renderNoteList()}
-            <AddNoteOptionStyled>
-                <FontAwesomeIcon icon={faPlus}/>
-            </AddNoteOptionStyled>
+            {isActiveAddNoteButton && 
+                <OptionsStyled>
+                    <AddNoteOptionStyled>
+                        <FontAwesomeIcon icon={faPlus}/>
+                    </AddNoteOptionStyled>
+                </OptionsStyled>
+            }
         </>
     )
 }
