@@ -1,7 +1,7 @@
 import { GetServerSideProps } from "next";
 import { useMemo, useState } from "react";
 
-import { Header, MainContent, NoteList, OptionName } from "@/presentation/components";
+import { Header, MainContent, Modes, NoteList, OptionName } from "@/presentation/components";
 import { NoteModel } from "@/domain/models";
 import { FooterOptions } from "@/presentation/components";
 
@@ -11,6 +11,7 @@ type NotesPageProps = {
 
 export default function NotesPage({ notes }: NotesPageProps) {
     const [listedNotes, setListedNotes] = useState<NoteModel[]>(notes)
+    const [mode, setMode] = useState<Modes>(Modes.Default)
 
     const notesCount = notes.length
     const maxNotesBeforeHideAddBookButton = 3
@@ -24,12 +25,29 @@ export default function NotesPage({ notes }: NotesPageProps) {
         }
     }, [shouldHaveAddBookInNoteList])
 
+    const handleMode = (option: OptionName) => {
+        const modeMapper = {
+            [OptionName.DeleteMode]: () => setMode(mode !== Modes.DeleteMode ? Modes.DeleteMode : Modes.Default),
+            [OptionName.AddNote]: () => {},
+            [OptionName.RemoveNote]: () => {},
+        }
+        modeMapper[option]()
+    }
+
     return (
         <>
             <Header/>
             <MainContent>
-                <NoteList notes={listedNotes} isActiveAddNoteButton={shouldHaveAddBookInNoteList}/>
-                <FooterOptions options={options} />
+                <NoteList
+                    notes={listedNotes}
+                    isActiveAddNoteButton={shouldHaveAddBookInNoteList}
+                    mode={mode}
+                />
+                <FooterOptions
+                    options={options}
+                    mode={mode}
+                    handleMethod={handleMode}
+                />
             </MainContent>
         </>
     )
@@ -43,6 +61,8 @@ export const getServerSideProps: GetServerSideProps = async () => {
     return {
         props: {
             notes: [
+                note,
+                note,
                 note,
                 note,
                 note,
