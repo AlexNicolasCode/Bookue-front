@@ -5,7 +5,6 @@ import { globalColors } from "@/presentation/styles/colors";
 export const NoteListStyled = styled.ul`
     padding: 0 2rem;
     margin: 0 0 1.5rem 0;
-    list-style-type: none;
 `
 
 export const NoteStyled = styled.li`
