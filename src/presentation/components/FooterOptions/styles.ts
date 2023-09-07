@@ -39,6 +39,6 @@ export const AddNoteOptionStyled = styled.button`
 export const RemoveNoteOptionStyled = styled.button`
     color: ${globalColors.white};
     border-radius: 100%;
-    background-color: ${globalColors.primary};
+    background-color: ${globalColors.alert};
     ${defaultButtonStyles}
 `
