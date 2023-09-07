@@ -21,10 +21,10 @@ export function NoteList ({ notes, isActiveAddNoteButton }: NoteListProps) {
     }
 
     const renderNotes = () =>
-        notes.map((note) => {
+        notes.map((note, index) => {
             const text = getCuttedText(note.text)
             return (
-                <NoteStyled id={note.id}>
+                <NoteStyled id={note.id} key={index}>
                     {text}
                 </NoteStyled>
             )
