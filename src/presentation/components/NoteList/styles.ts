@@ -11,7 +11,7 @@ export const NoteStyled = styled.li`
     background-color: ${globalColors.field};
     color: ${globalColors.dark};
     padding: 1rem;
-    width: calc(100vw - (2rem * 2));
+    width: calc(100vw - 6rem);
     min-height: 1rem;
     margin: 0 0 1rem 0;
 `
