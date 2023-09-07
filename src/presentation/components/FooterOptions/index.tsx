@@ -15,11 +15,20 @@ export enum OptionName {
     RemoveNote,
 }
 
-type FooterOptionsProps = {
-    options: OptionName[]
+export enum Modes {
+    Default,
+    DeleteMode,
+    AddMode,
 }
 
-export function FooterOptions ({ options }: FooterOptionsProps) {
+type FooterOptionsProps = {
+    options: OptionName[]
+    mode: Modes
+    handleMethod: (option: OptionName) => void
+    isWithoutBackground?: boolean
+}
+
+export function FooterOptions ({ options, mode, handleMethod, isWithoutBackground }: FooterOptionsProps) {
     const getOptionConfig = (optionName: OptionName): OptionConfig => {
         const optionConfigs = {
             [OptionName.DeleteMode]: {
@@ -59,9 +68,13 @@ export function FooterOptions ({ options }: FooterOptionsProps) {
             )
         })
 
-    return (
+    const renderActivetedOptionsListWithBackground = () => (
         <FooterOptionsStyled>
             {renderActivetedOptions()}
         </FooterOptionsStyled>
     )
+
+    return isWithoutBackground
+    ? <>{renderActivetedOptions()}</> 
+    : renderActivetedOptionsListWithBackground()
 }
