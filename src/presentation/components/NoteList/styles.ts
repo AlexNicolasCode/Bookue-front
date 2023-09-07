@@ -1,6 +1,7 @@
 import styled from "styled-components";
 
 import { globalColors } from "@/presentation/styles/colors";
+import { Modes } from "../FooterOptions";
 
 export const NoteListStyled = styled.ul`
     padding: 0 2rem;
@@ -14,6 +15,44 @@ export const NoteStyled = styled.li`
     width: calc(100vw - 6rem);
     min-height: 1rem;
     margin: 0 0 1rem 0;
+`
+
+type NoteCustomModeStyledProps = {
+    mode: Modes
+}
+
+const getBackgroundColorByMode = (mode: Modes) => {
+    const backgroundColorMapper = {
+        [Modes.DeleteMode]: '#F9ECE6'
+    }
+    const backgroundColorSelected = backgroundColorMapper[mode]
+    if (backgroundColorSelected) {
+        return backgroundColorSelected
+    }
+    return globalColors.field
+}
+
+export const NoteCustomModeStyled = styled.p<NoteCustomModeStyledProps>`
+    background-color: ${({ mode }) => getBackgroundColorByMode(mode)};
+    color: ${globalColors.dark};
+    padding: 1rem;
+    flex: 5;
+    width: calc(100vw - 6rem);
+    min-height: 1rem;
+    margin: 0;
+`
+
+export const ModeActivetedContainerStyled = styled.li`
+    display: flex;
+    justify-content: space-between;
+    min-height: 1rem;
+    margin: 0 0 1rem 0;
+`
+
+export const OptionsNoteStyled = styled.section`
+    display: flex;
+    align-items: center;
+    flex: 1;
 `
 
 export const OptionsStyled = styled.section`
