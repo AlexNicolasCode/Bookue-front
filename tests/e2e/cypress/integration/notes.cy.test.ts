@@ -19,6 +19,14 @@ describe('Notes screen', () => {
         cy.setCookie('bookue-user', 'any_token')
       })
 
+      it('Should render correct notes quantity', () => {
+        const notesCount = 6
+        const fakeBookId = faker.datatype.uuid()
+        cy.visit(`/book/${fakeBookId}/notes`)
+
+        cy.getByTestId('notes-note-card').should('have.length', notesCount)
+      })
+
       it('Should change to delete mode when user click in delete mode icon', () => {
         const notesCount = 6
         const fakeBookId = faker.datatype.uuid()
