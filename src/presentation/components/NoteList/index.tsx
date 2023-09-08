@@ -40,52 +40,46 @@ export function NoteList ({ notes, isActiveAddNoteButton, mode }: NoteListProps)
         }
     }
 
-    const renderNotesWithDeleteMode = () =>
-        notes.map((note, index) => 
-            <ModeActivetedContainerStyled>
-                <NoteCustomModeStyled
-                    id={note.id}
-                    mode={mode}
-                    key={index}
-                >
-                    {getCuttedText(note.text)}
-                </NoteCustomModeStyled>
-                {mode === Modes.DeleteMode &&
-                    <OptionsNoteStyled>
-                        <FooterOptions
-                            options={[OptionName.RemoveNote]}
-                            mode={mode}
-                            isWithoutBackground={true}
-                            handleMethod={handleMode}
-                        />
-                    </OptionsNoteStyled>
-                }
-            </ModeActivetedContainerStyled>
-        )
-
-    const renderNotes = () =>
-        notes.map((note, index) => {
-            const text = getCuttedText(note.text)
-            return (
-                <NoteStyled id={note.id} key={index}>
-                    {text}
-                </NoteStyled>
-            )
-        })
-
     const renderNoteList = () => 
         <NoteListStyled>
-            {renderNotes()}
+            {notes.map((note, index) => {
+                const text = getCuttedText(note.text)
+                return (
+                    <NoteStyled id={note.id} key={index}>
+                        {text}
+                    </NoteStyled>
+                )
+            })}
         </NoteListStyled>
 
-    const renderNotesListWithDeleteMode = () => 
+    const renderNotesListDeleteMode = () => 
         <NoteListStyled>
-            {renderNotesWithDeleteMode()}
+            {notes.map((note, index) => 
+                <ModeActivetedContainerStyled>
+                    <NoteCustomModeStyled
+                        id={note.id}
+                        mode={mode}
+                        key={index}
+                    >
+                        {getCuttedText(note.text)}
+                    </NoteCustomModeStyled>
+                    {mode === Modes.DeleteMode &&
+                        <OptionsNoteStyled>
+                            <FooterOptions
+                                options={[OptionName.RemoveNote]}
+                                mode={mode}
+                                isWithoutBackground={true}
+                                handleMethod={handleMode}
+                            />
+                        </OptionsNoteStyled>
+                    }
+                </ModeActivetedContainerStyled>
+            )}
         </NoteListStyled>
 
     const renderNoteListAccordingMode = () => {
         const modeMapper = {
-            [Modes.DeleteMode]: renderNotesListWithDeleteMode,
+            [Modes.DeleteMode]: renderNotesListDeleteMode,
             [Modes.Default]: renderNoteList,
         }
         return modeMapper[mode]()
