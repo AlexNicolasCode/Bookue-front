@@ -83,9 +83,17 @@ export function NoteList ({ notes, isActiveAddNoteButton, mode }: NoteListProps)
             {renderNotesWithDeleteMode()}
         </NoteListStyled>
 
+    const renderNoteListAccordingMode = () => {
+        const modeMapper = {
+            [Modes.DeleteMode]: renderNotesListWithDeleteMode,
+            [Modes.Default]: renderNoteList,
+        }
+        return modeMapper[mode]()
+    }
+
     return (
         <>
-            {mode === Modes.DeleteMode ? renderNotesListWithDeleteMode() : renderNoteList()}
+            {renderNoteListAccordingMode()}
             {mode === Modes.Default && isActiveAddNoteButton && 
                 <OptionsStyled>
                     <AddNoteOptionStyled>
