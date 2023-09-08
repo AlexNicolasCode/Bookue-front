@@ -13,7 +13,7 @@ export default function NotesPage({ notes }: NotesPageProps) {
     const [listedNotes, setListedNotes] = useState<NoteModel[]>(notes)
     const [mode, setMode] = useState<Modes>(Modes.Default)
 
-    const notesCount = notes.length
+    const notesCount = listedNotes.length
     const maxNotesBeforeHideAddBookButton = 3
     const shouldHaveAddBookInNoteList = notesCount <= maxNotesBeforeHideAddBookButton
 
