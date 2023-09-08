@@ -1,8 +1,11 @@
+import { useMemo } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 
 import { NoteModel } from "@/domain/models";
-import { FooterOptions, Modes, OptionName } from "../FooterOptions";
+import { FooterOptions } from "../FooterOptions";
+import { Modes, Option } from "@/presentation/contexts";
+import { useMode } from "@/presentation/hook";
 
 import {
     AddNoteOptionStyled,
@@ -16,11 +19,20 @@ import {
 
 type NoteListProps = {
     notes: NoteModel[]
-    isActiveAddNoteButton: boolean
-    mode: Modes
-}
+ }
 
-export function NoteList ({ notes, isActiveAddNoteButton, mode }: NoteListProps) {
+export function NoteList ({ notes }: NoteListProps) {
+    const { mode, changeMode } = useMode()
+
+    const shouldHaveAddBook = useMemo(() => {
+        if (mode !== Modes.DefaultMode) {
+            return false
+        }
+        const notesCount = notes.length
+        const maxNotesBeforeHideAddBookButton = 3
+        return notesCount <= maxNotesBeforeHideAddBookButton
+    }, [notes])
+
     const getCuttedText = (text: string) => {
         const maxChar = 750
         if (text.length > maxChar) {
@@ -28,16 +40,6 @@ export function NoteList ({ notes, isActiveAddNoteButton, mode }: NoteListProps)
             return `${partialText}...`
         }
         return text
-    }
-
-    const handleMode = (option: OptionName) => {
-        const modeMapper = {
-            [OptionName.RemoveNote]: () => {},
-        }
-        const foundMethod = modeMapper[option]
-        if (foundMethod) {
-            foundMethod()
-        }
     }
 
     const renderNoteList = () => 
@@ -63,16 +65,12 @@ export function NoteList ({ notes, isActiveAddNoteButton, mode }: NoteListProps)
                     >
                         {getCuttedText(note.text)}
                     </NoteCustomModeStyled>
-                    {mode === Modes.DeleteMode &&
-                        <OptionsNoteStyled>
-                            <FooterOptions
-                                options={[OptionName.RemoveNote]}
-                                mode={mode}
-                                isWithoutBackground={true}
-                                handleMethod={handleMode}
-                            />
-                        </OptionsNoteStyled>
-                    }
+                    <OptionsNoteStyled>
+                        <FooterOptions
+                            options={[Option.RemoveNote]}
+                            isWithoutBackground={true}
+                        />
+                    </OptionsNoteStyled>
                 </ModeActivetedContainerStyled>
             )}
         </NoteListStyled>
@@ -80,7 +78,7 @@ export function NoteList ({ notes, isActiveAddNoteButton, mode }: NoteListProps)
     const renderNoteListAccordingMode = () => {
         const modeMapper = {
             [Modes.DeleteMode]: renderNotesListDeleteMode,
-            [Modes.Default]: renderNoteList,
+            [Modes.DefaultMode]: renderNoteList,
         }
         return modeMapper[mode]()
     }
@@ -88,9 +86,9 @@ export function NoteList ({ notes, isActiveAddNoteButton, mode }: NoteListProps)
     return (
         <>
             {renderNoteListAccordingMode()}
-            {mode === Modes.Default && isActiveAddNoteButton && 
+            {shouldHaveAddBook && 
                 <OptionsStyled>
-                    <AddNoteOptionStyled>
+                    <AddNoteOptionStyled onClick={() => changeMode(Modes.AddMode)}>
                         <FontAwesomeIcon icon={faPlus}/>
                     </AddNoteOptionStyled>
                 </OptionsStyled>

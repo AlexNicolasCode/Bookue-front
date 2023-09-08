@@ -1,9 +1,10 @@
 import { GetServerSideProps } from "next";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 
-import { Header, MainContent, Modes, NoteList, OptionName } from "@/presentation/components";
+import { Header, MainContent, NoteList } from "@/presentation/components";
 import { NoteModel } from "@/domain/models";
 import { FooterOptions } from "@/presentation/components";
+import { ModeProvider } from "@/presentation/contexts";
 
 type NotesPageProps = {
     notes: NoteModel[]
@@ -11,52 +12,15 @@ type NotesPageProps = {
 
 export default function NotesPage({ notes }: NotesPageProps) {
     const [listedNotes, setListedNotes] = useState<NoteModel[]>(notes)
-    const [mode, setMode] = useState<Modes>(Modes.Default)
-
-    const shouldHaveAddBookInNoteList = useMemo(() => {
-        const notesCount = listedNotes.length
-        const maxNotesBeforeHideAddBookButton = 3
-        return notesCount <= maxNotesBeforeHideAddBookButton
-    }, [listedNotes])
-
-    const options: OptionName[] = useMemo(() => {
-        const optionsMapper = {
-            [Modes.DeleteMode]: [OptionName.DeleteMode, OptionName.AddNote],
-            [Modes.AddMode]: [OptionName.AddNote],
-            [Modes.Default]: [OptionName.DeleteMode, OptionName.AddNote],
-        }
-        return optionsMapper[mode]
-    }, [mode])
-
-    const changeMode = (targetMode: Modes) => {
-        setMode(mode !== targetMode ? targetMode : Modes.Default)
-    }
-
-    const handleMode = (option: OptionName) => {
-        const modeMapper = {
-            [OptionName.DeleteMode]: () => changeMode(Modes.DeleteMode),
-            [OptionName.AddNote]: () => changeMode(Modes.AddMode),
-            [OptionName.RemoveNote]: () => {},
-        }
-        modeMapper[option]()
-    }
 
     return (
-        <>
+        <ModeProvider>
             <Header/>
             <MainContent>
-                <NoteList
-                    notes={listedNotes}
-                    isActiveAddNoteButton={shouldHaveAddBookInNoteList}
-                    mode={mode}
-                />
-                <FooterOptions
-                    options={options}
-                    mode={mode}
-                    handleMethod={handleMode}
-                />
+                <NoteList notes={listedNotes}/>
+                <FooterOptions/>
             </MainContent>
-        </>
+        </ModeProvider>
     )
 }
 

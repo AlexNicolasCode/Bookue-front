@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 import { globalColors } from "@/presentation/styles/colors";
-import { Modes } from "../FooterOptions";
+import { Modes } from "@/presentation/contexts";
 
 export const NoteListStyled = styled.ul`
     height: 90%;
