@@ -13,9 +13,11 @@ export default function NotesPage({ notes }: NotesPageProps) {
     const [listedNotes, setListedNotes] = useState<NoteModel[]>(notes)
     const [mode, setMode] = useState<Modes>(Modes.Default)
 
-    const notesCount = listedNotes.length
-    const maxNotesBeforeHideAddBookButton = 3
-    const shouldHaveAddBookInNoteList = notesCount <= maxNotesBeforeHideAddBookButton
+    const shouldHaveAddBookInNoteList = useMemo(() => {
+        const notesCount = listedNotes.length
+        const maxNotesBeforeHideAddBookButton = 3
+        return notesCount <= maxNotesBeforeHideAddBookButton
+    }, [listedNotes])
 
     const options: OptionName[] = useMemo(() => {
         const optionsMapper = {
