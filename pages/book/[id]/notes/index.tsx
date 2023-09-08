@@ -18,12 +18,13 @@ export default function NotesPage({ notes }: NotesPageProps) {
     const shouldHaveAddBookInNoteList = notesCount <= maxNotesBeforeHideAddBookButton
 
     const options: OptionName[] = useMemo(() => {
-        if (shouldHaveAddBookInNoteList) {
-            return [OptionName.DeleteMode]
-        } else {
-            return [OptionName.DeleteMode, OptionName.AddNote]
+        const optionsMapper = {
+            [Modes.DeleteMode]: [OptionName.DeleteMode, OptionName.AddNote],
+            [Modes.AddMode]: [OptionName.AddNote],
+            [Modes.Default]: [OptionName.DeleteMode, OptionName.AddNote],
         }
-    }, [shouldHaveAddBookInNoteList])
+        return optionsMapper[mode]
+    }, [mode])
 
     const changeMode = (targetMode: Modes) => {
         setMode(mode !== targetMode ? targetMode : Modes.Default)
@@ -32,7 +33,7 @@ export default function NotesPage({ notes }: NotesPageProps) {
     const handleMode = (option: OptionName) => {
         const modeMapper = {
             [OptionName.DeleteMode]: () => changeMode(Modes.DeleteMode),
-            [OptionName.AddNote]: () => {},
+            [OptionName.AddNote]: () => changeMode(Modes.AddMode),
             [OptionName.RemoveNote]: () => {},
         }
         modeMapper[option]()
