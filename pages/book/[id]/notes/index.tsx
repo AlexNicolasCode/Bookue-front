@@ -25,9 +25,13 @@ export default function NotesPage({ notes }: NotesPageProps) {
         }
     }, [shouldHaveAddBookInNoteList])
 
+    const changeMode = (targetMode: Modes) => {
+        setMode(mode !== targetMode ? targetMode : Modes.Default)
+    }
+
     const handleMode = (option: OptionName) => {
         const modeMapper = {
-            [OptionName.DeleteMode]: () => setMode(mode !== Modes.DeleteMode ? Modes.DeleteMode : Modes.Default),
+            [OptionName.DeleteMode]: () => changeMode(Modes.DeleteMode),
             [OptionName.AddNote]: () => {},
             [OptionName.RemoveNote]: () => {},
         }
