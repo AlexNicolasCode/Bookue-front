@@ -36,5 +36,17 @@ describe('Notes screen', () => {
 
         cy.getByTestId('notes-note-card-delete-mode').should('have.length', notesCount)
       })
+
+      it('Should back to default mode when user click on delete mode button when delete mode is already activeted', () => {
+        const notesCount = 6
+        const fakeBookId = faker.datatype.uuid()
+        cy.visit(`/book/${fakeBookId}/notes`)
+        const deleteModeButton = cy.getByTestId('notes-delete-mode-button')
+        deleteModeButton.click()
+
+        deleteModeButton.click()
+
+        cy.getByTestId('notes-note-card').should('have.length', notesCount)
+      })
     })
 })
