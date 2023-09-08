@@ -6,8 +6,8 @@ const HeaderStyled = styled.header`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem;
-    margin-bottom: 2rem;
+    padding: 0 1rem;
+    height: 7.5%;
 `
 
 const BackButtonStyled = styled.section`
