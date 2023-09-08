@@ -3,8 +3,12 @@ import styled from "styled-components";
 import { globalColors } from "@/presentation/styles/colors";
 import { Modes } from "@/presentation/contexts";
 
-export const NoteListStyled = styled.ul`
-    height: 90%;
+type NodeListProps = {
+    mode?: Modes
+}
+
+export const NoteListStyled = styled.ul<NodeListProps>`
+    height: ${({ mode }) => mode === Modes.AddMode ? '40%' : '90%'};
     overflow-y: scroll;
     padding: 0 2rem;
     margin: 0;

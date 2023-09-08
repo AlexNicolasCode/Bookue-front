@@ -80,8 +80,25 @@ export function NoteList ({ notes }: NoteListProps) {
             )}
         </NoteListStyled>
 
+    const renderNotesListAddMode = () => 
+        <NoteListStyled mode={Modes.AddMode}>
+            {notes.map((note, index) => {
+                const text = getCuttedText(note.text)
+                return (
+                    <NoteStyled
+                        id={note.id}
+                        data-test-id={'notes-note-card'}
+                        key={index}
+                    >
+                        {text}
+                    </NoteStyled>
+                )
+            })}
+        </NoteListStyled>
+
     const renderNoteListAccordingMode = () => {
         const modeMapper = {
+            [Modes.AddMode]: renderNotesListAddMode,
             [Modes.DeleteMode]: renderNotesListDeleteMode,
             [Modes.DefaultMode]: renderNoteList,
         }
