@@ -11,6 +11,7 @@ type OptionConfig = {
     IconSupport: typeof DeleteModeOptionStyled | typeof AddNoteOptionStyled | typeof RemoveNoteOptionStyled
     icon: typeof faTrash | typeof faPlus | typeof faMinus
     isActive: boolean
+    testId?: string
 }
 
 type FooterOptionsProps = {
@@ -34,6 +35,7 @@ export function FooterOptions ({ isWithoutBackground, options }: FooterOptionsPr
         const optionConfigs = {
             [Option.DeleteNote]: {
                 IconSupport: DeleteModeOptionStyled,
+                testId: 'delete-mode-button',
                 icon: faTrash,
                 isActive: mode === Modes.DeleteMode,
             },
@@ -44,6 +46,7 @@ export function FooterOptions ({ isWithoutBackground, options }: FooterOptionsPr
             },
             [Option.RemoveNote]: {
                 IconSupport: RemoveNoteOptionStyled,
+                testId: 'remove-note-button',
                 icon: faMinus,
                 isActive: false,
             },
@@ -67,10 +70,12 @@ export function FooterOptions ({ isWithoutBackground, options }: FooterOptionsPr
                 icon,  
                 IconSupport,
                 isActive,
+                testId,
             } = getOptionConfig(option)
             return (
                 <IconSupport
                     isActive={isActive}
+                    data-test-id={`notes-${testId}`}
                     onClick={() => handleModeByIconClick(option)}
                     key={index}
                 >

@@ -47,7 +47,11 @@ export function NoteList ({ notes }: NoteListProps) {
             {notes.map((note, index) => {
                 const text = getCuttedText(note.text)
                 return (
-                    <NoteStyled id={note.id} key={index}>
+                    <NoteStyled
+                        id={note.id}
+                        data-test-id={'notes-note-card'}
+                        key={index}
+                    >
                         {text}
                     </NoteStyled>
                 )
@@ -61,6 +65,7 @@ export function NoteList ({ notes }: NoteListProps) {
                     <NoteCustomModeStyled
                         id={note.id}
                         mode={mode}
+                        data-test-id={'notes-note-card-delete-mode'}
                         key={index}
                     >
                         {getCuttedText(note.text)}
