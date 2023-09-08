@@ -11,11 +11,11 @@ const HeaderStyled = styled.header`
 `
 
 const BackButtonStyled = styled.section`
-    color: ${globalColors.primary}
+    color: ${globalColors.primary};
 `
 
 const AddBookButtonStyled = styled.section`
-    color: ${globalColors.primary}
+    color: ${globalColors.primary};
 `
 
 export { 
