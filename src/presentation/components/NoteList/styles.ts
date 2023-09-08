@@ -4,8 +4,10 @@ import { globalColors } from "@/presentation/styles/colors";
 import { Modes } from "../FooterOptions";
 
 export const NoteListStyled = styled.ul`
+    height: 90%;
+    overflow-y: scroll;
     padding: 0 2rem;
-    margin: 0 0 1.5rem 0;
+    margin: 0;
 `
 
 export const NoteStyled = styled.li`

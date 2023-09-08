@@ -4,12 +4,11 @@ import { globalColors } from "@/presentation/styles/colors";
 
 export const FooterOptionsStyled = styled.section`
     background-color: ${globalColors.white};
-    position: fixed;
-    bottom: 0;
-    padding: 1rem 1rem;
+    padding: 0 1rem;
+    height: 10%;
     display: flex;
     justify-content: flex-end;
-    width: calc(100% - 2rem);
+    align-items: center;
 `
 
 const defaultButtonStyles = css`
