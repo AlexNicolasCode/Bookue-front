@@ -23,6 +23,12 @@ export const NoteStyled = styled.li`
     margin: 0 0 1rem 0;
 `
 
+export const TextStyled = styled.pre`
+    font-family: 'Poppins';
+    margin: 0;
+    white-space: pre-wrap;
+`
+
 type NoteCustomModeStyledProps = {
     mode: Modes
 }

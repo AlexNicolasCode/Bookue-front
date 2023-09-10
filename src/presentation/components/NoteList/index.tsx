@@ -15,6 +15,7 @@ import {
     OptionsNoteStyled,
     NoteCustomModeStyled,
     ModeActivetedContainerStyled,
+    TextStyled,
 } from "./styles";
 
 type NoteListProps = {
@@ -46,7 +47,9 @@ export function NoteList ({ notes }: NoteListProps) {
                         data-test-id={'notes-note-card'}
                         key={index}
                     >
-                        {text}
+                        <TextStyled>
+                            {text}
+                        </TextStyled>
                     </NoteStyled>
                 )
             })}
@@ -86,7 +89,9 @@ export function NoteList ({ notes }: NoteListProps) {
                         data-test-id={'notes-note-card'}
                         key={index}
                     >
-                        {text}
+                        <TextStyled>
+                            {text}
+                        </TextStyled>
                     </NoteStyled>
                 )
             })}
