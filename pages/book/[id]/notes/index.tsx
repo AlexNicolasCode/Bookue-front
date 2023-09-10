@@ -19,6 +19,9 @@ export default function NotesPage({ notes }: NotesPageProps) {
                 <NoteList notes={listedNotes}/>
                 <Options
                     options={[Option.DeleteNote, Option.AddNote]}
+                    config={{
+                        hasBackground: true,
+                    }}
                 />
             </MainContent>
         </ModeProvider>
