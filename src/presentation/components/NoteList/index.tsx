@@ -98,7 +98,7 @@ export function NoteList ({ notes }: NoteListProps) {
             })}
         </NoteListStyled>
 
-    const renderNoteListAccordingMode = () => {
+    const renderNoteListByMode = () => {
         const modeMapper = {
             [Modes.AddMode]: renderNotesListAddMode,
             [Modes.DeleteMode]: renderNotesListDeleteMode,
@@ -109,7 +109,7 @@ export function NoteList ({ notes }: NoteListProps) {
 
     return (
         <>
-            {renderNoteListAccordingMode()}
+            {renderNoteListByMode()}
             {shouldHaveAddBook && 
                 <OptionsStyled>
                     <AddNoteOptionStyled onClick={() => changeMode(Modes.AddMode)}>
