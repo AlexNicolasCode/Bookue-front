@@ -1,9 +1,12 @@
 import { GetServerSideProps } from "next";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-import { Header, MainContent, NoteList, Option, Options } from "@/presentation/components";
+import { Header, Input, MainContent, NoteList, Option, Options } from "@/presentation/components";
 import { NoteModel } from "@/domain/models";
-import { ModeProvider } from "@/presentation/contexts";
+import { useModeController } from "@/presentation/hook";
+import { Modes } from "@/presentation/contexts";
+
+import { AddNoteContainer } from "./styles";
 
 type NotesPageProps = {
     notes: NoteModel[]
@@ -11,12 +14,27 @@ type NotesPageProps = {
 
 export default function NotesPage({ notes }: NotesPageProps) {
     const [listedNotes, setListedNotes] = useState<NoteModel[]>(notes)
+    const [newNote, setNewNote] = useState<string>('')
+    const { mode } = useModeController()
 
     return (
-        <ModeProvider>
+        <>
             <Header/>
             <MainContent>
                 <NoteList notes={listedNotes}/>
+                {mode === Modes.AddMode &&
+                    <AddNoteContainer>
+                        <Input
+                            setState={setNewNote}
+                            value={newNote}
+                            style={{
+                                isBorded: true,
+                                height: '100%',
+                                width: '100%',
+                            }}
+                        />
+                    </AddNoteContainer>
+                }
                 <Options
                     options={[Option.DeleteNote, Option.AddNote]}
                     config={{
@@ -24,7 +42,7 @@ export default function NotesPage({ notes }: NotesPageProps) {
                     }}
                 />
             </MainContent>
-        </ModeProvider>
+        </>
     )
 }
 
