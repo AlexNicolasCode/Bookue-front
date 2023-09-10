@@ -4,11 +4,11 @@ import { Modes } from "@/presentation/contexts";
 
 import { globalColors } from "@/presentation/styles/colors";
 
-type FooterOptionsProps = {
+type OptionsProps = {
     mode?: Modes
 }
 
-export const FooterOptionsStyled = styled.section<FooterOptionsProps>`
+export const OptionsStyled = styled.section<OptionsProps>`
     background-color: ${globalColors.white};
     padding: 0 1rem;
     height: ${({ mode }) => mode === Modes.AddMode ? '60%' : '10%'};

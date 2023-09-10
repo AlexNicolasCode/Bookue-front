@@ -3,7 +3,7 @@ import { useState } from "react";
 
 import { Header, MainContent, NoteList } from "@/presentation/components";
 import { NoteModel } from "@/domain/models";
-import { FooterOptions } from "@/presentation/components";
+import { Options } from "@/presentation/components";
 import { ModeProvider } from "@/presentation/contexts";
 
 type NotesPageProps = {
@@ -18,7 +18,7 @@ export default function NotesPage({ notes }: NotesPageProps) {
             <Header/>
             <MainContent>
                 <NoteList notes={listedNotes}/>
-                <FooterOptions/>
+                <Options/>
             </MainContent>
         </ModeProvider>
     )

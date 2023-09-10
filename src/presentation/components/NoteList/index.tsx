@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 
 import { NoteModel } from "@/domain/models";
-import { FooterOptions } from "../FooterOptions";
+import { Options } from "../Options";
 import { Modes, Option } from "@/presentation/contexts";
 import { useMode } from "@/presentation/hook";
 
@@ -71,7 +71,7 @@ export function NoteList ({ notes }: NoteListProps) {
                         {getCuttedText(note.text)}
                     </NoteCustomModeStyled>
                     <OptionsNoteStyled>
-                        <FooterOptions
+                        <Options
                             options={[Option.RemoveNote]}
                             isWithoutBackground={true}
                         />

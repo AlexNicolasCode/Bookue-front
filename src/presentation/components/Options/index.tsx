@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useMode } from "@/presentation/hook"
 import { Modes, Option } from "@/presentation/contexts"
 
-import { AddNoteOptionStyled, DeleteModeOptionStyled, FooterOptionsStyled, RemoveNoteOptionStyled } from "./styles"
+import { AddNoteOptionStyled, DeleteModeOptionStyled, OptionsStyled, RemoveNoteOptionStyled } from "./styles"
 
 type OptionConfig = {
     IconSupport: typeof DeleteModeOptionStyled | typeof AddNoteOptionStyled | typeof RemoveNoteOptionStyled
@@ -13,12 +13,12 @@ type OptionConfig = {
     testId?: string
 }
 
-type FooterOptionsProps = {
+type OptionsProps = {
     options?: Option[]
     isWithoutBackground?: boolean
 }
 
-export function FooterOptions ({ isWithoutBackground, options }: FooterOptionsProps) {
+export function Options ({ isWithoutBackground, options }: OptionsProps) {
     const { mode, changeMode } = useMode()
 
     const defaultOptions: Option[] = useMemo(() => {
@@ -81,15 +81,15 @@ export function FooterOptions ({ isWithoutBackground, options }: FooterOptionsPr
     }
 
     const renderAddNoteField = () => (
-        <FooterOptionsStyled mode={Modes.AddMode}>
+        <OptionsStyled mode={Modes.AddMode}>
             {renderActivetedOptions()}
-        </FooterOptionsStyled>
+        </OptionsStyled>
     )
 
     const renderDefaultMode = () => (
-        <FooterOptionsStyled>
+        <OptionsStyled>
             {renderActivetedOptions()}
-        </FooterOptionsStyled>
+        </OptionsStyled>
     )
 
     const renderWithoutBackground = () => (
