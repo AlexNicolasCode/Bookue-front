@@ -10,7 +10,6 @@ import { AddNoteOptionStyled, DeleteModeOptionStyled, FooterOptionsStyled, Remov
 type OptionConfig = {
     IconSupport: typeof DeleteModeOptionStyled | typeof AddNoteOptionStyled | typeof RemoveNoteOptionStyled
     icon: typeof faTrash | typeof faPlus | typeof faMinus
-    isActive: boolean
     testId?: string
 }
 
@@ -37,18 +36,15 @@ export function FooterOptions ({ isWithoutBackground, options }: FooterOptionsPr
                 IconSupport: DeleteModeOptionStyled,
                 testId: 'delete-mode-button',
                 icon: faTrash,
-                isActive: mode === Modes.DeleteMode,
             },
             [Option.AddNote]: {
                 IconSupport: AddNoteOptionStyled,
                 icon: faPlus,
-                isActive: false,
             },
             [Option.RemoveNote]: {
                 IconSupport: RemoveNoteOptionStyled,
                 testId: 'remove-note-button',
                 icon: faMinus,
-                isActive: false,
             },
         }
         return optionConfigs[option]
@@ -69,12 +65,11 @@ export function FooterOptions ({ isWithoutBackground, options }: FooterOptionsPr
             const {
                 icon,  
                 IconSupport,
-                isActive,
                 testId,
             } = getOptionConfig(option)
             return (
                 <IconSupport
-                    isActive={isActive}
+                    mode={mode}
                     data-test-id={`notes-${testId}`}
                     onClick={() => handleModeByIconClick(option)}
                     key={index}
@@ -85,13 +80,32 @@ export function FooterOptions ({ isWithoutBackground, options }: FooterOptionsPr
         })
     }
 
-    const renderActivetedOptionsListWithBackground = () => (
+    const renderAddNoteField = () => (
+        <FooterOptionsStyled mode={Modes.AddMode}>
+            {renderActivetedOptions()}
+        </FooterOptionsStyled>
+    )
+
+    const renderDefaultMode = () => (
         <FooterOptionsStyled>
             {renderActivetedOptions()}
         </FooterOptionsStyled>
     )
 
-    return isWithoutBackground
-    ? <>{renderActivetedOptions()}</> 
-    : renderActivetedOptionsListWithBackground()
+    const renderWithoutBackground = () => (
+        <>{renderActivetedOptions()}</>
+    )
+
+    const getRender = () => {
+        const renderMapper = {
+            [Modes.DefaultMode]: renderDefaultMode(),
+            [Modes.AddMode]: renderAddNoteField(),
+            ['withoutBackground']: renderWithoutBackground(),
+        }
+        return isWithoutBackground
+            ? renderMapper['withoutBackground']
+            : renderMapper[Modes.DefaultMode]
+    }
+
+    return getRender()
 }

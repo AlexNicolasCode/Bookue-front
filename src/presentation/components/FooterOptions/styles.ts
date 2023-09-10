@@ -1,11 +1,17 @@
 import styled, { css } from "styled-components";
 
+import { Modes } from "@/presentation/contexts";
+
 import { globalColors } from "@/presentation/styles/colors";
 
-export const FooterOptionsStyled = styled.section`
+type FooterOptionsProps = {
+    mode?: Modes
+}
+
+export const FooterOptionsStyled = styled.section<FooterOptionsProps>`
     background-color: ${globalColors.white};
     padding: 0 1rem;
-    height: 10%;
+    height: ${({ mode }) => mode === Modes.AddMode ? '60%' : '10%'};
     display: flex;
     justify-content: flex-end;
     align-items: center;
@@ -17,25 +23,36 @@ const defaultButtonStyles = css`
     margin: 0 0 0 1rem;
 `;
 
-type DeleteModeOptionProps = {
-    isActive: boolean
+type ButtonProps = {
+    mode: Modes
 }
 
-export const DeleteModeOptionStyled = styled.button<DeleteModeOptionProps>`
-    color: ${({ isActive }) =>
-        isActive ? globalColors.alert : globalColors.gray
+export const DeleteModeOptionStyled = styled.button<ButtonProps>`
+    color: ${({ mode }) => mode === Modes.DeleteMode
+        ? globalColors.alert
+        : globalColors.gray
     };
     ${defaultButtonStyles}
 `
 
-export const AddNoteOptionStyled = styled.button`
-    color: ${globalColors.white};
+export const AddNoteOptionStyled = styled.button<ButtonProps>`
     border-radius: 100%;
-    background-color: ${globalColors.primary};
+    ${({ mode }) => mode === Modes.AddMode
+        ?
+        `
+            border: 2px ${globalColors.primary} solid;
+            color: ${globalColors.primary};
+        `
+        :
+        `
+            color: ${globalColors.white};
+            background-color: ${globalColors.primary};
+        `
+    };;
     ${defaultButtonStyles}
 `
 
-export const RemoveNoteOptionStyled = styled.button`
+export const RemoveNoteOptionStyled = styled.button<ButtonProps>`
     color: ${globalColors.white};
     border-radius: 100%;
     background-color: ${globalColors.alert};
