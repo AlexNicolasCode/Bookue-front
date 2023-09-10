@@ -8,13 +8,21 @@ type OptionsProps = {
     mode?: Modes
 }
 
+const getConfigByMode = (mode: Modes): string => {
+    const configMapper = {
+        [Modes.AddMode]: 'height: 60%;',
+        [Modes.DefaultMode]: 'height: 10%',
+    }
+    return configMapper[mode ?? Modes.DefaultMode]
+}
+
 export const OptionsStyled = styled.section<OptionsProps>`
     background-color: ${globalColors.white};
     padding: 0 1rem;
-    height: ${({ mode }) => mode === Modes.AddMode ? '60%' : '10%'};
     display: flex;
     justify-content: flex-end;
     align-items: center;
+    ${({ mode }) => getConfigByMode(mode)};
 `
 
 const defaultButtonStyles = css`
