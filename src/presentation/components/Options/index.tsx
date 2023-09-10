@@ -77,31 +77,17 @@ export function Options ({ options, config: { hasBackground } }: OptionsProps) {
         })
     }
 
-    const renderAddNoteField = () => (
-        <OptionsStyled mode={Modes.AddMode}>
+    const renderOptionsByMode = (mode: Modes) => (
+        <OptionsStyled mode={mode}>
             {renderActivetedOptions()}
         </OptionsStyled>
-    )
-
-    const renderDefaultMode = () => (
-        <OptionsStyled>
-            {renderActivetedOptions()}
-        </OptionsStyled>
-    )
-
-    const renderWithoutBackground = () => (
-        <>{renderActivetedOptions()}</>
     )
 
     const getRender = () => {
-        const renderMapper = {
-            [Modes.DefaultMode]: renderDefaultMode(),
-            [Modes.AddMode]: renderAddNoteField(),
-            ['withoutBackground']: renderWithoutBackground(),
+        if (!hasBackground) {
+            return <>{renderActivetedOptions()}</>
         }
-        return hasBackground
-            ? renderMapper['withoutBackground']
-            : renderMapper[Modes.DefaultMode]
+        return renderOptionsByMode(mode)
     }
 
     return getRender()
