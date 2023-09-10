@@ -24,7 +24,7 @@ const getConfigByMode = (mode: Modes): string => {
             padding: 0 1rem;
         `,
     }
-    return configMapper[mode ?? Modes.DefaultMode]
+    return configMapper[mode] ?? configMapper[Modes.DefaultMode]
 }
 
 export const OptionsStyled = styled.section<OptionsProps>`
