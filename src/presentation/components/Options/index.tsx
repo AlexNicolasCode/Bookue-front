@@ -1,14 +1,19 @@
-import { useMemo } from "react"
 import { faMinus, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
 import { useModeController } from "@/presentation/hook"
-import { Modes, Option } from "@/presentation/contexts"
+import { Modes } from "@/presentation/contexts"
 
 import { AddNoteOptionStyled, DeleteModeOptionStyled, OptionsStyled, RemoveNoteOptionStyled } from "./styles"
 
+export enum Option {
+    DeleteNote,
+    AddNote,
+    RemoveNote,
+}
+
 type OptionsProps = {
-    options?: Option[]
+    options: Option[]
     config?: {
         hasBackground?: boolean
     }
@@ -16,15 +21,6 @@ type OptionsProps = {
 
 export function Options ({ options, config: { hasBackground } }: OptionsProps) {
     const { mode, changeMode } = useModeController()
-
-    const defaultOptions = useMemo(() => {
-        const optionsMapper = {
-            [Modes.DeleteMode]: [Option.DeleteNote, Option.AddNote],
-            [Modes.AddMode]: [Option.AddNote],
-            [Modes.DefaultMode]: [Option.DeleteNote, Option.AddNote],
-        }
-        return optionsMapper[mode]
-    }, [mode])
 
     const getOptionConfig = (option: Option) => {
         const optionConfigs = {
@@ -57,8 +53,7 @@ export function Options ({ options, config: { hasBackground } }: OptionsProps) {
     }
 
     const renderActivetedOptions = () => {
-        let optionsSelected = options ?? defaultOptions
-        return optionsSelected.map((option, index) => {
+        return options.map((option, index) => {
             const {
                 icon,  
                 IconSupport,

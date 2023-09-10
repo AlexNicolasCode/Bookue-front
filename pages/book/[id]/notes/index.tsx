@@ -1,9 +1,8 @@
 import { GetServerSideProps } from "next";
 import { useState } from "react";
 
-import { Header, MainContent, NoteList } from "@/presentation/components";
+import { Header, MainContent, NoteList, Option, Options } from "@/presentation/components";
 import { NoteModel } from "@/domain/models";
-import { Options } from "@/presentation/components";
 import { ModeProvider } from "@/presentation/contexts";
 
 type NotesPageProps = {
@@ -18,7 +17,9 @@ export default function NotesPage({ notes }: NotesPageProps) {
             <Header/>
             <MainContent>
                 <NoteList notes={listedNotes}/>
-                <Options/>
+                <Options
+                    options={[Option.DeleteNote, Option.AddNote]}
+                />
             </MainContent>
         </ModeProvider>
     )

@@ -3,8 +3,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 
 import { NoteModel } from "@/domain/models";
-import { Options } from "../Options";
-import { Modes, Option } from "@/presentation/contexts";
+import { Options, Option } from "../Options";
+import { Modes } from "@/presentation/contexts";
 import { useModeController } from "@/presentation/hook";
 
 import {
