@@ -2,7 +2,7 @@ import { useMemo } from "react"
 import { faMinus, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
-import { useMode } from "@/presentation/hook"
+import { useModeController } from "@/presentation/hook"
 import { Modes, Option } from "@/presentation/contexts"
 
 import { AddNoteOptionStyled, DeleteModeOptionStyled, OptionsStyled, RemoveNoteOptionStyled } from "./styles"
@@ -19,7 +19,7 @@ type OptionsProps = {
 }
 
 export function Options ({ isWithoutBackground, options }: OptionsProps) {
-    const { mode, changeMode } = useMode()
+    const { mode, changeMode } = useModeController()
 
     const defaultOptions: Option[] = useMemo(() => {
         const optionsMapper = {

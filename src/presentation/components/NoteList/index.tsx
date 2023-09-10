@@ -5,7 +5,7 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { NoteModel } from "@/domain/models";
 import { Options } from "../Options";
 import { Modes, Option } from "@/presentation/contexts";
-import { useMode } from "@/presentation/hook";
+import { useModeController } from "@/presentation/hook";
 
 import {
     AddNoteOptionStyled,
@@ -22,7 +22,7 @@ type NoteListProps = {
  }
 
 export function NoteList ({ notes }: NoteListProps) {
-    const { mode, changeMode } = useMode()
+    const { mode, changeMode } = useModeController()
 
     const shouldHaveAddBook = useMemo(() => {
         if (mode !== Modes.DefaultMode) {
