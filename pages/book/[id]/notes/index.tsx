@@ -15,7 +15,30 @@ type NotesPageProps = {
 export default function NotesPage({ notes }: NotesPageProps) {
     const [listedNotes, setListedNotes] = useState<NoteModel[]>(notes)
     const [newNote, setNewNote] = useState<string>('')
-    const { mode } = useModeController()
+    const { mode, lastMode } = useModeController()
+
+    useEffect(() => {
+        if (shouldAddNoteInList) {
+            addNoteInList()
+        }
+    }, [mode])
+
+    const shouldAddNoteInList =
+        newNote
+        && newNote.trim() !== ''
+        && lastMode.current === Modes.AddMode
+        && mode === Modes.DefaultMode
+    
+    const addNoteInList = () => {
+        setListedNotes([
+            {
+                id: '100',
+                text: newNote,
+            },
+            ...listedNotes,
+        ])
+        setNewNote('')
+    }
 
     return (
         <>
