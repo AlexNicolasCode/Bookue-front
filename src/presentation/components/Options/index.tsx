@@ -19,7 +19,7 @@ type OptionsProps = {
     }
 }
 
-export function Options ({ options, config: { hasBackground } }: OptionsProps) {
+export function Options ({ options, config }: OptionsProps) {
     const { mode, changeMode } = useModeController()
 
     const getOptionConfig = (option: Option) => {
@@ -79,7 +79,7 @@ export function Options ({ options, config: { hasBackground } }: OptionsProps) {
     )
 
     const getRender = () => {
-        if (!hasBackground) {
+        if (!config?.hasBackground) {
             return <>{renderActivetedOptions()}</>
         }
         return renderOptionsByMode(mode)
