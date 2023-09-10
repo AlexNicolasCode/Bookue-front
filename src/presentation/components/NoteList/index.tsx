@@ -74,7 +74,8 @@ export function NoteList ({ notes }: NoteListProps) {
                         <Options
                             options={[Option.RemoveNote]}
                             config={{
-                                hasBackground: true
+                                hasBackground: true,
+                                isFixedOptions: true,
                             }}
                         />
                     </OptionsNoteStyled>

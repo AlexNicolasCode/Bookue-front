@@ -17,6 +17,7 @@ type OptionsProps = {
     options: Option[]
     config?: {
         hasBackground?: boolean
+        isFixedOptions?: boolean
     }
 }
 
@@ -25,7 +26,9 @@ export function Options ({ options, config }: OptionsProps) {
     const [activetedOptions, setActivetedOptions]= useState<Option[]>(options)
 
     useEffect(() => {
-        setActivetedOptions(currentOptions)
+        if (!config?.isFixedOptions) {
+            setActivetedOptions(currentOptions)
+        }
     }, [mode])
 
     const currentOptions = useMemo(() => {
