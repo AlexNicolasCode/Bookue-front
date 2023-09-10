@@ -1,3 +1,4 @@
+import { useEffect, useMemo, useState } from "react"
 import { faMinus, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
@@ -21,6 +22,20 @@ type OptionsProps = {
 
 export function Options ({ options, config }: OptionsProps) {
     const { mode, changeMode } = useModeController()
+    const [activetedOptions, setActivetedOptions]= useState<Option[]>(options)
+
+    useEffect(() => {
+        setActivetedOptions(currentOptions)
+    }, [mode])
+
+    const currentOptions = useMemo(() => {
+        const optionsMapper = {
+            [Modes.DeleteMode]: [Option.DeleteNote], 
+            [Modes.AddMode]: [Option.AddNote],
+            [Modes.DefaultMode]: options,
+        }
+        return optionsMapper[mode]
+    }, [mode])
 
     const getOptionConfig = (option: Option) => {
         const optionConfigs = {
@@ -53,7 +68,7 @@ export function Options ({ options, config }: OptionsProps) {
     }
 
     const renderActivetedOptions = () => {
-        return options.map((option, index) => {
+        return activetedOptions.map((option, index) => {
             const {
                 icon,  
                 IconSupport,
