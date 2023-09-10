@@ -10,8 +10,19 @@ type OptionsProps = {
 
 const getConfigByMode = (mode: Modes): string => {
     const configMapper = {
-        [Modes.AddMode]: 'height: 60%;',
-        [Modes.DefaultMode]: 'height: 10%',
+        [Modes.AddMode]: `
+            flex-direction: column;
+            height: calc(60% - 2rem);
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+        `,
+        [Modes.DefaultMode]: `
+            height: 10%;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 0 1rem;
+        `,
     }
     return configMapper[mode ?? Modes.DefaultMode]
 }
@@ -20,10 +31,17 @@ export const OptionsStyled = styled.section<OptionsProps>`
     background-color: ${globalColors.white};
     padding: 0 1rem;
     display: flex;
-    justify-content: flex-end;
-    align-items: center;
     ${({ mode }) => getConfigByMode(mode)};
 `
+
+export const AddNoteInput = styled.textarea`
+    width: calc(100% - 2rem);
+    height: 75%;
+    padding: 1rem;
+    resize: none;
+    background-color: ${globalColors.field};
+    border: 1px ${globalColors.primary} solid;
+` 
 
 const defaultButtonStyles = css`
     width: 2rem;

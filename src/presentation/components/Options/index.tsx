@@ -5,7 +5,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useModeController } from "@/presentation/hook"
 import { Modes } from "@/presentation/contexts"
 
-import { AddNoteOptionStyled, DeleteModeOptionStyled, OptionsStyled, RemoveNoteOptionStyled } from "./styles"
+import {
+    AddNoteInput,
+    AddNoteOptionStyled,
+    DeleteModeOptionStyled,
+    OptionsStyled,
+    RemoveNoteOptionStyled,
+} from "./styles"
 
 export enum Option {
     DeleteNote,
@@ -90,8 +96,13 @@ export function Options ({ options, config }: OptionsProps) {
         })
     }
 
+    const renderAddNoteInput = () => (
+        <AddNoteInput />
+    )
+
     const renderOptionsByMode = (mode: Modes) => (
         <OptionsStyled mode={mode}>
+            {mode === Modes.AddMode && renderAddNoteInput()}
             {renderActivetedOptions()}
         </OptionsStyled>
     )
