@@ -5,7 +5,7 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { NoteModel } from "@/domain/models";
 import { Options, Option } from "../Options";
 import { Modes } from "@/presentation/contexts";
-import { useModeController } from "@/presentation/hook";
+import { useModeController, useTextConverter } from "@/presentation/hook";
 
 import {
     AddNoteOptionStyled,
@@ -22,7 +22,10 @@ type NoteListProps = {
  }
 
 export function NoteList ({ notes }: NoteListProps) {
+    const { truncateText } = useTextConverter()
     const { mode, changeMode } = useModeController()
+
+    const maxCharTruncate = 750
 
     const shouldHaveAddBook = useMemo(() => {
         if (mode !== Modes.DefaultMode) {
@@ -33,19 +36,10 @@ export function NoteList ({ notes }: NoteListProps) {
         return notesCount <= maxNotesBeforeHideAddBookButton
     }, [notes])
 
-    const getCuttedText = (text: string) => {
-        const maxChar = 750
-        if (text.length > maxChar) {
-            const partialText = text.slice(0, maxChar)
-            return `${partialText}...`
-        }
-        return text
-    }
-
     const renderNoteList = () => 
         <NoteListStyled>
             {notes.map((note, index) => {
-                const text = getCuttedText(note.text)
+                const text = truncateText(note.text, maxCharTruncate)
                 return (
                     <NoteStyled
                         id={note.id}
@@ -68,7 +62,7 @@ export function NoteList ({ notes }: NoteListProps) {
                         data-test-id={'notes-note-card-delete-mode'}
                         key={index}
                     >
-                        {getCuttedText(note.text)}
+                        {truncateText(note.text, maxCharTruncate)}
                     </NoteCustomModeStyled>
                     <OptionsNoteStyled>
                         <Options
@@ -85,7 +79,7 @@ export function NoteList ({ notes }: NoteListProps) {
     const renderNotesListAddMode = () => 
         <NoteListStyled mode={Modes.AddMode}>
             {notes.map((note, index) => {
-                const text = getCuttedText(note.text)
+                const text = truncateText(note.text, maxCharTruncate)
                 return (
                     <NoteStyled
                         id={note.id}
