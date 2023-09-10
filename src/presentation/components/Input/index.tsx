@@ -2,17 +2,28 @@ import { memo, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
-import { IconStyled, InputStyled, PasswordContainerStyled } from "./styles";
+import {
+    IconStyled,
+    InputStyled,
+    PasswordContainerStyled,
+    TextareaStyled,
+} from "./styles";
 
 type InputProps = {
-    type: string
-    placeholder: string
-    isWrongFill: boolean 
     setState: (fieldName: string, text: string) => void
-    min?: number
-    fieldName: string
-    testId?: string
     value: string
+    type?: string
+    placeholder?: string
+    isWrongFill?: boolean 
+    min?: number
+    fieldName?: string
+    testId?: string
+    style?: {
+        isBorded?: boolean
+        hasNoPadding?: boolean
+        height?: string
+        width?: string
+    }
 }
 
 function InputComponent({ 
@@ -24,6 +35,7 @@ function InputComponent({
     fieldName,
     testId,
     value,
+    style,
 }: InputProps) {
     const [isShowingPassword, setIsShowingPassword] = useState<boolean>()
     const fieldType = useRef(type)
@@ -57,13 +69,24 @@ function InputComponent({
                 onChange={(event) => setState(fieldName, event.target.value)}
                 value={value}
                 isPasswordField={isPasswordField}
+                {...style}
             />
             {renderLateralIcon()}
         </PasswordContainerStyled>
     )
 
-    const renderDefaultInput = () => (
-        <InputStyled
+    const renderDefaultInput = () => {
+        if (style && (style.height || style.width)) {
+            return <TextareaStyled
+                placeholder={placeholder}
+                isWrongFill={isWrongFill}
+                data-test-id={testId}
+                onChange={(event) => setState(fieldName, event.target.value)}
+                value={value}
+                {...style}
+            />
+        }
+        return <InputStyled
             type={fieldType.current}
             placeholder={placeholder}
             isWrongFill={isWrongFill}
@@ -71,8 +94,9 @@ function InputComponent({
             min={min}
             onChange={(event) => setState(fieldName, event.target.value)}
             value={value}
+            {...style}
         />
-    )
+    }
 
     return isPasswordField ? renderPasswordInput() : renderDefaultInput()
 }
