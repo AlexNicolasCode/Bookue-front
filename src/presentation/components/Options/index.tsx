@@ -6,9 +6,8 @@ import { useModeController } from "@/presentation/hook"
 import { Modes } from "@/presentation/contexts"
 
 import {
-    AddNoteInput,
     AddNoteOptionStyled,
-    DeleteModeOptionStyled,
+    DeleteOptionStyled,
     OptionsStyled,
     RemoveNoteOptionStyled,
 } from "./styles"
@@ -49,19 +48,22 @@ export function Options ({ options, config }: OptionsProps) {
     const getOptionConfig = (option: Option) => {
         const optionConfigs = {
             [Option.DeleteNote]: {
-                IconSupport: DeleteModeOptionStyled,
+                IconSupport: DeleteOptionStyled,
                 testId: 'delete-mode-button',
                 icon: faTrash,
+                isActive: mode === Modes.DeleteMode,
             },
             [Option.AddNote]: {
                 IconSupport: AddNoteOptionStyled,
                 testId: 'add-mode-button',
                 icon: faPlus,
+                isActive: mode === Modes.AddMode,
             },
             [Option.RemoveNote]: {
                 IconSupport: RemoveNoteOptionStyled,
                 testId: 'remove-note-button',
                 icon: faMinus,
+                isActive: false,
             },
         }
         return optionConfigs[option]
@@ -81,11 +83,12 @@ export function Options ({ options, config }: OptionsProps) {
             const {
                 icon,  
                 IconSupport,
+                isActive,
                 testId,
             } = getOptionConfig(option)
             return (
                 <IconSupport
-                    mode={mode}
+                    isActive={isActive}
                     data-test-id={`notes-${testId}`}
                     onClick={() => handleModeByIconClick(option)}
                     key={index}
@@ -96,13 +99,8 @@ export function Options ({ options, config }: OptionsProps) {
         })
     }
 
-    const renderAddNoteInput = () => (
-        <AddNoteInput />
-    )
-
-    const renderOptionsByMode = (mode: Modes) => (
-        <OptionsStyled mode={mode}>
-            {mode === Modes.AddMode && renderAddNoteInput()}
+    const renderOptions = () => (
+        <OptionsStyled>
             {renderActivetedOptions()}
         </OptionsStyled>
     )
@@ -111,7 +109,7 @@ export function Options ({ options, config }: OptionsProps) {
         if (!config?.hasBackground) {
             return <>{renderActivetedOptions()}</>
         }
-        return renderOptionsByMode(mode)
+        return renderOptions()
     }
 
     return getRender()
