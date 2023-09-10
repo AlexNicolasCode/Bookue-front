@@ -9,10 +9,12 @@ import { AddNoteOptionStyled, DeleteModeOptionStyled, OptionsStyled, RemoveNoteO
 
 type OptionsProps = {
     options?: Option[]
-    isWithoutBackground?: boolean
+    config?: {
+        hasBackground?: boolean
+    }
 }
 
-export function Options ({ isWithoutBackground, options }: OptionsProps) {
+export function Options ({ options, config: { hasBackground } }: OptionsProps) {
     const { mode, changeMode } = useModeController()
 
     const defaultOptions = useMemo(() => {
@@ -97,7 +99,7 @@ export function Options ({ isWithoutBackground, options }: OptionsProps) {
             [Modes.AddMode]: renderAddNoteField(),
             ['withoutBackground']: renderWithoutBackground(),
         }
-        return isWithoutBackground
+        return hasBackground
             ? renderMapper['withoutBackground']
             : renderMapper[Modes.DefaultMode]
     }

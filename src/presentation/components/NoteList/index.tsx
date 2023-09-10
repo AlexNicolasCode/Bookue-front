@@ -73,7 +73,9 @@ export function NoteList ({ notes }: NoteListProps) {
                     <OptionsNoteStyled>
                         <Options
                             options={[Option.RemoveNote]}
-                            isWithoutBackground={true}
+                            config={{
+                                hasBackground: true
+                            }}
                         />
                     </OptionsNoteStyled>
                 </ModeActivetedContainerStyled>
