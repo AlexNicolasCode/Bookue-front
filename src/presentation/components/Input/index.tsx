@@ -1,4 +1,4 @@
-import { memo, useRef, useState } from "react";
+import { Dispatch, memo, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
@@ -9,8 +9,14 @@ import {
     TextareaStyled,
 } from "./styles";
 
+type SetStateWithFieldName = {
+    fieldName?: string
+    text: string 
+} 
+
 type InputProps = {
-    setState: (fieldName: string, text: string) => void
+    setStateWithFieldName?: ({ fieldName, text }: SetStateWithFieldName) => void
+    setState?: Dispatch<string>
     value: string
     type?: string
     placeholder?: string
@@ -30,6 +36,7 @@ function InputComponent({
     type,
     placeholder,
     isWrongFill,
+    setStateWithFieldName,
     setState,
     min,
     fieldName,
@@ -39,6 +46,17 @@ function InputComponent({
 }: InputProps) {
     const [isShowingPassword, setIsShowingPassword] = useState<boolean>()
     const fieldType = useRef(type)
+
+    const handleSetState = ({ fieldName, text }: SetStateWithFieldName) => {
+        if (setState) {
+            setState(text)
+            return
+        }
+        if (setStateWithFieldName) {
+            setStateWithFieldName({ fieldName, text })
+            return
+        }
+    }
     
     const isPasswordField = /password/.test(fieldName)
 
@@ -66,7 +84,7 @@ function InputComponent({
                 placeholder={placeholder}
                 data-test-id={testId}
                 min={min}
-                onChange={(event) => setState(fieldName, event.target.value)}
+                onChange={(event) => handleSetState({ fieldName, text: event.target.value })}
                 value={value}
                 isPasswordField={isPasswordField}
                 {...style}
@@ -81,7 +99,7 @@ function InputComponent({
                 placeholder={placeholder}
                 isWrongFill={isWrongFill}
                 data-test-id={testId}
-                onChange={(event) => setState(fieldName, event.target.value)}
+                onChange={(event) => handleSetState({ fieldName, text: event.target.value })}
                 value={value}
                 {...style}
             />
@@ -92,7 +110,7 @@ function InputComponent({
             isWrongFill={isWrongFill}
             data-test-id={testId}
             min={min}
-            onChange={(event) => setState(fieldName, event.target.value)}
+            onChange={(event) => handleSetState({ fieldName, text: event.target.value })}
             value={value}
             {...style}
         />
