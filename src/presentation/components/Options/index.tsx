@@ -7,12 +7,6 @@ import { Modes, Option } from "@/presentation/contexts"
 
 import { AddNoteOptionStyled, DeleteModeOptionStyled, OptionsStyled, RemoveNoteOptionStyled } from "./styles"
 
-type OptionConfig = {
-    IconSupport: typeof DeleteModeOptionStyled | typeof AddNoteOptionStyled | typeof RemoveNoteOptionStyled
-    icon: typeof faTrash | typeof faPlus | typeof faMinus
-    testId?: string
-}
-
 type OptionsProps = {
     options?: Option[]
     isWithoutBackground?: boolean
@@ -21,7 +15,7 @@ type OptionsProps = {
 export function Options ({ isWithoutBackground, options }: OptionsProps) {
     const { mode, changeMode } = useModeController()
 
-    const defaultOptions: Option[] = useMemo(() => {
+    const defaultOptions = useMemo(() => {
         const optionsMapper = {
             [Modes.DeleteMode]: [Option.DeleteNote, Option.AddNote],
             [Modes.AddMode]: [Option.AddNote],
@@ -30,7 +24,7 @@ export function Options ({ isWithoutBackground, options }: OptionsProps) {
         return optionsMapper[mode]
     }, [mode])
 
-    const getOptionConfig = (option: Option): OptionConfig => {
+    const getOptionConfig = (option: Option) => {
         const optionConfigs = {
             [Option.DeleteNote]: {
                 IconSupport: DeleteModeOptionStyled,
@@ -39,6 +33,7 @@ export function Options ({ isWithoutBackground, options }: OptionsProps) {
             },
             [Option.AddNote]: {
                 IconSupport: AddNoteOptionStyled,
+                testId: 'add-mode-button',
                 icon: faPlus,
             },
             [Option.RemoveNote]: {
