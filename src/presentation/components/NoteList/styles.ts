@@ -1,17 +1,21 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 import { globalColors } from "@/presentation/styles/colors";
-import { Modes } from "@/presentation/contexts";
 
-type NodeListProps = {
-    mode?: Modes
-}
-
-export const NoteListStyled = styled.ul<NodeListProps>`
-    height: ${({ mode }) => mode === Modes.AddMode ? '40%' : '90%'};
+const noteListStyles = css`
     overflow-y: scroll;
     padding: 0 2rem;
     margin: 0;
+`
+
+export const NoteListDefault = styled.ul`
+    height: 90%;
+    ${noteListStyles}
+`
+
+export const NoteListAddMode = styled.ul`
+    height: 40%;
+    ${noteListStyles}
 `
 
 export const NoteStyled = styled.li`
@@ -29,23 +33,8 @@ export const TextStyled = styled.pre`
     white-space: pre-wrap;
 `
 
-type NoteCustomModeStyledProps = {
-    mode: Modes
-}
-
-const getBackgroundColorByMode = (mode: Modes) => {
-    const backgroundColorMapper = {
-        [Modes.DeleteMode]: '#F9ECE6'
-    }
-    const backgroundColorSelected = backgroundColorMapper[mode]
-    if (backgroundColorSelected) {
-        return backgroundColorSelected
-    }
-    return globalColors.field
-}
-
-export const NoteCustomModeStyled = styled.p<NoteCustomModeStyledProps>`
-    background-color: ${({ mode }) => getBackgroundColorByMode(mode)};
+export const NoteDelete = styled.p`
+    background-color: #F9ECE6;
     color: ${globalColors.dark};
     padding: 1rem;
     flex: 5;

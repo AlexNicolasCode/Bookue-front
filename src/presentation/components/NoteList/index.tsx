@@ -9,13 +9,14 @@ import { useModeController, useTextConverter } from "@/presentation/hook";
 
 import {
     AddNoteOptionStyled,
-    NoteListStyled,
     NoteStyled,
     OptionsStyled,
     OptionsNoteStyled,
-    NoteCustomModeStyled,
     ModeActivetedContainerStyled,
     TextStyled,
+    NoteDelete,
+    NoteListAddMode,
+    NoteListDefault,
 } from "./styles";
 
 type NoteListProps = {
@@ -38,7 +39,7 @@ export function NoteList ({ notes }: NoteListProps) {
     }, [notes])
 
     const renderNoteList = () => 
-        <NoteListStyled>
+        <NoteListDefault>
             {notes.map((note, index) => {
                 const text = truncateText(note.text, maxCharTruncate)
                 return (
@@ -53,20 +54,19 @@ export function NoteList ({ notes }: NoteListProps) {
                     </NoteStyled>
                 )
             })}
-        </NoteListStyled>
+        </NoteListDefault>
 
     const renderNotesListDeleteMode = () => 
-        <NoteListStyled>
+        <NoteListDefault>
             {notes.map((note, index) => 
                 <ModeActivetedContainerStyled>
-                    <NoteCustomModeStyled
+                    <NoteDelete
                         id={note.id}
-                        mode={mode}
                         data-test-id={'notes-note-card-delete-mode'}
                         key={index}
                     >
                         {truncateText(note.text, maxCharTruncate)}
-                    </NoteCustomModeStyled>
+                    </NoteDelete>
                     <OptionsNoteStyled>
                         <Options
                             options={[Option.RemoveNote]}
@@ -77,10 +77,10 @@ export function NoteList ({ notes }: NoteListProps) {
                     </OptionsNoteStyled>
                 </ModeActivetedContainerStyled>
             )}
-        </NoteListStyled>
+        </NoteListDefault>
 
     const renderNotesListAddMode = () => 
-        <NoteListStyled mode={Modes.AddMode}>
+        <NoteListAddMode>
             {notes.map((note, index) => {
                 const text = truncateText(note.text, maxCharTruncate)
                 return (
@@ -95,7 +95,7 @@ export function NoteList ({ notes }: NoteListProps) {
                     </NoteStyled>
                 )
             })}
-        </NoteListStyled>
+        </NoteListAddMode>
 
     const renderNoteListByMode = () => {
         const modeMapper = {
