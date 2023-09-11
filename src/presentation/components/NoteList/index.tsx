@@ -8,12 +8,12 @@ import { Modes } from "@/presentation/contexts";
 import { useModeController, useTextConverter } from "@/presentation/hook";
 
 import {
-    AddNoteOptionStyled,
-    NoteStyled,
-    OptionsStyled,
-    OptionsNoteStyled,
-    ModeActivetedContainerStyled,
-    TextStyled,
+    IconSupport,
+    Note,
+    OptionsAfterNoteList,
+    DeleteModeOptionsContainer,
+    DeleteModeContainer,
+    NoteText,
     NoteDelete,
     NoteListAddMode,
     NoteListDefault,
@@ -43,15 +43,15 @@ export function NoteList ({ notes }: NoteListProps) {
             {notes.map((note, index) => {
                 const text = truncateText(note.text, maxCharTruncate)
                 return (
-                    <NoteStyled
+                    <Note
                         id={note.id}
                         data-test-id={'notes-note-card'}
                         key={index}
                     >
-                        <TextStyled>
+                        <NoteText>
                             {text}
-                        </TextStyled>
-                    </NoteStyled>
+                        </NoteText>
+                    </Note>
                 )
             })}
         </NoteListDefault>
@@ -59,7 +59,7 @@ export function NoteList ({ notes }: NoteListProps) {
     const renderNotesListDeleteMode = () => 
         <NoteListDefault>
             {notes.map((note, index) => 
-                <ModeActivetedContainerStyled>
+                <DeleteModeContainer>
                     <NoteDelete
                         id={note.id}
                         data-test-id={'notes-note-card-delete-mode'}
@@ -67,15 +67,15 @@ export function NoteList ({ notes }: NoteListProps) {
                     >
                         {truncateText(note.text, maxCharTruncate)}
                     </NoteDelete>
-                    <OptionsNoteStyled>
+                    <DeleteModeOptionsContainer>
                         <Options
                             options={[Option.RemoveNote]}
                             config={{
                                 isFixedOptions: true,
                             }}
                         />
-                    </OptionsNoteStyled>
-                </ModeActivetedContainerStyled>
+                    </DeleteModeOptionsContainer>
+                </DeleteModeContainer>
             )}
         </NoteListDefault>
 
@@ -84,15 +84,15 @@ export function NoteList ({ notes }: NoteListProps) {
             {notes.map((note, index) => {
                 const text = truncateText(note.text, maxCharTruncate)
                 return (
-                    <NoteStyled
+                    <Note
                         id={note.id}
                         data-test-id={'notes-note-card'}
                         key={index}
                     >
-                        <TextStyled>
+                        <NoteText>
                             {text}
-                        </TextStyled>
-                    </NoteStyled>
+                        </NoteText>
+                    </Note>
                 )
             })}
         </NoteListAddMode>
@@ -110,11 +110,11 @@ export function NoteList ({ notes }: NoteListProps) {
         <>
             {renderNoteListByMode()}
             {shouldHaveAddBook && 
-                <OptionsStyled>
-                    <AddNoteOptionStyled onClick={() => changeMode(Modes.AddMode)}>
+                <OptionsAfterNoteList>
+                    <IconSupport onClick={() => changeMode(Modes.AddMode)}>
                         <FontAwesomeIcon icon={faPlus}/>
-                    </AddNoteOptionStyled>
-                </OptionsStyled>
+                    </IconSupport>
+                </OptionsAfterNoteList>
             }
         </>
     )

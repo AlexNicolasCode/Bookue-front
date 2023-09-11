@@ -18,7 +18,7 @@ export const NoteListAddMode = styled.ul`
     ${noteListStyles}
 `
 
-export const NoteStyled = styled.li`
+export const Note = styled.li`
     background-color: ${globalColors.field};
     color: ${globalColors.dark};
     padding: 1rem;
@@ -27,7 +27,7 @@ export const NoteStyled = styled.li`
     margin: 0 0 1rem 0;
 `
 
-export const TextStyled = styled.pre`
+export const NoteText = styled.pre`
     font-family: 'Poppins';
     margin: 0;
     white-space: pre-wrap;
@@ -43,26 +43,24 @@ export const NoteDelete = styled.p`
     margin: 0;
 `
 
-export const ModeActivetedContainerStyled = styled.li`
+export const DeleteModeContainer = styled.li`
     display: flex;
     justify-content: space-between;
     min-height: 1rem;
     margin: 0 0 1rem 0;
 `
 
-export const OptionsNoteStyled = styled.section`
+export const DeleteModeOptionsContainer = styled.section`
     display: flex;
     align-items: center;
-    flex: 1;
 `
 
-export const OptionsStyled = styled.section`
+export const OptionsAfterNoteList = styled.section`
     display: flex;
     justify-content: center;
-    width: 100%;
 `
 
-export const AddNoteOptionStyled = styled.button`
+export const IconSupport = styled.button`
     color: ${globalColors.white};
     width: 2rem;
     height: 2rem;
