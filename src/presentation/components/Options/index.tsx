@@ -69,7 +69,7 @@ export function Options ({ options, config }: OptionsProps) {
         return optionConfigs[option]
     }
 
-    const handleModeByIconClick = (option: Option) => {
+    const handleMode = (option: Option) => {
         const modeMapper = {
             [Option.DeleteNote]: () => changeMode(Modes.DeleteMode),
             [Option.AddNote]: () => changeMode(Modes.AddMode),
@@ -90,7 +90,7 @@ export function Options ({ options, config }: OptionsProps) {
                 <IconSupport
                     isActive={isActive}
                     data-test-id={`notes-${testId}`}
-                    onClick={() => handleModeByIconClick(option)}
+                    onClick={() => handleMode(option)}
                     key={index}
                 >
                     <FontAwesomeIcon icon={icon}/>
