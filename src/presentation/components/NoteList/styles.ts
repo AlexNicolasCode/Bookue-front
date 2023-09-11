@@ -54,16 +54,3 @@ export const DeleteModeOptionsContainer = styled.section`
     display: flex;
     align-items: center;
 `
-
-export const OptionsAfterNoteList = styled.section`
-    display: flex;
-    justify-content: center;
-`
-
-export const IconSupport = styled.button`
-    color: ${globalColors.white};
-    width: 2rem;
-    height: 2rem;
-    border-radius: 100%;
-    background-color: ${globalColors.primary};
-`

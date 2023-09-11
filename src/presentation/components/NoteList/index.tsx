@@ -1,16 +1,10 @@
-import { useMemo } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
-
 import { NoteModel } from "@/domain/models";
 import { Options, Option } from "../Options";
 import { Modes } from "@/presentation/contexts";
 import { useModeController, useTextConverter } from "@/presentation/hook";
 
 import {
-    IconSupport,
     Note,
-    OptionsAfterNoteList,
     DeleteModeOptionsContainer,
     DeleteModeContainer,
     NoteText,
@@ -25,18 +19,9 @@ type NoteListProps = {
 
 export function NoteList ({ notes }: NoteListProps) {
     const { truncateText } = useTextConverter()
-    const { mode, changeMode } = useModeController()
+    const { mode } = useModeController()
 
     const maxCharTruncate = 750
-
-    const shouldHaveAddBook = useMemo(() => {
-        if (mode !== Modes.DefaultMode) {
-            return false
-        }
-        const notesCount = notes.length
-        const maxNotesBeforeHideAddBookButton = 3
-        return notesCount <= maxNotesBeforeHideAddBookButton
-    }, [notes])
 
     const renderNoteList = () => 
         <NoteListDefault>
@@ -106,16 +91,5 @@ export function NoteList ({ notes }: NoteListProps) {
         return modeMapper[mode]()
     }
 
-    return (
-        <>
-            {renderNoteListByMode()}
-            {shouldHaveAddBook && 
-                <OptionsAfterNoteList>
-                    <IconSupport onClick={() => changeMode(Modes.AddMode)}>
-                        <FontAwesomeIcon icon={faPlus}/>
-                    </IconSupport>
-                </OptionsAfterNoteList>
-            }
-        </>
-    )
+    return renderNoteListByMode()
 }
