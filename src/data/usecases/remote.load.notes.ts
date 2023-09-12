@@ -1,17 +1,14 @@
 import { UnexpectedError } from "@/domain/errors";
 import { LoadNotes } from "@/domain/usecases";
 import { HttpClient, HttpStatusCode } from "@/data/protocols/http";
-import { LoadCookie } from "@/data/protocols/cookie";
 
 export class RemoteLoadNotes implements LoadNotes {
     constructor(
           private readonly url: string,
-          private readonly loadCookie: LoadCookie,
           private readonly httpClient: HttpClient<HttpResponseLoadNotes>,
     ) {}
   
-    async loadNotes (bookId: string): Promise<LoadNotes.Result> {
-        const accessToken = await this.loadCookie.load('bookue-user')
+    async loadNotes ({ accessToken, bookId }: LoadNotes.Params): Promise<LoadNotes.Result> {
         const httpResponse = await this.httpClient.request({
             url: this.url,
             method: 'post',
@@ -35,7 +32,7 @@ export class RemoteLoadNotes implements LoadNotes {
             })
         })
         switch (httpResponse.statusCode) {
-            case HttpStatusCode.ok: return httpResponse.body.data.loadNotes;
+            case HttpStatusCode.ok: return httpResponse.body.data.loadNotes ?? [];
             case HttpStatusCode.noContent: return [];
             default: throw new UnexpectedError();
         }
