@@ -2,7 +2,8 @@ import { faker } from "@faker-js/faker";
 
 import { LoadNotes } from "@/domain/usecases";
 import { LoadCookie } from "@/data/protocols/cookie";
-import { HttpClient } from "@/data/protocols/http";
+import { HttpClient, HttpStatusCode } from "@/data/protocols/http";
+import { UnexpectedError } from "@/domain/errors";
 
 import { CookieManagerAdapterSpy } from "@/tests/infra/mocks";
 import { throwError } from "@/tests/main/domain/mocks/test.helpers";
@@ -27,7 +28,7 @@ export class RemoteLoadNotes implements LoadNotes {
             body: JSON.stringify({
                 query: `
                     query LoadNotes($bookId: String!) {
-                        addBook(bookId: $bookId) {
+                        loadNotes(bookId: $bookId) {
                             id
                             text
                         }
@@ -39,13 +40,16 @@ export class RemoteLoadNotes implements LoadNotes {
                 },
             })
         })
-        return []
+        switch (httpResponse.statusCode) {
+            case HttpStatusCode.ok: return httpResponse.body.data.loadNotes;
+            default: throw new UnexpectedError();
+        }
     }
 }
 
 export type HttpResponseLoadNotes = {
     data: {
-        loadAllBooks: LoadNotes.Result
+        loadNotes: LoadNotes.Result
     }
 }
 
@@ -88,5 +92,22 @@ describe('RemoteLoadNotes', () => {
         const promise = sut.loadNotes(fakeBookId)
         
         await expect(promise).rejects.toThrow()
+    });
+
+    test('Should throw UnexpectedError when HttpRequest return an unexpected status code', async () => {
+        const { sut, httpClientSpy } = makeSut()
+        const fakeBookId = faker.datatype.uuid()
+        httpClientSpy.response = {
+            statusCode: faker.internet.httpStatusCode({
+                types: [
+                    'clientError',
+                    'serverError',
+                ]
+            })
+        }
+
+        const promise = sut.loadNotes(fakeBookId)
+        
+        await expect(promise).rejects.toEqual(new UnexpectedError())
     });
 });
