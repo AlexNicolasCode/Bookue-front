@@ -42,6 +42,7 @@ export class RemoteLoadNotes implements LoadNotes {
         })
         switch (httpResponse.statusCode) {
             case HttpStatusCode.ok: return httpResponse.body.data.loadNotes;
+            case HttpStatusCode.noContent: return [];
             default: throw new UnexpectedError();
         }
     }
@@ -109,5 +110,17 @@ describe('RemoteLoadNotes', () => {
         const promise = sut.loadNotes(fakeBookId)
         
         await expect(promise).rejects.toEqual(new UnexpectedError())
+    });
+
+    test('Should clean array when HttpRequest return 204 No Content status code', async () => {
+        const { sut, httpClientSpy } = makeSut()
+        const fakeBookId = faker.datatype.uuid()
+        httpClientSpy.response = {
+            statusCode: HttpStatusCode.noContent,
+        }
+
+        const result = await sut.loadNotes(fakeBookId)
+        
+        expect(result).toEqual([])
     });
 });
