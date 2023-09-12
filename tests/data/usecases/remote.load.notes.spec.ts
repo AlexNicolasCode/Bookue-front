@@ -49,12 +49,29 @@ export type HttpResponseLoadNotes = {
     }
 }
 
+type SutTypes = {
+    sut: RemoteLoadNotes
+    url: string
+    loadCookieSpy: CookieManagerAdapterSpy
+    httpClientSpy: HttpClientSpy
+}
+
+const makeSut = (): SutTypes => {
+    const url = faker.datatype.uuid()
+    const httpClientSpy = new HttpClientSpy()
+    const loadCookieSpy = new CookieManagerAdapterSpy()
+    const sut = new RemoteLoadNotes(url, loadCookieSpy, httpClientSpy)
+    return {
+        sut,
+        url,
+        httpClientSpy,
+        loadCookieSpy,
+    }
+}
+
 describe('RemoteLoadNotes', () => {
     test('Should throw if LoadCookie throws', async () => {
-        const fakeUrl = faker.datatype.uuid()
-        const httpClientSpy = new HttpClientSpy()
-        const loadCookieSpy = new CookieManagerAdapterSpy()
-        const sut = new RemoteLoadNotes(fakeUrl, loadCookieSpy, httpClientSpy)
+        const { sut, loadCookieSpy } = makeSut()
         const fakeBookId = faker.datatype.uuid()
         jest.spyOn(loadCookieSpy, 'load').mockImplementationOnce(throwError)
 
@@ -64,10 +81,7 @@ describe('RemoteLoadNotes', () => {
     });
 
     test('Should throw if HttpClient throws', async () => {
-        const fakeUrl = faker.datatype.uuid()
-        const httpClientSpy = new HttpClientSpy()
-        const loadCookieSpy = new CookieManagerAdapterSpy()
-        const sut = new RemoteLoadNotes(fakeUrl, loadCookieSpy, httpClientSpy)
+        const { sut, httpClientSpy } = makeSut()
         const fakeBookId = faker.datatype.uuid()
         jest.spyOn(httpClientSpy, 'request').mockImplementationOnce(throwError)
 
