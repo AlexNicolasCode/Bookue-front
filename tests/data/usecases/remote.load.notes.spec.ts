@@ -8,6 +8,7 @@ import { UnexpectedError } from "@/domain/errors";
 import { CookieManagerAdapterSpy } from "@/tests/infra/mocks";
 import { throwError } from "@/tests/main/domain/mocks/test.helpers";
 import { HttpClientSpy } from "@/tests/data/mocks";
+import { NoteModel } from "@/domain/models";
 
 export class RemoteLoadNotes implements LoadNotes {
     constructor(
@@ -122,5 +123,26 @@ describe('RemoteLoadNotes', () => {
         const result = await sut.loadNotes(fakeBookId)
         
         expect(result).toEqual([])
+    });
+
+    test('Should return notes on success', async () => {
+        const { sut, httpClientSpy } = makeSut()
+        const fakeBookId = faker.datatype.uuid()
+        const fakeNote: NoteModel = {
+            id: faker.datatype.uuid(),
+            text: faker.random.words(),
+        }
+        httpClientSpy.response = {
+            statusCode: HttpStatusCode.ok,
+            body: {
+                data: {
+                    loadNotes: [fakeNote]
+                }
+            }
+        }
+
+        const result = await sut.loadNotes(fakeBookId)
+        
+        expect(result).toEqual([fakeNote])
     });
 });
