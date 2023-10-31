@@ -44,11 +44,10 @@ export function NoteList ({ notes }: NoteListProps) {
     const renderNotesListDeleteMode = () => 
         <NoteListDefault>
             {notes.map((note, index) => 
-                <DeleteModeContainer>
+                <DeleteModeContainer key={index}>
                     <NoteDelete
                         id={note.id}
                         data-test-id={'notes-note-card-delete-mode'}
-                        key={index}
                     >
                         {truncateText(note.text, maxCharTruncate)}
                     </NoteDelete>
