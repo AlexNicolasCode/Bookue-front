@@ -95,4 +95,14 @@ describe('RemoteAddNote', () => {
         'Authorization': `Bearer ${accessToken}`,
     })
   });
+
+  test('should throw if HttpClient throws', async () => {
+    const { sut, httpClientSpy } = makeSut();
+    const fakeRequest = mockAddNoteParams();
+    jest.spyOn(httpClientSpy, 'request').mockImplementationOnce(throwError)
+
+    const promise = sut.add(fakeRequest);
+
+    await expect(promise).rejects.toThrow();
+  });
 });
