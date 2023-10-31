@@ -15,9 +15,10 @@ import {
 
 type NoteListProps = {
     notes: NoteModel[]
+    deleteNote: (nodeId: string) => void
  }
 
-export function NoteList ({ notes }: NoteListProps) {
+export function NoteList ({ notes, deleteNote }: NoteListProps) {
     const { truncateText } = useTextConverter()
     const { mode } = useModeController()
 
@@ -51,7 +52,7 @@ export function NoteList ({ notes }: NoteListProps) {
                     >
                         {truncateText(note.text, maxCharTruncate)}
                     </NoteDelete>
-                    <DeleteModeOptionsContainer>
+                    <DeleteModeOptionsContainer onClick={() => deleteNote(note.id)}>
                         <Options
                             options={[Option.RemoveNote]}
                             config={{

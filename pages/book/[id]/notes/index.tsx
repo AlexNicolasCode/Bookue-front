@@ -1,5 +1,7 @@
 import { GetServerSideProps } from "next";
 import { useEffect, useState } from "react";
+import { faker } from "@faker-js/faker";
+
 
 import {
     Header,
@@ -39,19 +41,24 @@ export default function NotesPage({ notes }: NotesPageProps) {
     const addNoteInList = () => {
         setListedNotes([
             {
-                id: '100',
+                id: faker.datatype.uuid(),
                 text: newNote,
             },
             ...listedNotes,
         ])
         setNewNote('')
     }
+    
+    const deleteNote = (noteId: string) => {
+        const updatedNotes = listedNotes.filter((note) => note.id !== noteId)
+        setListedNotes(updatedNotes)
+    }
 
     return (
         <>
             <Header/>
             <MainContent>
-                <NoteList notes={listedNotes}/>
+                <NoteList notes={listedNotes} deleteNote={deleteNote} />
                 {mode === Modes.AddMode &&
                     <AddNoteContainer>
                         <Input
