@@ -7,6 +7,7 @@ import { HttpClient } from '../protocols/http';
 import { CookieManagerAdapterSpy } from '@/tests/infra/mocks';
 import { mockAddNoteParams } from '@/tests/main/domain/mocks';
 import { HttpClientSpy } from '../mocks';
+import { throwError } from '@/tests/main/domain/mocks/test.helpers';
   
 export class RemoteAddNote implements AddNote {
     constructor(
@@ -68,6 +69,16 @@ describe('RemoteAddNote', () => {
     await sut.add(fakeRequest);
 
     expect(loadCookieSpy.key).toBe('bookue-user');
+  });
+
+  test('should throw if CookieManagerAdapterSpy throws', async () => {
+    const { sut, loadCookieSpy } = makeSut();
+    const fakeRequest = mockAddNoteParams();
+    jest.spyOn(loadCookieSpy, 'load').mockImplementationOnce(throwError)
+
+    const promise = sut.add(fakeRequest);
+
+    await expect(promise).rejects.toThrow();
   });
 
   test('should call HttpClient with correct params', async () => {
