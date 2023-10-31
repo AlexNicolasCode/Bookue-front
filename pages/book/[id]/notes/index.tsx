@@ -1,7 +1,15 @@
 import { GetServerSideProps } from "next";
 import { useEffect, useState } from "react";
 
-import { Header, Input, MainContent, NoteList, Option, Options } from "@/presentation/components";
+import {
+    Header,
+    Input,
+    MainContent,
+    NoteList,
+    Option,
+    Options,
+    AddNoteContainer,
+} from "@/presentation/components";
 import { NoteModel } from "@/domain/models";
 import { useModeController } from "@/presentation/hook";
 import { Modes } from "@/presentation/contexts";
