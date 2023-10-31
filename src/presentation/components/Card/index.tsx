@@ -30,7 +30,7 @@ export function Card({ book }: CardProps) {
             </DescriptionStyled>
 
             <OptionsStyled>
-                <Link href={`/book/${book.id}/note`}>
+                <Link href={`/book/${book.id}/notes`}>
                     <NotesButtonStyled data-test-id="home-book-notes-button">
                         Notes
                     </NotesButtonStyled>
