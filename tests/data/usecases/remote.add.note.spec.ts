@@ -38,28 +38,42 @@ export class RemoteAddNote implements AddNote {
         })
       })
     }
-  }
+}
+
+type SutTypes = {
+    sut: RemoteAddNote
+    url: string
+    loadCookieSpy: CookieManagerAdapterSpy
+    httpClientSpy: HttpClientSpy
+}
+
+const makeSut = (): SutTypes => {
+    const loadCookieSpy = new CookieManagerAdapterSpy();
+    const url = faker.internet.url();
+    const httpClientSpy = new HttpClientSpy();
+    const sut = new RemoteAddNote(loadCookieSpy, url, httpClientSpy);
+    return {
+        sut,
+        url,
+        loadCookieSpy,
+        httpClientSpy,
+    }
+}
 
 describe('RemoteAddNote', () => {
   test('should call CookieManagerAdapterSpy with correct key', async () => {
-    const cookieManagerAdapterSpy = new CookieManagerAdapterSpy();
-    const url = faker.internet.url();
-    const httpClientSpy = new HttpClientSpy();
-    const sut = new RemoteAddNote(cookieManagerAdapterSpy, url, httpClientSpy);
+    const { sut, loadCookieSpy } = makeSut();
     const fakeRequest = mockAddNoteParams();
 
     await sut.add(fakeRequest);
 
-    expect(cookieManagerAdapterSpy.key).toBe('bookue-user');
+    expect(loadCookieSpy.key).toBe('bookue-user');
   });
 
   test('should call HttpClient with correct params', async () => {
-    const cookieManagerAdapterSpy = new CookieManagerAdapterSpy();
-    const url = faker.internet.url();
-    const httpClientSpy = new HttpClientSpy();
-    const sut = new RemoteAddNote(cookieManagerAdapterSpy, url, httpClientSpy);
+    const { sut, loadCookieSpy, httpClientSpy, url } = makeSut();
     const fakeRequest = mockAddNoteParams();
-    const accessToken = cookieManagerAdapterSpy.result;
+    const accessToken = loadCookieSpy.result;
 
     await sut.add(fakeRequest);
 
