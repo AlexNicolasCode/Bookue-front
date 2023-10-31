@@ -1,50 +1,11 @@
 import { faker } from '@faker-js/faker';
 
-import { AddNote } from '@/domain/usecases';
-import { LoadCookie } from '../protocols/cookie';
-import { HttpClient, HttpStatusCode } from '@/data/protocols/http';
+import { RemoteAddNote } from '@/data/usecases';
 
 import { CookieManagerAdapterSpy } from '@/tests/infra/mocks';
 import { mockAddNoteParams } from '@/tests/main/domain/mocks';
 import { HttpClientSpy } from '../mocks';
 import { throwError } from '@/tests/main/domain/mocks/test.helpers';
-import { UnexpectedError } from '@/domain/errors';
-  
-export class RemoteAddNote implements AddNote {
-    constructor(
-        private readonly loadCookie: LoadCookie,
-        private readonly url: string,
-        private readonly httpClient: HttpClient,
-    ) {}
-  
-    async add(params: AddNote.Params): Promise<void> {
-      const accessToken = await this.loadCookie.load('bookue-user')
-      const httpResponse = await this.httpClient.request({
-        url: this.url,
-        method: 'post',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify({
-          query: `
-              mutation AddNote($bookId: String!, $text: String!) {
-                  addNote(bookId: $bookId, text: $text!) {}
-              }
-            `,
-  
-          variables: { 
-            bookId: params.bookId,
-            text: params.text,
-          },
-        })
-      })
-      switch (httpResponse.statusCode) {
-        case HttpStatusCode.ok: return
-        default: throw new UnexpectedError()
-      }
-    }
-}
 
 type SutTypes = {
     sut: RemoteAddNote
