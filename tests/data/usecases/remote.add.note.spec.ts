@@ -120,4 +120,13 @@ describe('RemoteAddNote', () => {
 
     await expect(promise).rejects.toThrow();
   });
+
+  test('should return none on success', async () => {
+    const { sut } = makeSut();
+    const fakeRequest = mockAddNoteParams();
+
+    const response = await sut.add(fakeRequest);
+
+    expect(response).toBeUndefined();
+  });
 });
