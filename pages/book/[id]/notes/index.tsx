@@ -5,8 +5,7 @@ import { Header, Input, MainContent, NoteList, Option, Options } from "@/present
 import { NoteModel } from "@/domain/models";
 import { useModeController } from "@/presentation/hook";
 import { Modes } from "@/presentation/contexts";
-
-import { AddNoteContainer } from "./styles";
+import { makeRemoteLoadNotes } from "@/main/factory/usecases";
 
 type NotesPageProps = {
     notes: NoteModel[]
@@ -69,21 +68,14 @@ export default function NotesPage({ notes }: NotesPageProps) {
     )
 }
 
-export const getServerSideProps: GetServerSideProps = async () => {
-    const note: NoteModel = {
-        id: '111',
-        text: 'testing testing  testing testingtestingtesting testing testing testing testing testing testingtesting testing testing testing'
-    }
+export const getServerSideProps: GetServerSideProps = async (context) => {
+    const accessToken = context.req.cookies['bookue-user'].toString()
+    const bookId = context.params['id'].toString()
+    const remoteLoadNotes = makeRemoteLoadNotes()
+    const notes = await remoteLoadNotes.loadNotes({ accessToken, bookId })
     return {
         props: {
-            notes: [
-                note,
-                note,
-                note,
-                note,
-                note,
-                note,
-            ],
+            notes,
         },
     }
 }
