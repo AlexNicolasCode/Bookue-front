@@ -22,7 +22,7 @@ export class RemoteAddNote implements AddNote {
         body: JSON.stringify({
           query: `
               mutation AddNote($bookId: String!, $text: String!) {
-                  addNote(bookId: $bookId, text: $text!) {}
+                addNote(bookId: $bookId, text: $text)
               }
             `,
   
