@@ -2,12 +2,13 @@ import { faker } from '@faker-js/faker';
 
 import { AddNote } from '@/domain/usecases';
 import { LoadCookie } from '../protocols/cookie';
-import { HttpClient } from '../protocols/http';
+import { HttpClient, HttpStatusCode } from '@/data/protocols/http';
 
 import { CookieManagerAdapterSpy } from '@/tests/infra/mocks';
 import { mockAddNoteParams } from '@/tests/main/domain/mocks';
 import { HttpClientSpy } from '../mocks';
 import { throwError } from '@/tests/main/domain/mocks/test.helpers';
+import { UnexpectedError } from '@/domain/errors';
   
 export class RemoteAddNote implements AddNote {
     constructor(
@@ -18,7 +19,7 @@ export class RemoteAddNote implements AddNote {
   
     async add(params: AddNote.Params): Promise<void> {
       const accessToken = await this.loadCookie.load('bookue-user')
-      await this.httpClient.request({
+      const httpResponse = await this.httpClient.request({
         url: this.url,
         method: 'post',
         headers: {
@@ -38,6 +39,10 @@ export class RemoteAddNote implements AddNote {
           },
         })
       })
+      switch (httpResponse.statusCode) {
+        case HttpStatusCode.ok: return
+        default: throw new UnexpectedError()
+      }
     }
 }
 
@@ -100,6 +105,16 @@ describe('RemoteAddNote', () => {
     const { sut, httpClientSpy } = makeSut();
     const fakeRequest = mockAddNoteParams();
     jest.spyOn(httpClientSpy, 'request').mockImplementationOnce(throwError)
+
+    const promise = sut.add(fakeRequest);
+
+    await expect(promise).rejects.toThrow();
+  });
+
+  test('should throw if HttpClient return status code that not 200', async () => {
+    const { sut, httpClientSpy } = makeSut();
+    const fakeRequest = mockAddNoteParams();
+    httpClientSpy.response.statusCode = 500
 
     const promise = sut.add(fakeRequest);
 
