@@ -1,7 +1,10 @@
+import { useEffect } from "react";
+import { useRouter } from "next/router";
+
 import { NoteModel } from "@/domain/models";
 import { Options, Option } from "../Options";
 import { Modes } from "@/presentation/contexts";
-import { useModeController, useTextConverter } from "@/presentation/hook";
+import { useModeController, useNote, useTextConverter } from "@/presentation/hook";
 
 import {
     Note,
@@ -14,13 +17,18 @@ import {
 } from "./styles";
 
 type NoteListProps = {
-    notes: NoteModel[]
-    deleteNote: (nodeId: string) => void
+    ssrNotes: NoteModel[]
  }
 
-export function NoteList ({ notes, deleteNote }: NoteListProps) {
+export function NoteList ({ ssrNotes }: NoteListProps) {
+    const router = useRouter()
     const { truncateText } = useTextConverter()
     const { mode } = useModeController()
+    const { notes, setNotes, deleteNote } = useNote()
+
+    useEffect(() => {
+        setNotes(ssrNotes)
+    }, [router.pathname])
 
     const maxCharTruncate = 750
 
