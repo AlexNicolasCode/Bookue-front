@@ -1,19 +1,25 @@
 import { ReactNode, useEffect, useState } from "react"
-import { faker } from "@faker-js/faker"
+import { useRouter } from "next/router"
 
 import { NoteContext } from "./context"
 import { NoteModel } from "@/domain/models"
 import { useModeController } from "@/presentation/hook"
 import { Modes } from "../mode"
+import { makeRemoteAddNote, makeRemoteLoadNotes } from "@/main/factory/usecases"
+import { makeCookieManagerAdapter } from "@/main/factory/cookie"
 
 type NoteProviderProps = {
     children: ReactNode
 }
 
-export const NoteProvider = ({ children }: NoteProviderProps) => {   
+export const NoteProvider = ({ children }: NoteProviderProps) => {
+    const router = useRouter()
     const [notes, setNotes] = useState<NoteModel[]>([])
     const [newNote, setNewNote] = useState<string>('')
     const { mode, lastMode } = useModeController()
+    const remoteAddNote = makeRemoteAddNote()
+    const remoteLoadNotes = makeRemoteLoadNotes()
+    const cookieManager = makeCookieManagerAdapter()
 
     const shouldAddNoteInList =
         newNote
@@ -27,14 +33,19 @@ export const NoteProvider = ({ children }: NoteProviderProps) => {
         }
     }, [mode])
 
-    const addNote = () => {
-        setNotes([
-            {
-                id: faker.datatype.uuid(),
-                text: newNote,
-            },
-            ...notes,
-        ])
+    const addNote = async () => {
+        const bookId = router.query.id.toString()
+        await remoteAddNote.add({
+            bookId,
+            text: newNote,
+        })
+        const accessToken = await cookieManager.load('bookue-user')
+        const notes = await remoteLoadNotes.loadNotes({
+            bookId,
+            accessToken,
+        })
+        setNotes(notes)
+        setNewNote('')
     }
     
     const deleteNote = (noteId: string) => {
