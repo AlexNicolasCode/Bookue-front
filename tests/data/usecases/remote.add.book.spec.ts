@@ -5,25 +5,25 @@ import { UnexpectedError } from '@/domain/errors'
 import { HttpStatusCode } from '@/data/protocols/http'
 
 import { HttpClientSpy } from '../mocks'
-import { CookieManagerAdapterSpy } from '@/tests/infra/mocks'
+import { LoadCookieSpy } from '@/tests/infra/mocks'
 import { throwError } from '@/tests/main/domain/mocks/test.helpers'
 
 type SutTypes = {
     sut: RemoteAddBook
     url: string
-    cookieManagerAdapterSpy: CookieManagerAdapterSpy
+    loadCookieSpy: LoadCookieSpy
     httpClientSpy: HttpClientSpy
 }
 
 const makeSut = (): SutTypes => {
     const url = faker.internet.url()
-    const cookieManagerAdapterSpy = new CookieManagerAdapterSpy()
+    const loadCookieSpy = new LoadCookieSpy()
     const httpClientSpy = new HttpClientSpy()
-    const sut = new RemoteAddBook(url, cookieManagerAdapterSpy, httpClientSpy)
+    const sut = new RemoteAddBook(url, loadCookieSpy, httpClientSpy)
     return {
         sut,
         url,
-        cookieManagerAdapterSpy,
+        loadCookieSpy,
         httpClientSpy
     }
 }
@@ -38,8 +38,8 @@ describe('RemoteAddBook', () => {
     })
 
     test('should call HttpClient with correct values', async () => {
-        const { sut, url, cookieManagerAdapterSpy, httpClientSpy } = makeSut()
-        const accessToken = cookieManagerAdapterSpy.result
+        const { sut, url, loadCookieSpy, httpClientSpy } = makeSut()
+        const accessToken = loadCookieSpy.result
         httpClientSpy.response = {
             statusCode: HttpStatusCode.ok,
         }
@@ -63,9 +63,9 @@ describe('RemoteAddBook', () => {
         await expect(promise).rejects.toThrow()
     })
 
-    test('should throw if CookieManagerAdapter throws', async () => {
-        const { sut, cookieManagerAdapterSpy } = makeSut()
-        jest.spyOn(cookieManagerAdapterSpy, 'load').mockImplementationOnce(throwError)
+    test('should throw if LoadCookie throws', async () => {
+        const { sut, loadCookieSpy } = makeSut()
+        jest.spyOn(loadCookieSpy, 'load').mockImplementationOnce(throwError)
 
         const promise = sut.add(fakeRequest)
 
