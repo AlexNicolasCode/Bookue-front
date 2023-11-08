@@ -115,5 +115,34 @@ describe('Notes screen', () => {
 
         cy.getByTestId('notes-add-note-input').should('exist')
       })
+
+      it('Should save note when user type some text in add mode and click on add mode button again', () => {
+        const fakeBookId = faker.datatype.uuid()
+        const fakeNoteText = faker.random.words()
+        cy.visit(`/book/${fakeBookId}/notes`)
+        cy.task('startServer', {
+          baseUrl: '/graphql',
+          statusCode: 200,
+          body: {
+            data: {
+              loadNotes: [],
+            }
+          }
+        })
+        cy.intercept(Cypress.env().baseApiURL, {
+          method: 'POST',
+        }, {
+          statusCode: 200,
+          body: {
+            data: { loadNotes: [{ id: faker.datatype.uuid(), text: fakeNoteText }] }
+          }
+        }).as('request')
+        
+        cy.getByTestId('notes-add-mode-button').click()
+        cy.getByTestId('notes-add-note-input').type(fakeNoteText)
+        cy.getByTestId('notes-add-mode-button').click()
+        
+        cy.getByTestId('notes-note-card').first().contains(fakeNoteText)
+      })
     })
 })
