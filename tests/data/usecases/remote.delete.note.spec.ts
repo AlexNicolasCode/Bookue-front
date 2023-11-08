@@ -1,13 +1,14 @@
 import { faker } from '@faker-js/faker';
 
 import { DeleteNote } from '@/domain/usecases';
-import { HttpClient } from '@/data/protocols/http';
+import { HttpClient, HttpStatusCode } from '@/data/protocols/http';
 import { LoadCookie } from '@/data/protocols/cookie';
 
 import { LoadCookieSpy } from '@/tests/infra/mocks';
 import { mockDeleteNoteParams } from '@/tests/main/domain/mocks';
 import { HttpClientSpy } from '../mocks';
 import { throwError } from '@/tests/main/domain/mocks/test.helpers';
+import { UnexpectedError } from '@/domain/errors';
 
 class RemoteDeleteNote implements DeleteNote {
   constructor(
@@ -18,7 +19,7 @@ class RemoteDeleteNote implements DeleteNote {
 
   async delete(params: DeleteNote.Params): Promise<void> {
     const accessToken = await this.loadCookie.load('bookue-user')
-    await this.httpClient.request({
+    const httpResponse = await this.httpClient.request({
       url: this.url,
       method: 'post',
       headers: {
@@ -38,6 +39,10 @@ class RemoteDeleteNote implements DeleteNote {
         },
       })
     })
+    switch (httpResponse.statusCode) {
+      case HttpStatusCode.ok: return httpResponse.body.data.deleteNote;
+      default: throw new UnexpectedError();
+    }
   }
 }
 
@@ -64,8 +69,16 @@ const makeSut = (): SutTypes => {
 
 describe('RemoteDeleteNote', () => {
   test('should call LoadCookie with correct key', async () => {
-    const { sut, loadCookieSpy } = makeSut();
+    const { sut, loadCookieSpy, httpClientSpy } = makeSut();
     const fakeRequest = mockDeleteNoteParams();
+    httpClientSpy.response = {
+      statusCode: HttpStatusCode.ok,
+      body: {
+        data: {
+          deleteNote: undefined
+        }
+      },
+    };
 
     await sut.delete(fakeRequest);
 
@@ -86,6 +99,14 @@ describe('RemoteDeleteNote', () => {
     const { sut, url, loadCookieSpy, httpClientSpy } = makeSut();
     const fakeRequest = mockDeleteNoteParams();
     const accessToken = loadCookieSpy.result;
+    httpClientSpy.response = {
+      statusCode: HttpStatusCode.ok,
+      body: {
+        data: {
+          deleteNote: undefined
+        }
+      },
+    };
 
     await sut.delete(fakeRequest);
 
@@ -105,5 +126,22 @@ describe('RemoteDeleteNote', () => {
     const promise = sut.delete(fakeRequest);
 
     await expect(promise).rejects.toThrow();
+  });
+
+  test('should return none on success', async () => {
+    const { sut, httpClientSpy } = makeSut();
+    const fakeRequest = mockDeleteNoteParams();
+    httpClientSpy.response = {
+      statusCode: HttpStatusCode.ok,
+      body: {
+        data: {
+          deleteNote: undefined
+        }
+      },
+    };
+
+    const response = await sut.delete(fakeRequest);
+
+    expect(response).toBeUndefined();
   });
 });
