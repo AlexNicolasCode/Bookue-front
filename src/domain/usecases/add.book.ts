@@ -7,7 +7,7 @@ export namespace AddBook {
         title: string
         author: string
         description: string
-        currentPage: string
-        pages: string
+        currentPage: number
+        pages: number
     }
 }

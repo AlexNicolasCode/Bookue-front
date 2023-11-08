@@ -24,6 +24,8 @@ type InputProps = {
     min?: number
     fieldName?: string
     testId?: string
+    value: string
+    max?: string
     style?: {
         isBorded?: boolean
         hasNoPadding?: boolean
@@ -42,6 +44,7 @@ function InputComponent({
     fieldName,
     testId,
     value,
+    max,
     style,
 }: InputProps) {
     const [isShowingPassword, setIsShowingPassword] = useState<boolean>()
@@ -112,6 +115,7 @@ function InputComponent({
             min={min}
             onChange={(event) => handleSetState({ fieldName, text: event.target.value })}
             value={value}
+            max={max}
             {...style}
         />
     }

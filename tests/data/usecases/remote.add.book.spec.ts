@@ -1,96 +1,55 @@
-import { faker } from '@faker-js/faker'
+import { HttpStatusCode } from "@/data/protocols/http";
+import { RemoteAddBook } from "@/data/usecases";
+import { UnexpectedError } from "@/domain/errors";
 
-import { RemoteAddBook } from '@/data/usecases'
-import { UnexpectedError } from '@/domain/errors'
-import { HttpStatusCode } from '@/data/protocols/http'
+import { faker } from "@faker-js/faker";
 
-import { HttpClientSpy } from '../mocks'
-import { CookieManagerAdapterSpy } from '@/tests/infra/mocks'
-import { throwError } from '@/tests/main/domain/mocks/test.helpers'
+import { mockAddBookParams } from "@/tests/domain/mocks";
+import { HttpClientSpy } from "../mocks";
 
-type SutTypes = {
-    sut: RemoteAddBook
-    url: string
-    cookieManagerAdapterSpy: CookieManagerAdapterSpy
-    httpClientSpy: HttpClientSpy
-}
-
-const makeSut = (): SutTypes => {
-    const url = faker.internet.url()
-    const cookieManagerAdapterSpy = new CookieManagerAdapterSpy()
-    const httpClientSpy = new HttpClientSpy()
-    const sut = new RemoteAddBook(url, cookieManagerAdapterSpy, httpClientSpy)
-    return {
-        sut,
-        url,
-        cookieManagerAdapterSpy,
-        httpClientSpy
+type HttpResponseAddBook = {
+  data: {
+    addBook: {
+        id: string
     }
+  }
 }
 
 describe('RemoteAddBook', () => {
-    let fakeRequest
-
-    beforeEach(() => {
-        fakeRequest = {
-            accessToken: faker.datatype.uuid()
-        }
-    })
-
     test('should call HttpClient with correct values', async () => {
-        const { sut, url, cookieManagerAdapterSpy, httpClientSpy } = makeSut()
-        const accessToken = cookieManagerAdapterSpy.result
+      const url = faker.internet.url();
+      const httpClientSpy = new HttpClientSpy<HttpResponseAddBook>();
+      const sut = new RemoteAddBook(url, httpClientSpy);
+      const fakeRequest = mockAddBookParams();
+  
+      await sut.add(fakeRequest);
+  
+      expect(httpClientSpy.url).toBe(url);
+      expect(httpClientSpy.method).toBe('post');
+      expect(httpClientSpy.headers).toStrictEqual({ 'Content-Type': 'application/json' });
+    });
+
+    test('should return correct body on success', async () => {
+        const url = faker.internet.url();
+        const httpClientSpy = new HttpClientSpy<HttpResponseAddBook>();
+        const sut = new RemoteAddBook(url, httpClientSpy);
+    
+        const httpResponse = await sut.add(mockAddBookParams());
+    
+        expect(httpResponse).toEqual(undefined);
+      });
+
+    test('should throw when httpClient return server error', async () => {
+        const url = faker.internet.url();
+        const httpClientSpy = new HttpClientSpy<HttpResponseAddBook>();
+        const sut = new RemoteAddBook(url, httpClientSpy);
         httpClientSpy.response = {
-            statusCode: HttpStatusCode.ok,
+            statusCode: HttpStatusCode.serverError
         }
 
-        await sut.add(fakeRequest)
-
-        expect(httpClientSpy.url).toBe(url)
-        expect(httpClientSpy.method).toBe('post')
-        expect(httpClientSpy.headers).toStrictEqual({
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${accessToken}`,
-        })
-    })
-
-    test('should throw if HttpClient throws', async () => {
-        const { sut, httpClientSpy } = makeSut()
-        jest.spyOn(httpClientSpy, 'request').mockImplementationOnce(throwError)
-
-        const promise = sut.add(fakeRequest)
-
-        await expect(promise).rejects.toThrow()
-    })
-
-    test('should throw if CookieManagerAdapter throws', async () => {
-        const { sut, cookieManagerAdapterSpy } = makeSut()
-        jest.spyOn(cookieManagerAdapterSpy, 'load').mockImplementationOnce(throwError)
-
-        const promise = sut.add(fakeRequest)
-
-        await expect(promise).rejects.toThrow()
-    })
-
-    test('should throw UnexpectedError if HttpClient return status code different 200', async () => {
-        const { sut, httpClientSpy } = makeSut()
-        httpClientSpy.response = {
-          statusCode: faker.internet.httpStatusCode({ types: ['clientError', 'serverError', 'informational'] }),
-        }
+        const promise = sut.add(mockAddBookParams());
     
-        const response = sut.add(fakeRequest)
-    
-        await expect(response).rejects.toThrow(new UnexpectedError())
-    })
-
-    test('should return undefined on success', async () => {
-        const { sut, httpClientSpy } = makeSut()
-        httpClientSpy.response = {
-          statusCode: HttpStatusCode.ok,
-        }
-    
-        const response = await sut.add(fakeRequest)
-    
-        expect(response).toBeUndefined()
-    })
+        await expect(promise).rejects.toThrow(new UnexpectedError());
+      });
 })
+
