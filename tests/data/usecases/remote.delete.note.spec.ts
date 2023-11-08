@@ -40,13 +40,30 @@ class RemoteDeleteNote implements DeleteNote {
   }
 }
 
+type SutTypes = {
+  sut: RemoteDeleteNote
+  url: string
+  httpClientSpy: HttpClientSpy
+  loadCookieSpy: LoadCookieSpy
+}
+
+const makeSut = (): SutTypes => {
+  const loadCookieSpy = new LoadCookieSpy();
+  const url = faker.internet.url();
+  const httpClientSpy = new HttpClientSpy();
+  const sut = new RemoteDeleteNote(loadCookieSpy, url, httpClientSpy);
+  return {
+    sut,
+    url,
+    httpClientSpy,
+    loadCookieSpy,
+  }
+}
+
 
 describe('RemoteDeleteNote', () => {
   test('should call LoadCookie with correct key', async () => {
-    const loadCookieSpy = new LoadCookieSpy();
-    const url = faker.internet.url();
-    const httpClientSpy = new HttpClientSpy();
-    const sut = new RemoteDeleteNote(loadCookieSpy, url, httpClientSpy);
+    const { sut, loadCookieSpy } = makeSut();
     const fakeRequest = mockDeleteNoteParams();
 
     await sut.delete(fakeRequest);
@@ -55,10 +72,7 @@ describe('RemoteDeleteNote', () => {
   });
 
   test('should call HttpClient with correct params', async () => {
-    const loadCookieSpy = new LoadCookieSpy();
-    const url = faker.internet.url();
-    const httpClientSpy = new HttpClientSpy();
-    const sut = new RemoteDeleteNote(loadCookieSpy, url, httpClientSpy);
+    const { sut, url, loadCookieSpy, httpClientSpy } = makeSut();
     const fakeRequest = mockDeleteNoteParams();
     const accessToken = loadCookieSpy.result;
 
