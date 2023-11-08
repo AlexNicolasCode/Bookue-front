@@ -116,6 +116,27 @@ describe('Notes screen', () => {
         cy.getByTestId('notes-add-note-input').should('exist')
       })
 
+      it('Should not save note when user type blank text in add mode and click on add mode button again', () => {
+        const fakeBookId = faker.datatype.uuid()
+        const notes = mockNoteList()
+        cy.visit(`/book/${fakeBookId}/notes`)
+        cy.task('startServer', {
+          baseUrl: '/graphql',
+          statusCode: 200,
+          body: {
+            data: {
+              loadNotes: [...notes],
+            }
+          }
+        })
+        
+        cy.getByTestId('notes-add-mode-button').click()
+        cy.getByTestId('notes-add-note-input').type(" ")
+        cy.getByTestId('notes-add-mode-button').click()
+        
+        cy.getByTestId('notes-note-card').should('have.length', notes.length)
+      })
+
       it('Should save note when user type some text in add mode and click on add mode button again', () => {
         const fakeBookId = faker.datatype.uuid()
         const fakeNoteText = faker.random.words()
