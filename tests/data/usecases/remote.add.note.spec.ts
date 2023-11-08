@@ -2,7 +2,7 @@ import { faker } from '@faker-js/faker';
 
 import { RemoteAddNote } from '@/data/usecases';
 
-import { CookieManagerAdapterSpy } from '@/tests/infra/mocks';
+import { LoadCookieSpy } from '@/tests/infra/mocks';
 import { mockAddNoteParams } from '@/tests/main/domain/mocks';
 import { HttpClientSpy } from '../mocks';
 import { throwError } from '@/tests/main/domain/mocks/test.helpers';
@@ -10,12 +10,12 @@ import { throwError } from '@/tests/main/domain/mocks/test.helpers';
 type SutTypes = {
     sut: RemoteAddNote
     url: string
-    loadCookieSpy: CookieManagerAdapterSpy
+    loadCookieSpy: LoadCookieSpy
     httpClientSpy: HttpClientSpy
 }
 
 const makeSut = (): SutTypes => {
-    const loadCookieSpy = new CookieManagerAdapterSpy();
+    const loadCookieSpy = new LoadCookieSpy();
     const url = faker.internet.url();
     const httpClientSpy = new HttpClientSpy();
     const sut = new RemoteAddNote(loadCookieSpy, url, httpClientSpy);
@@ -28,7 +28,7 @@ const makeSut = (): SutTypes => {
 }
 
 describe('RemoteAddNote', () => {
-  test('should call CookieManagerAdapterSpy with correct key', async () => {
+  test('should call LoadCookieSpy with correct key', async () => {
     const { sut, loadCookieSpy } = makeSut();
     const fakeRequest = mockAddNoteParams();
 
@@ -37,7 +37,7 @@ describe('RemoteAddNote', () => {
     expect(loadCookieSpy.key).toBe('bookue-user');
   });
 
-  test('should throw if CookieManagerAdapterSpy throws', async () => {
+  test('should throw if LoadCookieSpy throws', async () => {
     const { sut, loadCookieSpy } = makeSut();
     const fakeRequest = mockAddNoteParams();
     jest.spyOn(loadCookieSpy, 'load').mockImplementationOnce(throwError)
