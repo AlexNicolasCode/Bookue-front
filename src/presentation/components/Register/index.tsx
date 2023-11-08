@@ -1,7 +1,7 @@
 import { useRouter } from "next/router"
 import { FormEvent, useState } from "react"
 
-import { makeRemoteAddAccount } from "@/main/factory/usecases"
+import { makeAddAccount } from "@/main/factory/usecases"
 import { makeCookieManagerAdapter } from "@/main/factory/cookie"
 import { makeRegisterValidation } from "@/main/factory/validation"
 import { useAlert } from "@/presentation/hook"
@@ -48,7 +48,7 @@ export function Register() {
                 setNewAlert({ text: error, type: AlertType.Error })
                 return
             }
-            const remoteAddAccount = makeRemoteAddAccount()
+            const remoteAddAccount = makeAddAccount()
             const { accessToken } = await remoteAddAccount.add(form)
             await setJwtLocaly(accessToken)
             goToFeedPage()

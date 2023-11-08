@@ -5,7 +5,7 @@ import { NoteContext } from "./context"
 import { NoteModel } from "@/domain/models"
 import { useModeController } from "@/presentation/hook"
 import { Modes } from "../mode"
-import { makeRemoteAddNote, makeRemoteDeleteNote, makeRemoteLoadNotes } from "@/main/factory/usecases"
+import { makeAddNote, makeDeleteNote, makeLoadNotes } from "@/main/factory/usecases"
 import { makeCookieManagerAdapter } from "@/main/factory/cookie"
 
 type NoteProviderProps = {
@@ -17,9 +17,9 @@ export const NoteProvider = ({ children }: NoteProviderProps) => {
     const [notes, setNotes] = useState<NoteModel[]>([])
     const [newNote, setNewNote] = useState<string>('')
     const { mode, lastMode } = useModeController()
-    const remoteAddNote = makeRemoteAddNote()
-    const remoteLoadNotes = makeRemoteLoadNotes()
-    const remoteDeleteNote = makeRemoteDeleteNote()
+    const remoteAddNote = makeAddNote()
+    const remoteLoadNotes = makeLoadNotes()
+    const remoteDeleteNote = makeDeleteNote()
     const cookieManager = makeCookieManagerAdapter()
 
     const shouldAddNoteInList =

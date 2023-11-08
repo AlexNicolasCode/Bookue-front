@@ -7,7 +7,7 @@ import { mockDeleteNoteParams } from '@/tests/main/domain/mocks';
 import { HttpClientSpy } from '../mocks';
 import { throwError } from '@/tests/main/domain/mocks/test.helpers';
 import { UnexpectedError } from '@/domain/errors';
-import { RemoteDeleteNote } from './remote.delete.note';
+import { RemoteDeleteNote } from '@/data/usecases';
 
 type SutTypes = {
   sut: RemoteDeleteNote
