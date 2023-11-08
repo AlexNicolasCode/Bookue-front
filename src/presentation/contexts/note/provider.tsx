@@ -5,7 +5,7 @@ import { NoteContext } from "./context"
 import { NoteModel } from "@/domain/models"
 import { useModeController } from "@/presentation/hook"
 import { Modes } from "../mode"
-import { makeRemoteAddNote, makeRemoteLoadNotes } from "@/main/factory/usecases"
+import { makeRemoteAddNote, makeRemoteDeleteNote, makeRemoteLoadNotes } from "@/main/factory/usecases"
 import { makeCookieManagerAdapter } from "@/main/factory/cookie"
 
 type NoteProviderProps = {
@@ -19,6 +19,7 @@ export const NoteProvider = ({ children }: NoteProviderProps) => {
     const { mode, lastMode } = useModeController()
     const remoteAddNote = makeRemoteAddNote()
     const remoteLoadNotes = makeRemoteLoadNotes()
+    const remoteDeleteNote = makeRemoteDeleteNote()
     const cookieManager = makeCookieManagerAdapter()
 
     const shouldAddNoteInList =
@@ -50,6 +51,7 @@ export const NoteProvider = ({ children }: NoteProviderProps) => {
     
     const deleteNote = (noteId: string) => {
         const updatedNotes = notes.filter((note) => note.id !== noteId)
+        remoteDeleteNote.delete({ noteId, bookId: String(router.query['id']), })
         setNotes(updatedNotes)
     }
     

@@ -6,7 +6,7 @@ import { AddNoteContainerStyled } from "./styles";
 export const AddNoteContainer = () => {
     const { newNote, setNewNote } = useNote()
     return (
-        <AddNoteContainerStyled>
+        <AddNoteContainerStyled data-test-id="notes-add-note-input">
             <Input
                 setState={setNewNote}
                 value={newNote}
