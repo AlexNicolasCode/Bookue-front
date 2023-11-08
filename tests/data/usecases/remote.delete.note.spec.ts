@@ -96,4 +96,14 @@ describe('RemoteDeleteNote', () => {
         'Authorization': `Bearer ${accessToken}`,
     })
   });
+
+  test('should throw if HttpClient throws', async () => {
+    const { sut, httpClientSpy } = makeSut();
+    const fakeRequest = mockDeleteNoteParams();
+    jest.spyOn(httpClientSpy, 'request').mockImplementationOnce(throwError);
+
+    const promise = sut.delete(fakeRequest);
+
+    await expect(promise).rejects.toThrow();
+  });
 });
