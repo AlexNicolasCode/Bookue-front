@@ -7,6 +7,7 @@ import { LoadCookie } from '@/data/protocols/cookie';
 import { LoadCookieSpy } from '@/tests/infra/mocks';
 import { mockDeleteNoteParams } from '@/tests/main/domain/mocks';
 import { HttpClientSpy } from '../mocks';
+import { throwError } from '@/tests/main/domain/mocks/test.helpers';
 
 class RemoteDeleteNote implements DeleteNote {
   constructor(
@@ -69,6 +70,16 @@ describe('RemoteDeleteNote', () => {
     await sut.delete(fakeRequest);
 
     expect(loadCookieSpy.key).toBe('bookue-user');
+  });
+
+  test('should throw if LoadCookie throws', async () => {
+    const { sut, loadCookieSpy } = makeSut();
+    const fakeRequest = mockDeleteNoteParams();
+    jest.spyOn(loadCookieSpy, 'load').mockImplementationOnce(throwError)
+
+    const promise = sut.delete(fakeRequest);
+
+    await expect(promise).rejects.toThrow();
   });
 
   test('should call HttpClient with correct params', async () => {
