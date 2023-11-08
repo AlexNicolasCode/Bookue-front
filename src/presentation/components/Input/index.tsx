@@ -24,7 +24,6 @@ type InputProps = {
     min?: number
     fieldName?: string
     testId?: string
-    value: string
     max?: string
     style?: {
         isBorded?: boolean
