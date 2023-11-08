@@ -13,6 +13,7 @@ type InputProps = {
     fieldName: string
     testId?: string
     value: string
+    max?: string
 }
 
 function InputComponent({ 
@@ -24,6 +25,7 @@ function InputComponent({
     fieldName,
     testId,
     value,
+    max,
 }: InputProps) {
     const [isShowingPassword, setIsShowingPassword] = useState<boolean>()
     const fieldType = useRef(type)
@@ -71,6 +73,7 @@ function InputComponent({
             min={min}
             onChange={(event) => setState(fieldName, event.target.value)}
             value={value}
+            max={max}
         />
     )
 
