@@ -4,7 +4,7 @@ import { useRouter } from "next/router"
 
 import { Header, Input, Form, Container, SubmitButton, Text, Alert } from "@/presentation/components"
 import { useBookForm } from "@/presentation/hooks"
-import { makeRemoteAddBook } from "@/main/factory/usecases"
+import { makeAddBook } from "@/main/factory/usecases"
 
 function AddBookCurrentPagePage() {
     const router = useRouter()
@@ -14,7 +14,7 @@ function AddBookCurrentPagePage() {
     const handleSubmit = async (event: FormEvent<HTMLFormElement>): Promise<void> => {
         event.preventDefault()
         try {
-            const addBook = makeRemoteAddBook()
+            const addBook = makeAddBook()
             await addBook.add({
                 title: bookForm.title.text,
                 author: bookForm.author.text,

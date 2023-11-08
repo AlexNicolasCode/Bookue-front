@@ -2,7 +2,7 @@ import { RemoteLoadNotes } from '@/data/usecases';
 import { LoadNotes } from '@/domain/usecases';
 import { makeAxiosHttpClient, makeBookueApiUrl } from '../http';
 
-export const makeRemoteLoadNotes = (): LoadNotes => {
+export const makeLoadNotes = (): LoadNotes => {
     const apiUrl = makeBookueApiUrl('')
     const axiosHttpClient = makeAxiosHttpClient()
     return new RemoteLoadNotes(

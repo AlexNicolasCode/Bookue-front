@@ -5,7 +5,7 @@ import { Form, Header } from "@/presentation/components"
 import { makeAddBookValidation } from "@/main/factory/validation"
 import { useAlert } from "@/presentation/hook"
 import { AlertMessage, AlertType } from "@/presentation/contexts"
-import { makeRemoteAddBook } from "@/main/factory/usecases"
+import { makeAddBook } from "@/main/factory/usecases"
 import { MainContent } from "@/presentation/components"
 
 type Form = {
@@ -47,7 +47,7 @@ export default function AddBookPage() {
                 setNewAlert({ text: error.message, type: AlertType.Error })
                 return
             }
-            const remoteAddBook = makeRemoteAddBook()
+            const remoteAddBook = makeAddBook()
             await remoteAddBook.add(form)
             router.push('/')
         } catch (error) {

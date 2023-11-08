@@ -2,7 +2,7 @@ import { GetServerSideProps } from "next"
 
 import { BookModel } from "@/domain/models"
 import { BookDetails, Header } from "@/presentation/components"
-import { makeRemoteLoadBook } from "@/main/factory/usecases"
+import { makeLoadBook } from "@/main/factory/usecases"
 
 type PageProps = {
     book: BookModel
@@ -20,7 +20,7 @@ function BookPage({ book }: PageProps) {
 export const getServerSideProps: GetServerSideProps = async (context) => {
     const accessToken = context.req.cookies['bookue-user']
     const bookId = context.params['id'].toString()
-    const remoteLoadBook = makeRemoteLoadBook()
+    const remoteLoadBook = makeLoadBook()
     try {
         const book = await remoteLoadBook.loadBook({ accessToken, bookId })
         return {

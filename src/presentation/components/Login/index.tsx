@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 
 import { makeCookieManagerAdapter } from "@/main/factory/cookie";
 import { makeLoginValidation } from "@/main/factory/validation";
-import { makeRemoteAuthentication } from "@/main/factory/usecases";
+import { makeAuthentication } from "@/main/factory/usecases";
 import { useAlert } from "@/presentation/hook";
 import { AlertMessage, AlertType } from "@/presentation/contexts";
 import { Form, Logo } from "@/presentation/components";
@@ -59,7 +59,7 @@ export function Login() {
                 setNewAlert({ text: error, type: AlertType.Error })
                 return
             }
-            const remoteAuthentication = makeRemoteAuthentication()
+            const remoteAuthentication = makeAuthentication()
             const account = await remoteAuthentication.auth(form)
             if (!account) {
                 alertUserNotFound()

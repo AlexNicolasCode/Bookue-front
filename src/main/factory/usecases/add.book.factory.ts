@@ -1,15 +1,15 @@
-import { RemoteAddNote } from '@/data/usecases';
-import { AddNote } from '@/domain/usecases';
+import { RemoteAddBook } from '@/data/usecases';
+import { AddBook } from '@/domain/usecases';
 import { makeAxiosHttpClient, makeBookueApiUrl } from '../http';
 import { CookieManagerAdapter } from '@/infra/cookie';
 
-export const makeRemoteAddNote = (): AddNote => {
+export const makeAddBook = (): AddBook => {
     const apiUrl = makeBookueApiUrl('')
     const axiosHttpClient = makeAxiosHttpClient()
     const cookieManagerAdapter = new CookieManagerAdapter()
-    return new RemoteAddNote(
-        cookieManagerAdapter,
+    return new RemoteAddBook(
         apiUrl,
+        cookieManagerAdapter,
         axiosHttpClient,
     )
 }
