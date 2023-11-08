@@ -1,5 +1,6 @@
 type TextConverters = {
     normalizeContent: (content: string) => string
+    truncateText: (text: string, maxChar: number) => string
 }
 
 const normalizeContent = (content: string) => {
@@ -7,4 +8,15 @@ const normalizeContent = (content: string) => {
     return contentInNormalCase.charAt(0).toUpperCase().trim() + contentInNormalCase.slice(1).toLowerCase();
 }
 
-export const useTextConverter = () => ({ normalizeContent } as TextConverters) 
+const truncateText = (text: string, maxChar: number) => {
+    if (text.length > maxChar) {
+        const partialText = text.slice(0, maxChar)
+        return `${partialText}...`
+    }
+    return text
+}
+
+export const useTextConverter = () => ({
+    normalizeContent,
+    truncateText,
+} as TextConverters) 

@@ -5,19 +5,51 @@ import { globalColors } from "@/presentation/styles/colors";
 type InputStyledProps = {
     isWrongFill?: boolean 
     isPasswordField?: boolean
+    isBorded?: boolean
+    hasNoPadding?: boolean
+    height?: string
+    width?: string
 }
 
-export const InputStyled = styled.input`
+const getInputStyles = ({
+    isBorded,
+    height,
+    width,
+    hasNoPadding,
+    isWrongFill,
+    isPasswordField,
+}: InputStyledProps): string => {
+    let styles = ``
+    if (!isWrongFill && isBorded) styles += `border: 1px ${globalColors.primary} solid;`
+    if (isWrongFill) styles += `border: 1px ${globalColors.alert} solid;`
+    if (height) styles += `height: ${height};`
+    if (width) styles += `width: ${width};`
+    if (!width && isPasswordField) styles += `width: 14rem;`
+    if (hasNoPadding) styles += `padding: 0;`
+    if (!hasNoPadding && isPasswordField) styles += `padding: 0 0 0 1rem;`
+    if (!hasNoPadding && width) styles += `width: calc(${width} - 2rem);`
+    return styles
+}
+
+export const InputStyled = styled.input<InputStyledProps>`
     background-color: ${globalColors.field};
-    border: none;
     height: 40px;
-    width: ${({ isPasswordField }: InputStyledProps) => 
-        isPasswordField ? '14rem' : '15rem'
-    };;
-    padding: ${({ isPasswordField }: InputStyledProps) => 
-        isPasswordField ? '0 0 0 1rem' : '0 1rem'
-    };
-    border: ${(props: InputStyledProps) => props.isWrongFill && `1px ${globalColors.alert} solid` };
+    width: 15rem;
+    padding: 0 1rem;
+    border: none;
+    ${(props) => getInputStyles(props)}
+    
+    ::placeholder {
+        color: ${globalColors.placeholder};
+    }
+`
+
+export const TextareaStyled = styled.textarea<InputStyledProps>`
+    background-color: ${globalColors.field};
+    height: 40px;
+    width: 15rem;
+    padding: 1rem;
+    ${(props) => getInputStyles(props)}
     
     ::placeholder {
         color: ${globalColors.placeholder};

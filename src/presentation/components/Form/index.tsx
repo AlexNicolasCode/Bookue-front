@@ -4,6 +4,11 @@ import { Input, SubmitButton } from "@/presentation/components"
 
 import { FormStyled } from "./styles"
 
+type SetFieldValueParams = {
+    fieldName: string
+    text: string
+}
+
 type FormProp = {
     [fieldName: string]: string
 }
@@ -90,10 +95,10 @@ export const Form = ({ handleSubmit, fields, wrongField, submitButtonText }: For
         setFormFields(updatedForm)
     }
 
-    const setFieldValue = (fieldName: string, value: string): void => {
+    const setFieldValue = ({ fieldName, text }: SetFieldValueParams): void => {
         setForm({
             ...form,
-            [fieldName]: value
+            [fieldName]: text,
         })
     }
 
@@ -109,7 +114,7 @@ export const Form = ({ handleSubmit, fields, wrongField, submitButtonText }: For
             return <Input
                 type={fieldType}
                 placeholder={fieldPlaceholder}
-                setState={setFieldValue}
+                setStateWithFieldName={setFieldValue}
                 fieldName={fieldName}
                 min={min}
                 isWrongFill={isWrongFill}
