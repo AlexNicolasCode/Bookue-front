@@ -77,5 +77,25 @@ describe('Notes screen', () => {
 
         cy.getByTestId('notes-note-card').should('have.length', notes.length)
       })
+
+      it('Should delete note when user, on delete mode, select some note on delete button', () => {
+        const notes = mockNoteList()
+        const fakeBookId = faker.datatype.uuid()
+        cy.visit(`/book/${fakeBookId}/notes`)
+        cy.task('startServer', {
+          baseUrl: '/graphql',
+          statusCode: 200,
+          body: {
+            data: {
+              loadNotes: [...notes]
+            }
+          }
+        })
+        cy.getByTestId('notes-delete-mode-button').click()
+
+        cy.getByTestId(`notes-remove-note-button`).first().click()
+
+        cy.getByTestId('notes-note-card-delete-mode').should('have.length', notes.length - 1)
+      })
     })
 })
