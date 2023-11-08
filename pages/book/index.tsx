@@ -28,11 +28,13 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     }
 
     const book: BookModel = {
+        id: String(1),
         title: 'Scherlock Holmes',
         author: 'Scherlock Holmes',
         description: 'Scherlock Holmes',
         currentPage: 10,
         pages: 1240,
+        createdAt: new Date().toISOString(),
     }
 
     return {
