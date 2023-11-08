@@ -3,8 +3,13 @@ import { AddBook } from '@/domain/usecases';
 import { makeAxiosHttpClient, makeBookueApiUrl } from '../http';
 import { CookieManagerAdapter } from '@/infra/cookie';
 
-export const makeRemoteAddBook = (): AddBook => new RemoteAddBook(
-    makeBookueApiUrl(''),
-    makeAxiosHttpClient(),
-    new CookieManagerAdapter()
-);
+export const makeRemoteAddBook = (): AddBook => {
+    const apiUrl = makeBookueApiUrl('')
+    const axiosHttpClient = makeAxiosHttpClient()
+    const cookieManagerAdapter = new CookieManagerAdapter()
+    return new RemoteAddBook(
+        apiUrl,
+        cookieManagerAdapter,
+        axiosHttpClient,
+    )
+}

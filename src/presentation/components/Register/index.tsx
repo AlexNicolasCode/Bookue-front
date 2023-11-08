@@ -1,129 +1,62 @@
 import { useRouter } from "next/router"
 import { FormEvent, useState } from "react"
 
-import {
-    Form,
-    Input,
-    Logo,
-    Alert,
-    SubmitButton,
-} from "src/presentation/components"
+import { makeRemoteAddAccount } from "@/main/factory/usecases"
+import { makeCookieManagerAdapter } from "@/main/factory/cookie"
+import { makeRegisterValidation } from "@/main/factory/validation"
+import { useAlert } from "@/presentation/hook"
+import { AlertMessage, AlertType } from "@/presentation/contexts"
+import { Form, Logo } from "@/presentation/components"
 
 import { RegisterStyled } from "./styled"
 
-import { makeRemoteAddAccount } from "@/main/factory/usecases"
-import { makeCookieManagerAdapter } from "@/main/factory/cookie"
-import { ValidationComposite } from "@/main/composites"
-
-type RegisterProps = {
-    validation: ValidationComposite
+type Form = {
+    name: string
+    email: string
+    password: string
+    passwordConfirmation: string
 }
 
-type RegisterFormProps = {
-    name: {
-        isWrongFill: boolean
-        text: string
-    }
-    email: {
-        isWrongFill: boolean
-        text: string
-    }
-    password: {
-        isWrongFill: boolean
-        text: string
-    }
-    passwordConfirmation: {
-        isWrongFill: boolean
-        text: string
-    }
-}
-
-
-function Register({ validation }: RegisterProps) {
+export function Register() {
     const router = useRouter()
+    const { setNewAlert } = useAlert()
+    const [wrongField, setWrongField] = useState<string>()
 
-    const [alert, setAlert] = useState<string>("")
-    const [userForm, setUserForm] = useState<RegisterFormProps>({
-        name: {
-            isWrongFill: false,
-            text: ""
-        },
-        email: {
-            isWrongFill: false,
-            text: ""
-        },
-        password: {
-            isWrongFill: false,
-            text: ""
-        },
-        passwordConfirmation: {
-            isWrongFill: false,
-            text: ""
-        },
-    })
+    const formFields = ['name', 'email', 'password', 'passwordConfirmation']
 
-    const setField = (field, text: string) => setUserForm({ 
-        ...userForm,
-        [field]: {
-            isWrongFill: userForm[field].isWrongFill,
-            text: text
-        },
-    })
-
-    const validateForm = (): string => {
-        const fields = ['name', 'email', 'password', 'passwordConfirmation']
-        const errorList = fields.map((field: string) => {
-            const fieldInput = { [field]: userForm[field].text }
-            if (field === 'password') {
-                const error = validation.validate(
-                    field,
-                    {
-                        ...fieldInput,
-                        passwordConfirmation: userForm['passwordConfirmation'].text
-                    }
-                )
-                setWrongFields(field, error)
-                return error
-            }
-            const error = validation.validate(field, fieldInput)
-            setWrongFields(field, error)
-            return error
+    const validateForm = (form: Form): string => {
+        const validator = makeRegisterValidation()
+        const errorList = formFields.map((fieldName) => {
+            const error = validator.validate(
+                fieldName,
+                form,
+            )
+            return { fieldName, error }
         })
-        return errorList.find((error: string) => error !== undefined)
+        const firstError = errorList.find((error) => error.error !== undefined)
+        if (firstError && firstError.error) {
+            setWrongField(firstError.fieldName)
+            return firstError.error
+        } 
     }
 
-    const setWrongFields = (field: string, error: string) => {
-        setUserForm({
-            ...userForm,
-            [field]: {
-                isWrongFill: error ? true : false,
-                text: userForm[field].text,
-            },
-        })
-    }
-
-    const handleSubmit = async (event: FormEvent<HTMLFormElement>): Promise<void> => {
+    const handleSubmit = async (event: FormEvent<HTMLFormElement>, form: Form): Promise<void> => {
         event.preventDefault()
         try {
-            const error = validateForm()
+            const error = validateForm(form)
             if (error) {
-                setAlert(error)
+                setNewAlert({ text: error, type: AlertType.Error })
                 return
             }
             const remoteAddAccount = makeRemoteAddAccount()
-            const { accessToken } = await remoteAddAccount.add({
-                name: userForm.name.text,
-                email: userForm.email.text,
-                password: userForm.password.text,
-                passwordConfirmation: userForm.passwordConfirmation.text,
-            })
+            const { accessToken } = await remoteAddAccount.add(form)
             await setJwtLocaly(accessToken)
             goToFeedPage()
         } catch (error) {
             if (error.message.includes('email')) {
-                setWrongFields('email', error.message)
+                setWrongField('email')
             }
-            setAlert(error.message)
+            setNewAlert({ text: AlertMessage.GenericError, type: AlertType.Error })
         }
     }
 
@@ -139,52 +72,12 @@ function Register({ validation }: RegisterProps) {
     return (
         <RegisterStyled>
             <Logo/>
-
-            <Form onSubmit={handleSubmit}>
-                <Input 
-                    type="name"
-                    placeholder="Name"
-                    setState={setField}
-                    field={'name'}
-                    isWrongFill={userForm.name.isWrongFill}
-                    value={userForm.name.text}
-                />
-                <Input 
-                    type="email"
-                    placeholder="Email"
-                    setState={setField}
-                    field={'email'}
-                    isWrongFill={userForm.email.isWrongFill}
-                    value={userForm.email.text}
-                />
-                <Input
-                    type="password"
-                    placeholder="Password"
-                    setState={setField}
-                    field={'password'}
-                    isWrongFill={userForm.password.isWrongFill}
-                    value={userForm.password.text}
-                />
-                <Input 
-                    type="password"
-                    placeholder="Password confirmation"
-                    setState={setField}
-                    field={'passwordConfirmation'}
-                    isWrongFill={userForm.passwordConfirmation.isWrongFill}
-                    value={userForm.passwordConfirmation.text}
-                />
-
-                {
-                    alert.length > 0 &&
-                    <Alert>
-                        {alert}                
-                    </Alert>
-                }
-
-                <SubmitButton text={'Register'}/>
-            </Form>
+            <Form
+                handleSubmit={handleSubmit}
+                fields={formFields}
+                wrongField={wrongField}
+                submitButtonText='Sign up'
+            />
         </RegisterStyled>
     )
 }
-
-export { Register }

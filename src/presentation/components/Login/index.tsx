@@ -1,118 +1,29 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useCallback, useState } from "react";
 import { useRouter } from "next/router";
 
-import { 
-    Form,
-    Logo,
-    Input,
-    Alert,
-    SubmitButton,
-} from "src/presentation/components";
+import { makeCookieManagerAdapter } from "@/main/factory/cookie";
+import { makeLoginValidation } from "@/main/factory/validation";
+import { makeRemoteAuthentication } from "@/main/factory/usecases";
+import { useAlert } from "@/presentation/hook";
+import { AlertMessage, AlertType } from "@/presentation/contexts";
+import { Form, Logo } from "@/presentation/components";
 
 import { LoginStyled } from "./styles";
 
-import { makeCookieManagerAdapter } from "@/main/factory/cookie";
-import { ValidationComposite } from "@/main/composites";
-import { Authentication } from "@/domain/usecases";
-
-export type LoginProps = {
-    validation: ValidationComposite
-    remoteAuthentication: Authentication
+type Form = {
+    email: string
+    password: string
 }
 
-type UserFormProps = {
-    email: {
-        isWrongFill: boolean
-        text: string
-    }
-    password: {
-        isWrongFill: boolean
-        text: string
-    }
-}
-
-export function Login({ validation, remoteAuthentication }: LoginProps) {
+export function Login() {
     const router = useRouter()
-    const [alert, setAlert] = useState<string>("")
-    const [userForm, setUserForm] = useState<UserFormProps>({
-        email: {
-            isWrongFill: false,
-            text: ""
-        },
-        password: {
-            isWrongFill: false,
-            text: ""
-        },
-    })
-    
-    const setField = (field, text: string) => setUserForm({ 
-        ...userForm,
-        [field]: {
-            isWrongFill: userForm[field].isWrongFill,
-            text: text
-        },
-    })
+    const { setNewAlert } = useAlert()
+    const [wrongField, setWrongField] = useState<string>()
 
-
-    const validateForm = (): string => {
-        const emailValidationError = validation.validate('email', { email: userForm.email.text })
-        const passwordValidationError = validation.validate('password', { password: userForm.password.text })
-        setWrongFields(emailValidationError, passwordValidationError)
-        return emailValidationError || passwordValidationError
-    }
-
-    const setWrongFields = (
-        emailValidationError?: string, 
-        passwordValidationError?: string
-    ) => {
-        if (emailValidationError || passwordValidationError) {
-            setUserForm({
-                email: {
-                    isWrongFill: emailValidationError ? true : false,
-                    text: userForm.email.text,
-                },
-                password: {
-                    isWrongFill: passwordValidationError ? true : false,
-                    text: userForm.password.text,
-                },
-            })
-        }
-    }
-
-    const cleanWrongField = (): void => setWrongFields()
-    
-    const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-        event.preventDefault()
-        try {
-            const error = validateForm()
-            if (error) {
-                setAlert(error)
-                return
-            }
-            const account = await remoteAuthentication.auth({
-                email: userForm.email.text,
-                password: userForm.password.text,
-            })
-            cleanWrongField()
-            if (!account) {
-                alertUserNotFound()
-                return
-            }
-            await setJwtLocaly(account.accessToken)
-            goToFeedPage()
-        } catch (error) {
-            if (error.message.includes('email')) {
-                setWrongFields(error.message)
-            }
-            setAlert(error.message)
-        }
-    }
+    const formFields = ['email', 'password']
 
     const alertUserNotFound = () => {
-        setAlert("User not found!")
-        setTimeout(() => {
-            setAlert("")
-        }, 5000)
+        setNewAlert({ text: "User not found!", type: AlertType.Error })
     }
 
     const setJwtLocaly = async (accessToken: string): Promise<void> => {
@@ -124,37 +35,57 @@ export function Login({ validation, remoteAuthentication }: LoginProps) {
         router.push("/")
     }
 
+    const validateForm = (form: Form): string => {
+        const validator = makeLoginValidation()
+        const errorList = formFields.map((fieldName) => {
+            const error = validator.validate(
+                fieldName,
+                form,
+            )
+            return { fieldName, error }
+        })
+        const firstError = errorList.find((error) => error.error !== undefined)
+        if (firstError && firstError.error) {
+            setWrongField(firstError.fieldName)
+            return firstError.error
+        } 
+    }
+
+    const handleSubmit = async (event: FormEvent<HTMLFormElement>, form: Form) => {
+        event.preventDefault()
+        try {
+            const error = validateForm(form)
+            if (error) {
+                setNewAlert({ text: error, type: AlertType.Error })
+                return
+            }
+            const remoteAuthentication = makeRemoteAuthentication()
+            const account = await remoteAuthentication.auth(form)
+            if (!account) {
+                alertUserNotFound()
+                return
+            }
+            await setJwtLocaly(account.accessToken)
+            goToFeedPage()
+        } catch (error) {
+            if (error.message.includes('email')) {
+                setWrongField('email')
+                setNewAlert({ text: error.message, type: AlertType.Warn })
+                return
+            }
+            setNewAlert({ text: AlertMessage.GenericError, type: AlertType.Error })
+        }
+    }
+
     return (
         <LoginStyled>
             <Logo/>
-
-            <Form onSubmit={handleSubmit}>
-                <Input 
-                    type="email"
-                    placeholder="email"
-                    setState={setField}
-                    field={'email'}
-                    isWrongFill={userForm.email.isWrongFill}
-                    value={userForm.email.text}
-                />
-                <Input 
-                    type="password"
-                    placeholder="password"
-                    setState={setField}
-                    field={'password'}
-                    isWrongFill={userForm.password.isWrongFill}
-                    value={userForm.password.text}
-                />
-
-                {
-                    alert.length > 0 && 
-                    <Alert>
-                        {alert}
-                    </Alert>
-                }
-
-                <SubmitButton text={'Login'}/>
-            </Form>
+            <Form
+                handleSubmit={handleSubmit}
+                fields={formFields}
+                wrongField={wrongField}
+                submitButtonText='Sign in'
+            />
         </LoginStyled>
     )
 }

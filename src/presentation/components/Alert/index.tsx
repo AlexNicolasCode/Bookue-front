@@ -1,14 +1,19 @@
-import { AlertStyled } from "./styles";
+import { AlertContainerStyled, AlertFooterStyled, AlertStyled } from "./styles";
 
 type AlertProps = {
     children: string
+    type: string
 }
 
-function Alert({ children }: AlertProps) {
+function Alert({ children, type }: AlertProps) {
     return (
-        <AlertStyled>
-            {children}
-        </AlertStyled>
+        <AlertFooterStyled>
+            <AlertContainerStyled type={type}>
+                <AlertStyled data-test-id="alert-message">
+                    {children}
+                </AlertStyled>
+            </AlertContainerStyled>
+        </AlertFooterStyled>
     )
 }
 

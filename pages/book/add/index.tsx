@@ -1,122 +1,77 @@
 import { FormEvent, useState } from "react"
-import { GetServerSideProps } from "next"
 import { useRouter } from "next/router"
 
-import { Header, Input, Form, Container, SubmitButton, Alert } from "@/presentation/components"
-import { useBookForm } from "@/presentation/hooks"
-import { makeBookFormValidation } from "@/main/factory/validation"
+import { Form, Header } from "@/presentation/components"
+import { makeAddBookValidation } from "@/main/factory/validation"
+import { useAlert } from "@/presentation/hook"
+import { AlertMessage, AlertType } from "@/presentation/contexts"
+import { makeRemoteAddBook } from "@/main/factory/usecases"
+import { MainContent } from "@/presentation/components"
 
-function AddBookPage() {
+type Form = {
+    title: string
+    author: string
+    currentPage: string
+    pages: string
+    description: string
+}
+
+export default function AddBookPage() {
     const router = useRouter()
-    const {
-        bookForm,
-        setField,
-        setWrongFillField,
-    } = useBookForm()
-    const [alert, setAlert] = useState<string>()
+    const { setNewAlert } = useAlert()
+    const [wrongField, setWrongField] = useState<string>()
+    
+    const formFields = ['title', 'author', 'currentPage', 'pages', 'description']
 
-    const formFields = [
-        {
-            fieldName: "title",
-            placeholder: "What's book name?",
-        },
-        {
-            fieldName: "author",
-            placeholder: "Who write this book?",
-        },
-        {
-            fieldName: "pages",
-            placeholder: "How much pages?",
-        },
-        {
-            fieldName: "description",
-            placeholder: "Describe this book (Optional)",
-        },
-    ]
-
-
-    const setErrorAlert = (field: string, error: string) => {
-        setWrongFillField(field)
-        setAlert(error)
-    }
-
-    const validateForm = (): string => {
-        const fields = ['title', 'author', 'description', 'pages']
-        const validation = makeBookFormValidation()
-        const errorList = fields.map((field: string) => {
-            const fieldInput = { [field]: bookForm[field].text }
-            const error = validation.validate(field, fieldInput)
-            return error
+    const validateForm = (form: Form) => {
+        const errors = formFields.map((fieldName) => {
+            const validator = makeAddBookValidation()
+            const error = validator.validate(
+                fieldName,
+                form,
+            )
+            if (error) {
+                return { fieldName, message: error }
+            }
         })
-        const errorIndex = errorList.findIndex((error: string) => error !== undefined)
-        const error = errorList.find((error: string) => error !== undefined)
-        if (error) {
-            setErrorAlert(fields[errorIndex], error)
-        }
-        return error
+        const firstError = errors.find((error) => error)
+        return firstError
     }
 
-    const handleSubmit = (event: FormEvent<HTMLFormElement>): void => {
+    const handleSubmit = async (event: FormEvent<HTMLFormElement>, form: Form) => {
         event.preventDefault()
-        const error = validateForm()
-        if (error) {
-            return
+        try {
+            const error = validateForm(form)
+            if (error) {
+                setWrongField(error.fieldName)
+                setNewAlert({ text: error.message, type: AlertType.Error })
+                return
+            }
+            const remoteAddBook = makeRemoteAddBook()
+            await remoteAddBook.add(form)
+            router.push('/')
+        } catch (error) {
+            if (error.message.includes('email')) {
+                setWrongField('email')
+            }
+            setNewAlert({ text: AlertMessage.GenericError, type: AlertType.Error })
         }
-        goToCurrentPageScreen()
     }
-    
-    const goToCurrentPageScreen = async (): Promise<void> => {
-        router.push('/book/add/current-page')
-    }
-
-    const renderInputFields = (): any => formFields.map((field, index) => {
-        return (
-        <Input
-            type={field.fieldName === 'pages' ? 'number' : 'text'}
-            field={field.fieldName}
-            placeholder={field.placeholder}
-            isWrongFill={bookForm[field.fieldName].isWrongFill}
-            setState={setField}
-            value={bookForm[field.fieldName].text}
-            key={index}
-        />
-    )})
-    
-    const renderAddBookForm = () => (
-        <Form onSubmit={handleSubmit}>
-            {renderInputFields()}
-            <SubmitButton text={'Next'} />
-        </Form>
-    )
 
     return (
         <>
             <Header/>
-            <Container>
-                {renderAddBookForm()}
-            </Container>
-            <Container centralize>
-                {alert &&
-                    <Alert>{alert}</Alert>
-                }
-            </Container>
+            <MainContent>
+                <Form
+                    handleSubmit={handleSubmit}
+                    fields={formFields}
+                    wrongField={wrongField}
+                    submitButtonText={{
+                        align: 'right',
+                        text: 'Save',
+                    }}
+                />
+            </MainContent>
         </>
     )
 }
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-    const accessToken = context.req.cookies['bookue-user']
-    if (!accessToken) {
-        return {
-            props: {},
-            redirect: {
-                destination: '/login'
-            }
-        }
-    }
-    return {
-        props: {}
-    }
-}
-
-export default AddBookPage

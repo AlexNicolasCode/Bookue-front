@@ -7,6 +7,7 @@ const HeaderStyled = styled.header`
     justify-content: space-between;
     align-items: center;
     padding: 1rem;
+    margin-bottom: 2rem;
 `
 
 const BackButtonStyled = styled.section`

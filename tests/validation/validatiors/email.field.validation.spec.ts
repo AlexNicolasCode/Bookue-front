@@ -1,6 +1,6 @@
 import { faker } from "@faker-js/faker";
 
-import { InvalidEmailError } from "@/domain/errors";
+import { InvalidUserError } from "@/domain/errors";
 import { EmailValidation } from "@/validation/validators";
 
 describe('EmailValidation', () => {
@@ -10,7 +10,7 @@ describe('EmailValidation', () => {
 
         const error = sut.validate({ [field]: faker.random.word() })
 
-        expect(error).toEqual(new InvalidEmailError())
+        expect(error).toEqual(new InvalidUserError())
     })
 
     test('Should return falsy if email is valid', () => {

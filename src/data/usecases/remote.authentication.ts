@@ -1,4 +1,4 @@
-import { EmailInUseError, InvalidEmailError, UnexpectedError } from '@/domain/errors';
+import { EmailInUseError, InvalidUserError, UnexpectedError } from '@/domain/errors';
 import { Authentication } from '@/domain/usecases';
 import { HttpClient, HttpStatusCode } from '../protocols/http';
 
@@ -37,7 +37,7 @@ export class RemoteAuthentication implements Authentication {
     });
     switch (httpResponse.statusCode) {
       case HttpStatusCode.ok: return httpResponse.body.data.login;
-      case HttpStatusCode.unauthorized: throw new InvalidEmailError();
+      case HttpStatusCode.unauthorized: throw new InvalidUserError();
       case HttpStatusCode.forbidden: throw new EmailInUseError();
       default: throw new UnexpectedError();
     }

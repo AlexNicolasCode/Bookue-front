@@ -1,3 +1,3 @@
-[submodule "api"]
+[submodule "Bookue-api"]
 	path = Bookue-api
-	url = https://github.com/AlexNicolasCode/Bookue-api
+	url = git@github.com:AlexNicolasCode/Bookue-api.git

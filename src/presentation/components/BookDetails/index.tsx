@@ -1,6 +1,10 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 import { BookModel } from "@/domain/models";
+import { makeEditBookValidation } from "@/main/factory/validation";
+import { useAlert, useTextConverter } from "@/presentation/hook";
+import { AlertType } from "@/presentation/contexts";
+
 import {
     ContainerStyled,
     DetailsContainerStyled,
@@ -22,56 +26,42 @@ type BookDetailsProps = {
 }
 
 type BookField = {
+    fieldName: string
     label: string
     value: string | number
     isEditing: boolean
+    fieldType: string
+    testId: string
 }
 
+const fieldNames = ['id', 'title', 'author', 'description', 'currentPage', 'pages', 'createdAt']
+
 export function BookDetails({ book }: BookDetailsProps) {
+    const { normalizeContent } = useTextConverter()
+    const { setNewAlert } = useAlert()
     const [editableBook, setEditableBook] = useState<BookModel>(book)
-    const [bookFields, setBookFields] = useState<BookField[]>([
-        {
-            label: "Title",
-            value: editableBook.title,
+    const [bookFields, setBookFields] = useState<BookField[]>(
+        fieldNames.map((fieldName: string) => ({
+            fieldName: fieldName,
+            label: normalizeContent(fieldName),
+            value: editableBook[fieldName],
             isEditing: false,
-        },
-        {
-            label: "Author",
-            value: editableBook.author,
-            isEditing: false,
-        },
-        {
-            label: "Description",
-            value: editableBook.description,
-            isEditing: false,
-        },
-        {
-            label: "Current Page",
-            value: editableBook.currentPage,
-            isEditing: false,
-        },
-        {
-            label: "Pages",
-            value: editableBook.pages,
-            isEditing: false,
-        },
-    ])
+            fieldType: 'text',
+            testId: `book-details-${fieldName}-field`,
+        }))
+    )
 
-    const getBookProgressPerCent = () => {
-        const perCent = String((editableBook.currentPage * 100) / editableBook.pages);
-        return perCent.substring(0, 3)
-    }
+    const bookProgressPercentage = useMemo(() => {
+        const percentage = String((editableBook.currentPage * 100) / editableBook.pages);
+        return `${percentage.substring(0, 4)}%`
+    }, [editableBook.currentPage, editableBook.pages])
 
-    const getTypeByLabel = (label: string) => {
-        return label === "Current Page" || label === "Pages" ? "number" : "text"
-    }
-
-    const setBookFieldByLabel = (label: string, targetLabel: string, value: string | boolean) => {
+    const setBookFieldByFieldName = (fieldName: string, targetKey: string, value: string | boolean): void => {
         const bookFiedlsEditted = bookFields.map((bookField: BookField) => {
-            if (bookField.label === label) {
+            if (bookField.fieldName === fieldName) {
                 return {
                     ...bookField,
-                    [targetLabel]: value,
+                    [targetKey]: value,
                 }
             }
             return bookField
@@ -79,53 +69,88 @@ export function BookDetails({ book }: BookDetailsProps) {
         setBookFields(bookFiedlsEditted)
     }
 
-    const setEditableBookContentByLabel = (label: string, value: string) => {
+    const setEditableBookContentByFieldName = (fieldName: string, value: string): void => {
         setEditableBook({
             ...editableBook,
-            [label]: value,
+            [fieldName]: value,
         })
-        setBookFieldByLabel(label, "value", value)
+        setBookFieldByFieldName(fieldName, 'value', value)
     }
 
-    const handleEditModeByLabel = (label: string) => {
-        const bookField = bookFields.find((field) => field.label === label)
-        setBookFieldByLabel(label, "isEditing", !bookField.isEditing)
+    const validateEditableField = (fieldName: string): string | undefined => {
+        const fieldTexts = {}
+        fieldNames.forEach(
+            (fieldName: string) =>
+            fieldTexts[fieldName] = bookFields.find((field) => field.fieldName === fieldName).value
+        )
+        const validator = makeEditBookValidation()
+        const error = validator.validate(
+            fieldName,
+            fieldTexts,
+        )
+        return error
     }
+
+    const handleEditModeByFieldName = (fieldName: string) => {
+        const bookField = bookFields.find((field) => field.fieldName === fieldName)
+        const isSaveFieldFlow = bookField.isEditing
+        if (isSaveFieldFlow) {
+            const error = validateEditableField(fieldName)
+            if (error) {
+                setNewAlert({
+                    text: error,
+                    type: AlertType.Error,
+                })
+                return
+            }
+        }
+        setBookFieldByFieldName(fieldName, 'isEditing', !bookField.isEditing)
+    }
+
+    const renderHeader = (): JSX.Element => (
+        <HeaderStyled>
+            <TitleStyled data-test-id="book-details-title">{book.title}</TitleStyled>
+            <LateralContainerStyled>
+                <TextStyled>Progress</TextStyled>
+                <ProgressBarStyled data-test-id="book-details-process-percentage">
+                    {bookProgressPercentage}
+                </ProgressBarStyled>
+            </LateralContainerStyled>
+        </HeaderStyled>
+    )
+
+    const renderFields = (): JSX.Element[] => bookFields.map((book, index) => 
+        <FieldContainerStyled key={index}>
+            {book.isEditing
+                ?
+                <FieldStyled>
+                    <FieldLabelStyled>{book.label}</FieldLabelStyled>
+                    <FieldContentEditingModeStyled
+                        onChange={(event) => setEditableBookContentByFieldName(book.fieldName, event.target.value)}
+                        type={book.fieldType}
+                        value={book.value}
+                        data-test-id={`${book.testId}-edit-mode`} />
+                </FieldStyled>
+                :
+                <FieldStyled>
+                    <FieldLabelStyled data-test-id={`${book.testId}-label`}>{book.label}</FieldLabelStyled>
+                    <FieldContentStyled data-test-id={book.testId}>{book.value}</FieldContentStyled>
+                </FieldStyled>
+            }
+            <EditButtonStyled
+                onClick={() => handleEditModeByFieldName(book.fieldName)}
+                data-test-id={`${book.testId}-edit-button`}
+            >
+                Edit
+            </EditButtonStyled>
+        </FieldContainerStyled>
+    );
 
     return (
         <ContainerStyled>
-            <HeaderStyled>
-                <TitleStyled>{book.title}</TitleStyled>
-
-                <LateralContainerStyled>
-                    <TextStyled>Progress</TextStyled>
-                    <ProgressBarStyled>{ getBookProgressPerCent() }%</ProgressBarStyled>
-                </LateralContainerStyled>
-            </HeaderStyled>
-
+            {renderHeader()}
             <DetailsContainerStyled>
-                {bookFields.map((book, index) =>
-                    <FieldContainerStyled key={index}>
-                        {book.isEditing
-                            ?
-                            <FieldStyled>
-                                <FieldLabelStyled>{ book.label }</FieldLabelStyled>
-                                <FieldContentEditingModeStyled
-                                    onChange={(event) => setEditableBookContentByLabel(book.label, event.target.value)}
-                                    type={getTypeByLabel(book.label)}
-                                    value={ book.value }
-                                />
-                            </FieldStyled>
-                            :
-                            <FieldStyled>
-                                <FieldLabelStyled>{ book.label }</FieldLabelStyled>
-                                <FieldContentStyled>{ book.value }</FieldContentStyled>
-                            </FieldStyled>
-                        }
-
-                        <EditButtonStyled onClick={() => handleEditModeByLabel(book.label)}>Edit</EditButtonStyled>
-                    </FieldContainerStyled>
-                )}
+                {renderFields()}
             </DetailsContainerStyled>
         </ContainerStyled>
     )

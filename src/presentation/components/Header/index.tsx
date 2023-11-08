@@ -1,4 +1,5 @@
 import { useRouter } from "next/router"
+import Link from "next/link"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faArrowLeft, faPlus } from "@fortawesome/free-solid-svg-icons"
 
@@ -24,25 +25,24 @@ export function Header() {
                     <FontAwesomeIcon
                         icon={faArrowLeft}
                         onClick={backToLastPage}
+                        data-test-id="header-back-book-button"
                     />
                 </BackButtonStyled>
             )
         }
     }
 
-    const goToAddBookPage = () => {
-        router.push('/book/add')
-    }
-
     const renderAddBookButton = () => {
         if (router.pathname === '/') {
             return (
-                <AddBookButtonStyled>
-                    <FontAwesomeIcon
-                        icon={faPlus}
-                        onClick={goToAddBookPage}
-                    />
-                </AddBookButtonStyled>
+                <Link href={'/book/add'}>
+                    <AddBookButtonStyled>
+                        <FontAwesomeIcon
+                            icon={faPlus}
+                            data-test-id="header-add-book-button"
+                        />
+                    </AddBookButtonStyled>
+                </Link>
             )
         }
     }
@@ -50,9 +50,7 @@ export function Header() {
     return (
         <HeaderStyled>
             {renderBackButton()}
-
             <Logo/>
-
             {renderAddBookButton()}
         </HeaderStyled>
     )
