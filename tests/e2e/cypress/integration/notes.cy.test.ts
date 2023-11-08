@@ -97,5 +97,23 @@ describe('Notes screen', () => {
 
         cy.getByTestId('notes-note-card-delete-mode').should('have.length', notes.length - 1)
       })
+
+      it('Should open add note input when user click on add mode button', () => {
+        const fakeBookId = faker.datatype.uuid()
+        cy.visit(`/book/${fakeBookId}/notes`)
+        cy.task('startServer', {
+          baseUrl: '/graphql',
+          statusCode: 200,
+          body: {
+            data: {
+              loadNotes: [...mockNoteList()]
+            }
+          }
+        })
+
+        cy.getByTestId('notes-add-mode-button').click()
+
+        cy.getByTestId('notes-add-note-input').should('exist')
+      })
     })
 })
