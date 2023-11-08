@@ -1,4 +1,5 @@
 export * from "./login.validation.factory"
 export * from "./register.validation.factory"
+export * from "./book.form.validation.factory"
 export * from "./edit.book.validation.factory"
 export * from "./add.book.validation.factory"
