@@ -5,11 +5,11 @@ module.exports = {
     node: true,
   },
 
-  parser: "@typescript-eslint/parser",
+  parser: '@typescript-eslint/parser',
 
   parserOptions: {
     ecmaVersion: 2020,
-    sourceType: "module",
+    sourceType: 'module',
   },
 
   rules: {
@@ -19,15 +19,12 @@ module.exports = {
 
   overrides: [
     {
-      files: [
-        '**/__tests__/*.{j,t}s?(x)',
-        '**/tests/unit/**/*.spec.{j,t}s?(x)',
-      ],
+      files: ['**/__tests__/*.{j,t}s?(x)', '**/tests/unit/**/*.spec.{j,t}s?(x)'],
       env: {
         jest: true,
       },
     },
   ],
 
-  extends: ['plugin:storybook/recommended']
-};
+  extends: ['plugin:storybook/recommended'],
+}

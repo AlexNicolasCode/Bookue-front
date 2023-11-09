@@ -1,6 +1,6 @@
-import { EmailInUseError, InvalidUserError, UnexpectedError } from '@/domain/errors';
-import { Authentication } from '@/domain/usecases';
-import { HttpClient, HttpStatusCode } from '../protocols/http';
+import { EmailInUseError, InvalidUserError, UnexpectedError } from '@/domain/errors'
+import { Authentication } from '@/domain/usecases'
+import { HttpClient, HttpStatusCode } from '../protocols/http'
 
 type HttpResponseAuthentication = {
   data: {
@@ -12,8 +12,8 @@ type HttpResponseAuthentication = {
 
 export class RemoteAuthentication implements Authentication {
   constructor(
-        private readonly url: string,
-        private readonly httpClient: HttpClient<HttpResponseAuthentication>,
+    private readonly url: string,
+    private readonly httpClient: HttpClient<HttpResponseAuthentication>
   ) {}
 
   async auth(params: Authentication.Params): Promise<Authentication.Result | undefined> {
@@ -30,16 +30,20 @@ export class RemoteAuthentication implements Authentication {
             }
         `,
         variables: {
-            email: params.email,
-            password: params.password,
-        }
+          email: params.email,
+          password: params.password,
+        },
       }),
-    });
+    })
     switch (httpResponse.statusCode) {
-      case HttpStatusCode.ok: return httpResponse.body.data.login;
-      case HttpStatusCode.unauthorized: throw new InvalidUserError();
-      case HttpStatusCode.forbidden: throw new EmailInUseError();
-      default: throw new UnexpectedError();
+      case HttpStatusCode.ok:
+        return httpResponse.body.data.login
+      case HttpStatusCode.unauthorized:
+        throw new InvalidUserError()
+      case HttpStatusCode.forbidden:
+        throw new EmailInUseError()
+      default:
+        throw new UnexpectedError()
     }
   }
 }

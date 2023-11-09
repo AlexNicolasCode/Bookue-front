@@ -3,7 +3,8 @@ import { CompareFieldsValidation } from '@/validation/validators'
 
 import { faker } from '@faker-js/faker'
 
-const makeSut = (field: string, fieldToCompare: string): CompareFieldsValidation => new CompareFieldsValidation(field, fieldToCompare)
+const makeSut = (field: string, fieldToCompare: string): CompareFieldsValidation =>
+  new CompareFieldsValidation(field, fieldToCompare)
 
 describe('CompareFieldsValidation', () => {
   test('Should return error if compare is invalid', () => {
@@ -13,7 +14,7 @@ describe('CompareFieldsValidation', () => {
 
     const error = sut.validate({
       [field]: 'any_value',
-      [fieldToCompare]: 'other_value'
+      [fieldToCompare]: 'other_value',
     })
 
     expect(error).toEqual(new InvalidFieldError(`${field} fields comparation`))
@@ -27,7 +28,7 @@ describe('CompareFieldsValidation', () => {
 
     const error = sut.validate({
       [field]: value,
-      [fieldToCompare]: value
+      [fieldToCompare]: value,
     })
 
     expect(error).toBeFalsy()

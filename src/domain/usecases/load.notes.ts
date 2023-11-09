@@ -1,13 +1,13 @@
-import { NoteModel } from "../models"
+import { NoteModel } from '../models'
 
 export interface LoadNotes {
-    loadNotes: (params: LoadNotes.Params) => Promise<LoadNotes.Result>
+  loadNotes: (params: LoadNotes.Params) => Promise<LoadNotes.Result>
 }
 
 export namespace LoadNotes {
-    export type Params = {
-        accessToken: string
-        bookId: string
-    }
-    export type Result = NoteModel[] | []
+  export type Params = {
+    accessToken: string
+    bookId: string
+  }
+  export type Result = NoteModel[] | []
 }

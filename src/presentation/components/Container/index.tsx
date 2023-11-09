@@ -1,4 +1,4 @@
-import { ContainerStyled } from "./styles";
+import { ContainerStyled } from './styles'
 
 const Container = ContainerStyled
 

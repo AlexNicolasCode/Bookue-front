@@ -1,3 +1,3 @@
 export interface SetCookie {
-    set: (key: string, value: string) => Promise<void>
+  set: (key: string, value: string) => Promise<void>
 }

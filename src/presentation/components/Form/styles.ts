@@ -1,13 +1,11 @@
-import styled from "styled-components"
+import styled from 'styled-components'
 
 const FormStyled = styled.form`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    grid-gap: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  grid-gap: 12px;
 `
 
-export {
-    FormStyled,    
-}
+export { FormStyled }

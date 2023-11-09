@@ -1,13 +1,9 @@
-import { TextStyled } from "./styles"
+import { TextStyled } from './styles'
 
 type TextProps = {
-    text?: string
+  text?: string
 }
 
 export function Text({ text }: TextProps) {
-    return (
-        <TextStyled>
-            {text}
-        </TextStyled>
-    )
-} 
+  return <TextStyled>{text}</TextStyled>
+}

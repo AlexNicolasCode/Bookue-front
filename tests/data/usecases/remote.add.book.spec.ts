@@ -9,88 +9,90 @@ import { LoadCookieSpy } from '@/tests/infra/mocks'
 import { throwError } from '@/tests/main/domain/mocks/test.helpers'
 
 type SutTypes = {
-    sut: RemoteAddBook
-    url: string
-    loadCookieSpy: LoadCookieSpy
-    httpClientSpy: HttpClientSpy
+  sut: RemoteAddBook
+  url: string
+  loadCookieSpy: LoadCookieSpy
+  httpClientSpy: HttpClientSpy
 }
 
 const makeSut = (): SutTypes => {
-    const url = faker.internet.url()
-    const loadCookieSpy = new LoadCookieSpy()
-    const httpClientSpy = new HttpClientSpy()
-    const sut = new RemoteAddBook(url, loadCookieSpy, httpClientSpy)
-    return {
-        sut,
-        url,
-        loadCookieSpy,
-        httpClientSpy
-    }
+  const url = faker.internet.url()
+  const loadCookieSpy = new LoadCookieSpy()
+  const httpClientSpy = new HttpClientSpy()
+  const sut = new RemoteAddBook(url, loadCookieSpy, httpClientSpy)
+  return {
+    sut,
+    url,
+    loadCookieSpy,
+    httpClientSpy,
+  }
 }
 
 describe('RemoteAddBook', () => {
-    let fakeRequest
+  let fakeRequest
 
-    beforeEach(() => {
-        fakeRequest = {
-            accessToken: faker.datatype.uuid()
-        }
+  beforeEach(() => {
+    fakeRequest = {
+      accessToken: faker.datatype.uuid(),
+    }
+  })
+
+  test('should call HttpClient with correct values', async () => {
+    const { sut, url, loadCookieSpy, httpClientSpy } = makeSut()
+    const accessToken = loadCookieSpy.result
+    httpClientSpy.response = {
+      statusCode: HttpStatusCode.ok,
+    }
+
+    await sut.add(fakeRequest)
+
+    expect(httpClientSpy.url).toBe(url)
+    expect(httpClientSpy.method).toBe('post')
+    expect(httpClientSpy.headers).toStrictEqual({
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${accessToken}`,
     })
+  })
 
-    test('should call HttpClient with correct values', async () => {
-        const { sut, url, loadCookieSpy, httpClientSpy } = makeSut()
-        const accessToken = loadCookieSpy.result
-        httpClientSpy.response = {
-            statusCode: HttpStatusCode.ok,
-        }
+  test('should throw if HttpClient throws', async () => {
+    const { sut, httpClientSpy } = makeSut()
+    jest.spyOn(httpClientSpy, 'request').mockImplementationOnce(throwError)
 
-        await sut.add(fakeRequest)
+    const promise = sut.add(fakeRequest)
 
-        expect(httpClientSpy.url).toBe(url)
-        expect(httpClientSpy.method).toBe('post')
-        expect(httpClientSpy.headers).toStrictEqual({
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${accessToken}`,
-        })
-    })
+    await expect(promise).rejects.toThrow()
+  })
 
-    test('should throw if HttpClient throws', async () => {
-        const { sut, httpClientSpy } = makeSut()
-        jest.spyOn(httpClientSpy, 'request').mockImplementationOnce(throwError)
+  test('should throw if LoadCookie throws', async () => {
+    const { sut, loadCookieSpy } = makeSut()
+    jest.spyOn(loadCookieSpy, 'load').mockImplementationOnce(throwError)
 
-        const promise = sut.add(fakeRequest)
+    const promise = sut.add(fakeRequest)
 
-        await expect(promise).rejects.toThrow()
-    })
+    await expect(promise).rejects.toThrow()
+  })
 
-    test('should throw if LoadCookie throws', async () => {
-        const { sut, loadCookieSpy } = makeSut()
-        jest.spyOn(loadCookieSpy, 'load').mockImplementationOnce(throwError)
+  test('should throw UnexpectedError if HttpClient return status code different 200', async () => {
+    const { sut, httpClientSpy } = makeSut()
+    httpClientSpy.response = {
+      statusCode: faker.internet.httpStatusCode({
+        types: ['clientError', 'serverError', 'informational'],
+      }),
+    }
 
-        const promise = sut.add(fakeRequest)
+    const response = sut.add(fakeRequest)
 
-        await expect(promise).rejects.toThrow()
-    })
+    await expect(response).rejects.toThrow(new UnexpectedError())
+  })
 
-    test('should throw UnexpectedError if HttpClient return status code different 200', async () => {
-        const { sut, httpClientSpy } = makeSut()
-        httpClientSpy.response = {
-          statusCode: faker.internet.httpStatusCode({ types: ['clientError', 'serverError', 'informational'] }),
-        }
-    
-        const response = sut.add(fakeRequest)
-    
-        await expect(response).rejects.toThrow(new UnexpectedError())
-    })
+  test('should return undefined on success', async () => {
+    const { sut, httpClientSpy } = makeSut()
+    httpClientSpy.response = {
+      statusCode: HttpStatusCode.ok,
+    }
 
-    test('should return undefined on success', async () => {
-        const { sut, httpClientSpy } = makeSut()
-        httpClientSpy.response = {
-          statusCode: HttpStatusCode.ok,
-        }
-    
-        const response = await sut.add(fakeRequest)
-    
-        expect(response).toBeUndefined()
-    })
+    const response = await sut.add(fakeRequest)
+
+    expect(response).toBeUndefined()
+  })
 })

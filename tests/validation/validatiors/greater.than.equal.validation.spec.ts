@@ -1,7 +1,7 @@
-import { faker } from "@faker-js/faker"
+import { faker } from '@faker-js/faker'
 
-import { GreaterThanFieldError } from "@/validation/errors"
-import { GreaterThanEqualValidation } from "@/validation/validators"
+import { GreaterThanFieldError } from '@/validation/errors'
+import { GreaterThanEqualValidation } from '@/validation/validators'
 
 describe('GreaterThanEqualValidation', () => {
   test('Should return error if first field is less than second field', () => {
@@ -9,7 +9,7 @@ describe('GreaterThanEqualValidation', () => {
     const fieldToCompare = faker.random.word()
     const input = {
       [field]: faker.datatype.number({ max: 99 }),
-      [fieldToCompare]: faker.datatype.number({ min: 100 })
+      [fieldToCompare]: faker.datatype.number({ min: 100 }),
     }
     const sut = new GreaterThanEqualValidation(field, fieldToCompare)
 
@@ -22,8 +22,8 @@ describe('GreaterThanEqualValidation', () => {
     const field = faker.random.word()
     const fieldToCompare = faker.random.word()
     const input = {
-      [field]: faker.datatype.number({ min: 100  }),
-      [fieldToCompare]: faker.datatype.number({ max: 99 })
+      [field]: faker.datatype.number({ min: 100 }),
+      [fieldToCompare]: faker.datatype.number({ max: 99 }),
     }
     const sut = new GreaterThanEqualValidation(field, fieldToCompare)
 
@@ -38,7 +38,7 @@ describe('GreaterThanEqualValidation', () => {
     const ramdomNumber = faker.datatype.number()
     const input = {
       [field]: ramdomNumber,
-      [fieldToCompare]: ramdomNumber
+      [fieldToCompare]: ramdomNumber,
     }
     const sut = new GreaterThanEqualValidation(field, fieldToCompare)
 
