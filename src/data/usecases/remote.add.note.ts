@@ -10,7 +10,7 @@ export class RemoteAddNote implements AddNote {
         private readonly httpClient: HttpClient,
     ) {}
   
-    async add(params: AddNote.Params): Promise<void> {
+    async add(params: AddNote.Params): Promise<AddNote.Result> {
       const accessToken = await this.loadCookie.load('bookue-user')
       const httpResponse = await this.httpClient.request({
         url: this.url,
@@ -22,7 +22,9 @@ export class RemoteAddNote implements AddNote {
         body: JSON.stringify({
           query: `
               mutation AddNote($bookId: String!, $text: String!) {
-                addNote(bookId: $bookId, text: $text)
+                addNote(bookId: $bookId, text: $text) {
+                  id
+                }
               }
             `,
   
@@ -33,7 +35,7 @@ export class RemoteAddNote implements AddNote {
         })
       })
       switch (httpResponse.statusCode) {
-        case HttpStatusCode.ok: return
+        case HttpStatusCode.ok: return httpResponse.body.data.addNote
         default: throw new UnexpectedError()
       }
     }

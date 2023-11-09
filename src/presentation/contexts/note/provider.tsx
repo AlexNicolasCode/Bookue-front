@@ -5,8 +5,7 @@ import { NoteContext } from "./context"
 import { NoteModel } from "@/domain/models"
 import { useModeController } from "@/presentation/hook"
 import { Modes } from "../mode"
-import { makeAddNote, makeDeleteNote, makeLoadNotes } from "@/main/factory/usecases"
-import { makeCookieManagerAdapter } from "@/main/factory/cookie"
+import { makeAddNote, makeDeleteNote } from "@/main/factory/usecases"
 
 type NoteProviderProps = {
     children: ReactNode
@@ -18,9 +17,7 @@ export const NoteProvider = ({ children }: NoteProviderProps) => {
     const [newNote, setNewNote] = useState<string>('')
     const { mode, lastMode } = useModeController()
     const remoteAddNote = makeAddNote()
-    const remoteLoadNotes = makeLoadNotes()
     const remoteDeleteNote = makeDeleteNote()
-    const cookieManager = makeCookieManagerAdapter()
 
     const shouldAddNoteInList =
         newNote
@@ -36,16 +33,17 @@ export const NoteProvider = ({ children }: NoteProviderProps) => {
 
     const addNote = async () => {
         const bookId = router.query.id.toString()
-        await remoteAddNote.add({
+        const createdNote = await remoteAddNote.add({
             bookId,
             text: newNote,
         })
-        const accessToken = await cookieManager.load('bookue-user')
-        const notes = await remoteLoadNotes.loadNotes({
-            bookId,
-            accessToken,
-        })
-        setNotes(notes)
+        setNotes([
+            {
+                id: createdNote.id,
+                text: newNote,
+            }, 
+            ...notes
+        ])
         setNewNote('')
     }
     

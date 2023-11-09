@@ -1,6 +1,7 @@
 import { faker } from '@faker-js/faker';
 
 import { RemoteAddNote } from '@/data/usecases';
+import { HttpStatusCode } from '@/data/protocols/http';
 
 import { LoadCookieSpy } from '@/tests/infra/mocks';
 import { mockAddNoteParams } from '@/tests/main/domain/mocks';
@@ -29,8 +30,18 @@ const makeSut = (): SutTypes => {
 
 describe('RemoteAddNote', () => {
   test('should call LoadCookieSpy with correct key', async () => {
-    const { sut, loadCookieSpy } = makeSut();
+    const { sut, loadCookieSpy, httpClientSpy } = makeSut();
     const fakeRequest = mockAddNoteParams();
+    httpClientSpy.response = {
+      statusCode: HttpStatusCode.ok,
+      body: {
+        data: {
+          addNote: {
+            id: faker.datatype.uuid(),
+          }
+        }
+      },
+    };
 
     await sut.add(fakeRequest);
 
@@ -51,6 +62,16 @@ describe('RemoteAddNote', () => {
     const { sut, loadCookieSpy, httpClientSpy, url } = makeSut();
     const fakeRequest = mockAddNoteParams();
     const accessToken = loadCookieSpy.result;
+    httpClientSpy.response = {
+      statusCode: HttpStatusCode.ok,
+      body: {
+        data: {
+          addNote: {
+            id: faker.datatype.uuid(),
+          }
+        }
+      },
+    }
 
     await sut.add(fakeRequest);
 
@@ -82,12 +103,22 @@ describe('RemoteAddNote', () => {
     await expect(promise).rejects.toThrow();
   });
 
-  test('should return none on success', async () => {
-    const { sut } = makeSut();
+  test('should return correct note id on success', async () => {
+    const { sut, httpClientSpy } = makeSut();
     const fakeRequest = mockAddNoteParams();
+    httpClientSpy.response = {
+      statusCode: HttpStatusCode.ok,
+      body: {
+        data: {
+          addNote: {
+            id: faker.datatype.uuid(),
+          }
+        }
+      },
+    }
 
     const response = await sut.add(fakeRequest);
 
-    expect(response).toBeUndefined();
+    expect(response.id).toBe(httpClientSpy.response.body.data.addNote.id);
   });
 });
