@@ -91,6 +91,14 @@ describe('Notes screen', () => {
             }
           }
         })
+        cy.intercept(Cypress.env().baseApiURL, {
+          method: 'POST',
+        }, {
+          statusCode: 200,
+          body: {
+            data: { deleteNote: null }
+          }
+        }).as('request')
         cy.getByTestId('notes-delete-mode-button').click()
 
         cy.getByTestId(`notes-remove-note-button`).first().click()
