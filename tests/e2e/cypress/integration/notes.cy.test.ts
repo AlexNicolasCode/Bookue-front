@@ -155,7 +155,7 @@ describe('Notes screen', () => {
         }, {
           statusCode: 200,
           body: {
-            data: { loadNotes: [{ id: faker.datatype.uuid(), text: fakeNoteText }] }
+            data: { addNote: { id: faker.datatype.uuid() } }
           }
         }).as('request')
         
