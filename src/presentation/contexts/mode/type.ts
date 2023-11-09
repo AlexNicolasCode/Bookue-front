@@ -1,5 +1,5 @@
 export enum Modes {
-    DefaultMode,
-    DeleteMode,
-    AddMode,
+  DefaultMode,
+  DeleteMode,
+  AddMode,
 }

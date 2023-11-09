@@ -1,5 +1,5 @@
 declare namespace Cypress {
-    export interface Chainable {
-      getByTestId: (id: string) => Chainable<Element>
-    }
+  export interface Chainable {
+    getByTestId: (id: string) => Chainable<Element>
+  }
 }

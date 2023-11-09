@@ -1,17 +1,17 @@
-version: "3.9"
+version: '3.9'
 services:
   frontend:
     image: bookue-frontend
     container_name: front
     command: yarn start:dev
-    environment: 
-        NEXT_PUBLIC_BOOKUE_API_URL: http://host.docker.internal:8000/graphql
+    environment:
+      NEXT_PUBLIC_BOOKUE_API_URL: http://host.docker.internal:8000/graphql
     ports:
-        - 3000:3000
+      - 3000:3000
     volumes:
-        - ./:/usr/local/apps/bookue-front/
-        - nodemodules-front:/usr/local/apps/bookue-front/node_modules/
-    build:  
+      - ./:/usr/local/apps/bookue-front/
+      - nodemodules-front:/usr/local/apps/bookue-front/node_modules/
+    build:
       dockerfile: ./Dockerfile
       context: .
       cache_from:
@@ -22,28 +22,28 @@ services:
     command: >
       sh -c "cd ./Bookue-api && yarn && yarn start:dev"
     ports:
-        - 8000:8000
-    environment: 
-        MONGO_DB_URL: mongodb://host.docker.internal:27017/MONGO_DATABASE_DEV
-        PORT: 8000
-        JWT_SECRET_KEY: docker-jwt-secret-key
+      - 8000:8000
+    environment:
+      MONGO_DB_URL: mongodb://host.docker.internal:27017/MONGO_DATABASE_DEV
+      PORT: 8000
+      JWT_SECRET_KEY: docker-jwt-secret-key
     volumes:
-        - ./:/usr/local/apps/bookue-api/
-        - nodemodules-api:/usr/local/apps/bookue-api/node_modules/
-    build:  
+      - ./:/usr/local/apps/bookue-api/
+      - nodemodules-api:/usr/local/apps/bookue-api/node_modules/
+    build:
       context: ./Bookue-api/
       dockerfile: Dockerfile
       cache_from:
         - node:16-alpine
-    depends_on: 
-        - database
+    depends_on:
+      - database
   database:
     container_name: mongodb
     image: mongo
     volumes:
       - ~/mongo:/data/db
     ports:
-      - "27017:27017"
+      - '27017:27017'
 volumes:
-    nodemodules-front:
-    nodemodules-api:
+  nodemodules-front:
+  nodemodules-api:

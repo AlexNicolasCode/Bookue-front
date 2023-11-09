@@ -1,103 +1,91 @@
-import { useEffect } from "react";
-import { useRouter } from "next/router";
+import { useEffect } from 'react'
+import { useRouter } from 'next/router'
 
-import { NoteModel } from "@/domain/models";
-import { Options, Option } from "../Options";
-import { Modes } from "@/presentation/contexts";
-import { useModeController, useNote, useTextConverter } from "@/presentation/hook";
+import { NoteModel } from '@/domain/models'
+import { Options, Option } from '../Options'
+import { Modes } from '@/presentation/contexts'
+import { useModeController, useNote, useTextConverter } from '@/presentation/hook'
 
 import {
-    Note,
-    DeleteModeOptionsContainer,
-    DeleteModeContainer,
-    NoteText,
-    NoteDelete,
-    NoteListAddMode,
-    NoteListDefault,
-} from "./styles";
+  Note,
+  DeleteModeOptionsContainer,
+  DeleteModeContainer,
+  NoteText,
+  NoteDelete,
+  NoteListAddMode,
+  NoteListDefault,
+} from './styles'
 
 type NoteListProps = {
-    ssrNotes: NoteModel[]
- }
+  ssrNotes: NoteModel[]
+}
 
-export function NoteList ({ ssrNotes }: NoteListProps) {
-    const router = useRouter()
-    const { truncateText } = useTextConverter()
-    const { mode } = useModeController()
-    const { notes, setNotes, deleteNote } = useNote()
+export function NoteList({ ssrNotes }: NoteListProps) {
+  const router = useRouter()
+  const { truncateText } = useTextConverter()
+  const { mode } = useModeController()
+  const { notes, setNotes, deleteNote } = useNote()
 
-    useEffect(() => {
-        setNotes(ssrNotes)
-    }, [router.pathname])
+  useEffect(() => {
+    setNotes(ssrNotes)
+  }, [router.pathname])
 
-    const maxCharTruncate = 750
+  const maxCharTruncate = 750
 
-    const renderNoteList = () => 
-        <NoteListDefault>
-            {notes.map((note, index) => {
-                const text = truncateText(note.text, maxCharTruncate)
-                return (
-                    <Note
-                        id={note.id}
-                        data-test-id={'notes-note-card'}
-                        key={index}
-                    >
-                        <NoteText>
-                            {text}
-                        </NoteText>
-                    </Note>
-                )
-            })}
-        </NoteListDefault>
+  const renderNoteList = () => (
+    <NoteListDefault>
+      {notes.map((note, index) => {
+        const text = truncateText(note.text, maxCharTruncate)
+        return (
+          <Note id={note.id} data-test-id={'notes-note-card'} key={index}>
+            <NoteText>{text}</NoteText>
+          </Note>
+        )
+      })}
+    </NoteListDefault>
+  )
 
-    const renderNotesListDeleteMode = () => 
-        <NoteListDefault>
-            {notes.map((note, index) => 
-                <DeleteModeContainer key={index}>
-                    <NoteDelete
-                        id={note.id}
-                        data-test-id={'notes-note-card-delete-mode'}
-                    >
-                        {truncateText(note.text, maxCharTruncate)}
-                    </NoteDelete>
-                    <DeleteModeOptionsContainer onClick={() => deleteNote(note.id)}>
-                        <Options
-                            options={[Option.RemoveNote]}
-                            config={{
-                                isFixedOptions: true,
-                            }}
-                        />
-                    </DeleteModeOptionsContainer>
-                </DeleteModeContainer>
-            )}
-        </NoteListDefault>
+  const renderNotesListDeleteMode = () => (
+    <NoteListDefault>
+      {notes.map((note, index) => (
+        <DeleteModeContainer key={index}>
+          <NoteDelete id={note.id} data-test-id={'notes-note-card-delete-mode'}>
+            {truncateText(note.text, maxCharTruncate)}
+          </NoteDelete>
+          <DeleteModeOptionsContainer onClick={() => deleteNote(note.id)}>
+            <Options
+              options={[Option.RemoveNote]}
+              config={{
+                isFixedOptions: true,
+              }}
+            />
+          </DeleteModeOptionsContainer>
+        </DeleteModeContainer>
+      ))}
+    </NoteListDefault>
+  )
 
-    const renderNotesListAddMode = () => 
-        <NoteListAddMode>
-            {notes.map((note, index) => {
-                const text = truncateText(note.text, maxCharTruncate)
-                return (
-                    <Note
-                        id={note.id}
-                        data-test-id={'notes-note-card'}
-                        key={index}
-                    >
-                        <NoteText>
-                            {text}
-                        </NoteText>
-                    </Note>
-                )
-            })}
-        </NoteListAddMode>
+  const renderNotesListAddMode = () => (
+    <NoteListAddMode>
+      {notes.map((note, index) => {
+        const text = truncateText(note.text, maxCharTruncate)
+        return (
+          <Note id={note.id} data-test-id={'notes-note-card'} key={index}>
+            <NoteText>{text}</NoteText>
+          </Note>
+        )
+      })}
+    </NoteListAddMode>
+  )
 
-    const renderNoteListByMode = () => {
-        const modeMapper = {
-            [Modes.AddMode]: renderNotesListAddMode,
-            [Modes.DeleteMode]: renderNotesListDeleteMode,
-            [Modes.DefaultMode]: renderNoteList,
-        }
-        return modeMapper[mode]()
+  const renderNoteListByMode = () => {
+    const modeMapper = {
+      [Modes.AddMode]: renderNotesListAddMode,
+      [Modes.DeleteMode]: renderNotesListDeleteMode,
+      [Modes.DefaultMode]: renderNoteList,
     }
+    return modeMapper[mode]()
+  }
 
-    return renderNoteListByMode()
+  return renderNoteListByMode()
 }

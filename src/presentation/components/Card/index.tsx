@@ -1,46 +1,42 @@
-import Link from "next/link"
+import Link from 'next/link'
 
-import { BookModel } from "@/domain/models"
+import { BookModel } from '@/domain/models'
 
 import {
-    CardStyled,
-    CountPageStyled,
-    DescriptionStyled,
-    DetailsButtonStyled,
-    HeaderStyled,
-    NotesButtonStyled,
-    OptionsStyled,
-    TitleStyled,
-} from "./styles"
+  CardStyled,
+  CountPageStyled,
+  DescriptionStyled,
+  DetailsButtonStyled,
+  HeaderStyled,
+  NotesButtonStyled,
+  OptionsStyled,
+  TitleStyled,
+} from './styles'
 
 type CardProps = {
-    book: BookModel
+  book: BookModel
 }
 
 export function Card({ book }: CardProps) {
-    return (
-        <CardStyled data-test-id="home-book-card">
-            <HeaderStyled>
-                <TitleStyled data-test-id="home-book-title">{book.title}</TitleStyled>
-                <CountPageStyled data-test-id="home-book-pages">{book.currentPage} - {book.pages}</CountPageStyled>
-            </HeaderStyled>
+  return (
+    <CardStyled data-test-id='home-book-card'>
+      <HeaderStyled>
+        <TitleStyled data-test-id='home-book-title'>{book.title}</TitleStyled>
+        <CountPageStyled data-test-id='home-book-pages'>
+          {book.currentPage} - {book.pages}
+        </CountPageStyled>
+      </HeaderStyled>
 
-            <DescriptionStyled data-test-id="home-book-description">
-                {book.description}
-            </DescriptionStyled>
+      <DescriptionStyled data-test-id='home-book-description'>{book.description}</DescriptionStyled>
 
-            <OptionsStyled>
-                <Link href={`/book/${book.id}/notes`}>
-                    <NotesButtonStyled data-test-id="home-book-notes-button">
-                        Notes
-                    </NotesButtonStyled>
-                </Link>
-                <Link href={`/book/${book.id}`}>
-                    <DetailsButtonStyled data-test-id="home-book-details-button">
-                        Details
-                    </DetailsButtonStyled>
-                </Link>
-            </OptionsStyled>
-        </CardStyled>
-    )
+      <OptionsStyled>
+        <Link href={`/book/${book.id}/notes`}>
+          <NotesButtonStyled data-test-id='home-book-notes-button'>Notes</NotesButtonStyled>
+        </Link>
+        <Link href={`/book/${book.id}`}>
+          <DetailsButtonStyled data-test-id='home-book-details-button'>Details</DetailsButtonStyled>
+        </Link>
+      </OptionsStyled>
+    </CardStyled>
+  )
 }

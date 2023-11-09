@@ -1,1 +1,1 @@
-export * from './cookie.manager.adapter';
+export * from './cookie.manager.adapter'

@@ -1,17 +1,17 @@
-import { Alert } from "./"
+import { Alert } from './'
 
 export default {
   component: Alert,
   title: 'Alert',
   tags: ['autodocs'],
-};
+}
 
 export const Error = {
   args: {
     children: 'Testing this alert!',
     isActive: true,
     type: 'error',
-  }
+  },
 }
 
 export const Warn = {
@@ -19,7 +19,7 @@ export const Warn = {
     children: 'Testing this alert!',
     isActive: true,
     type: 'warn',
-  }
+  },
 }
 
 export const Succeds = {
@@ -27,5 +27,5 @@ export const Succeds = {
     children: 'Testing this alert!',
     isActive: true,
     type: 'succeds',
-  }
+  },
 }

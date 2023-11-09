@@ -1,142 +1,154 @@
-import { FormEvent, useEffect, useState } from "react"
+import { FormEvent, useEffect, useState } from 'react'
 
-import { Input, SubmitButton } from "@/presentation/components"
+import { Input, SubmitButton } from '@/presentation/components'
 
-import { FormStyled } from "./styles"
+import { FormStyled } from './styles'
 
 type SetFieldValueParams = {
-    fieldName: string
-    text: string
+  fieldName: string
+  text: string
 }
 
 type FormProp = {
-    [fieldName: string]: string
+  [fieldName: string]: string
 }
 
 type FormComponentProps = {
-    handleSubmit: (event: FormEvent<HTMLFormElement>, form: FormProp) => Promise<void>
-    fields: string[]
-    wrongField?: string
-    submitButtonText: string | {
+  handleSubmit: (event: FormEvent<HTMLFormElement>, form: FormProp) => Promise<void>
+  fields: string[]
+  wrongField?: string
+  submitButtonText:
+    | string
+    | {
         align: 'left' | 'right'
         text: string
-    }
+      }
 }
 
-export const Form = ({ handleSubmit, fields, wrongField, submitButtonText }: FormComponentProps) => {
-    const [form, setForm] = useState<FormProp>({})
-    const [formFields, setFormFields] = useState(
-        fields.map((fieldName) => ({
-            fieldName,
-            isWrongFill: false,
-        }))
-    )
+export const Form = ({
+  handleSubmit,
+  fields,
+  wrongField,
+  submitButtonText,
+}: FormComponentProps) => {
+  const [form, setForm] = useState<FormProp>({})
+  const [formFields, setFormFields] = useState(
+    fields.map((fieldName) => ({
+      fieldName,
+      isWrongFill: false,
+    }))
+  )
 
-    useEffect(() => {
-        if (wrongField) {
-            activeFieldIsWrongFill(wrongField)        
-        } else {
-            cleanwrongFields()
-        }
-    }, [wrongField])
-
-    const getFieldPlaceholder = (fieldName: string): string => {
-        const placeholderMapper = {
-            'name': 'Ex: Bob Bookue',
-            'email': 'Ex: bookue@gmail.com',
-            'password': 'Ex: BookueLovePotato',
-            'passwordConfirmation': 'Ex: BookueLovePotato',
-            'title': 'Ex: Welcome to the Bookue',
-            'author': 'Ex: Bookue Lispector',
-            'currentPage': 'Ex: 10',
-            'pages': 'Ex: 100',
-            'description': 'Ex: This is a Bookue book',
-        }
-        return placeholderMapper[fieldName]
+  useEffect(() => {
+    if (wrongField) {
+      activeFieldIsWrongFill(wrongField)
+    } else {
+      cleanwrongFields()
     }
-    
-    const getFieldType = (fieldName: string): string => {
-        const fieldNameLowCase = fieldName.toLowerCase()
-        const isPageField = /page/.test(fieldNameLowCase)
-        if (isPageField) {
-            return 'number'
-        }
-        const isPasswordField = /password/.test(fieldNameLowCase)
-        if (isPasswordField) {
-            return 'password'
-        }
-        const isEmailField = /email/.test(fieldNameLowCase)
-        if (isEmailField) {
-            return 'email'
-        }
-        return 'text'
+  }, [wrongField])
+
+  const getFieldPlaceholder = (fieldName: string): string => {
+    const placeholderMapper = {
+      name: 'Ex: Bob Bookue',
+      email: 'Ex: bookue@gmail.com',
+      password: 'Ex: BookueLovePotato',
+      passwordConfirmation: 'Ex: BookueLovePotato',
+      title: 'Ex: Welcome to the Bookue',
+      author: 'Ex: Bookue Lispector',
+      currentPage: 'Ex: 10',
+      pages: 'Ex: 100',
+      description: 'Ex: This is a Bookue book',
     }
+    return placeholderMapper[fieldName]
+  }
 
-    const cleanwrongFields = () => {
-        const updatedFields = formFields.map((field) => ({
-            ...field,
-            isWrongFill: false
-        }))
-        setFormFields(updatedFields)
+  const getFieldType = (fieldName: string): string => {
+    const fieldNameLowCase = fieldName.toLowerCase()
+    const isPageField = /page/.test(fieldNameLowCase)
+    if (isPageField) {
+      return 'number'
     }
-
-    const getUpdatedFields = (fieldName: string, targetField: string, value: string | boolean) => {
-        return formFields.map((field, index) => {
-            if(field.fieldName === fieldName) {
-                formFields[index][targetField] = value
-                return formFields[index]
-            }
-            return formFields[index]
-        })
+    const isPasswordField = /password/.test(fieldNameLowCase)
+    if (isPasswordField) {
+      return 'password'
     }
-
-    const activeFieldIsWrongFill = (fieldName: string): void => {
-        const updatedForm = getUpdatedFields(fieldName, 'isWrongFill', true)
-        setFormFields(updatedForm)
+    const isEmailField = /email/.test(fieldNameLowCase)
+    if (isEmailField) {
+      return 'email'
     }
+    return 'text'
+  }
 
-    const setFieldValue = ({ fieldName, text }: SetFieldValueParams): void => {
-        setForm({
-            ...form,
-            [fieldName]: text,
-        })
-    }
+  const cleanwrongFields = () => {
+    const updatedFields = formFields.map((field) => ({
+      ...field,
+      isWrongFill: false,
+    }))
+    setFormFields(updatedFields)
+  }
 
-    const getSubmitButtonText = () => typeof submitButtonText === 'string' ? submitButtonText : submitButtonText.text
-    
-    const getSubmitButtonAlign = () => typeof submitButtonText !== 'string' ? submitButtonText.align : null
-
-    const renderFields = (): JSX.Element => {
-        const inputFields = formFields.map(({ fieldName, isWrongFill }, index) => {
-            const fieldType = getFieldType(fieldName)
-            const fieldPlaceholder = getFieldPlaceholder(fieldName)
-            const min = fieldType === 'number' ? 0 : null
-            return <Input
-                type={fieldType}
-                placeholder={fieldPlaceholder}
-                setStateWithFieldName={setFieldValue}
-                fieldName={fieldName}
-                min={min}
-                isWrongFill={isWrongFill}
-                testId={`${fieldName}-field`}
-                value={form[fieldName] ?? ''}
-                key={index}
-            />
+  const getUpdatedFields = (fieldName: string, targetField: string, value: string | boolean) => {
+    return formFields.map((field, index) => {
+      if (field.fieldName === fieldName) {
+        formFields[index][targetField] = value
+        return formFields[index]
+      }
+      return formFields[index]
     })
-        return <>{inputFields}</>
-    }
+  }
 
-    const renderSubmit = () => 
-        <SubmitButton
-            align={getSubmitButtonAlign()}
-            text={getSubmitButtonText()}
-            testId='submit-form-button'
+  const activeFieldIsWrongFill = (fieldName: string): void => {
+    const updatedForm = getUpdatedFields(fieldName, 'isWrongFill', true)
+    setFormFields(updatedForm)
+  }
+
+  const setFieldValue = ({ fieldName, text }: SetFieldValueParams): void => {
+    setForm({
+      ...form,
+      [fieldName]: text,
+    })
+  }
+
+  const getSubmitButtonText = () =>
+    typeof submitButtonText === 'string' ? submitButtonText : submitButtonText.text
+
+  const getSubmitButtonAlign = () =>
+    typeof submitButtonText !== 'string' ? submitButtonText.align : null
+
+  const renderFields = (): JSX.Element => {
+    const inputFields = formFields.map(({ fieldName, isWrongFill }, index) => {
+      const fieldType = getFieldType(fieldName)
+      const fieldPlaceholder = getFieldPlaceholder(fieldName)
+      const min = fieldType === 'number' ? 0 : null
+      return (
+        <Input
+          type={fieldType}
+          placeholder={fieldPlaceholder}
+          setStateWithFieldName={setFieldValue}
+          fieldName={fieldName}
+          min={min}
+          isWrongFill={isWrongFill}
+          testId={`${fieldName}-field`}
+          value={form[fieldName] ?? ''}
+          key={index}
         />
+      )
+    })
+    return <>{inputFields}</>
+  }
 
-    return (
-        <FormStyled onSubmit={(event) => handleSubmit(event, form)}>
-            {renderFields()}
-            {renderSubmit()}
-        </FormStyled>
-    )
+  const renderSubmit = () => (
+    <SubmitButton
+      align={getSubmitButtonAlign()}
+      text={getSubmitButtonText()}
+      testId='submit-form-button'
+    />
+  )
+
+  return (
+    <FormStyled onSubmit={(event) => handleSubmit(event, form)}>
+      {renderFields()}
+      {renderSubmit()}
+    </FormStyled>
+  )
 }

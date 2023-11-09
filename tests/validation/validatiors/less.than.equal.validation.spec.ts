@@ -1,7 +1,7 @@
-import { faker } from "@faker-js/faker"
+import { faker } from '@faker-js/faker'
 
-import { GreaterThanFieldError } from "@/validation/errors"
-import { LessThanEqualValidation } from "@/validation/validators"
+import { GreaterThanFieldError } from '@/validation/errors'
+import { LessThanEqualValidation } from '@/validation/validators'
 
 describe('LessThanEqualValidation', () => {
   test('Should return error if first field is greater than second field', () => {
@@ -9,7 +9,7 @@ describe('LessThanEqualValidation', () => {
     const fieldToCompare = faker.random.word()
     const input = {
       [field]: faker.datatype.number({ min: 100 }),
-      [fieldToCompare]: faker.datatype.number({ max: 99 })
+      [fieldToCompare]: faker.datatype.number({ max: 99 }),
     }
     const sut = new LessThanEqualValidation(field, fieldToCompare)
 
@@ -22,8 +22,8 @@ describe('LessThanEqualValidation', () => {
     const field = faker.random.word()
     const fieldToCompare = faker.random.word()
     const input = {
-      [field]: faker.datatype.number({ max: 99  }),
-      [fieldToCompare]: faker.datatype.number({ min: 100 })
+      [field]: faker.datatype.number({ max: 99 }),
+      [fieldToCompare]: faker.datatype.number({ min: 100 }),
     }
     const sut = new LessThanEqualValidation(field, fieldToCompare)
 

@@ -1,10 +1,10 @@
-import { faker } from "@faker-js/faker"
+import { faker } from '@faker-js/faker'
 
-import { mockLoadAllBooksEndpoint } from "../utils/start.fake.server";
-import { InvalidFieldError, RequiredFieldError } from "../../../../src/validation/errors";
+import { mockLoadAllBooksEndpoint } from '../utils/start.fake.server'
+import { InvalidFieldError, RequiredFieldError } from '../../../../src/validation/errors'
 
 describe('Sign up screen', () => {
-  let fakeAccount;
+  let fakeAccount
 
   beforeEach(() => {
     cy.viewport('iphone-x')
@@ -14,7 +14,7 @@ describe('Sign up screen', () => {
       password: faker.internet.password(),
     }
   })
-  
+
   it('Should change to login page when click in login button', () => {
     cy.visit('/sign-up')
 
@@ -24,7 +24,8 @@ describe('Sign up screen', () => {
   })
 
   it('Should show password error alert when user fill password and password confirmation field with diferent values', () => {
-    const invalidPasswordComparationError = new InvalidFieldError('password fields comparation').message
+    const invalidPasswordComparationError = new InvalidFieldError('password fields comparation')
+      .message
     cy.visit('/sign-up')
 
     cy.getByTestId('name-field').type(fakeAccount.name)
@@ -35,10 +36,10 @@ describe('Sign up screen', () => {
 
     cy.getByTestId('alert-message').contains(invalidPasswordComparationError, { matchCase: false })
   })
-  
+
   it('Should show password error alert when user not fill password confirmation field', () => {
     cy.visit('/sign-up')
-    
+
     cy.getByTestId('name-field').type(fakeAccount.name)
     cy.getByTestId('email-field').type(fakeAccount.email)
     cy.getByTestId('password-field').type(fakeAccount.password)
@@ -85,18 +86,22 @@ describe('Sign up screen', () => {
 
   it('Should redirect to home screen on success', () => {
     cy.visit('/sign-up')
-    cy.intercept(Cypress.env("baseApiURL"), {
-      method: 'POST',
-      }, {
-      statusCode: 200,
-      body: {
-        data: {
-          signUp: {
-            accessToken: faker.datatype.string(),
-          }
-        }
+    cy.intercept(
+      Cypress.env('baseApiURL'),
+      {
+        method: 'POST',
+      },
+      {
+        statusCode: 200,
+        body: {
+          data: {
+            signUp: {
+              accessToken: faker.datatype.string(),
+            },
+          },
+        },
       }
-    }).as('request')
+    ).as('request')
 
     cy.getByTestId('name-field').type(fakeAccount.name)
     cy.getByTestId('email-field').type(fakeAccount.email)
@@ -121,7 +126,7 @@ describe('Sign up screen', () => {
   it('Should hide password when user click in hide password icon', () => {
     cy.visit('/sign-up')
     const passwordField = cy.getByTestId('password-field')
-    
+
     cy.getByTestId('password-icon-view').click()
     passwordField.type(fakeAccount.password)
     cy.getByTestId('password-icon-view').click()
@@ -139,11 +144,10 @@ describe('Sign up screen', () => {
     passwordField.invoke('attr', 'type').should('eq', 'text')
   })
 
-  
   it('Should hide password confirmation when user click in hide password icon', () => {
     cy.visit('/sign-up')
     const passwordField = cy.getByTestId('passwordConfirmation-field')
-    
+
     cy.getByTestId('passwordConfirmation-icon-view').click()
     passwordField.type(fakeAccount.password)
     cy.getByTestId('passwordConfirmation-icon-view').click()

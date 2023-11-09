@@ -1,20 +1,20 @@
-import { GetServerSideProps } from "next"
+import { GetServerSideProps } from 'next'
 
-import { UnloggedHeader, Login } from "@/presentation/components"
+import { UnloggedHeader, Login } from '@/presentation/components'
 
 function LoginPage() {
-    return (
-        <>
-            <UnloggedHeader />
-            <Login />
-        </>
-    )
+  return (
+    <>
+      <UnloggedHeader />
+      <Login />
+    </>
+  )
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-    return {
-        props: {},
-    }
+  return {
+    props: {},
+  }
 }
 
 export default LoginPage

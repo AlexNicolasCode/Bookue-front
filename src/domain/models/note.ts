@@ -1,4 +1,4 @@
 export type NoteModel = {
-    id: string,
-    text: string,
+  id: string
+  text: string
 }

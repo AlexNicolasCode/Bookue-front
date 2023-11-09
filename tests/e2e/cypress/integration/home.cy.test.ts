@@ -1,12 +1,12 @@
-import { mockBook } from "../../../data/mocks/mock.book"
-import { BookModel } from "../../../../src/domain/models"
+import { mockBook } from '../../../data/mocks/mock.book'
+import { BookModel } from '../../../../src/domain/models'
 
 describe('Home screen', () => {
   beforeEach(() => {
     cy.viewport('iphone-x')
   })
 
-  describe('when not authenticated', () => {    
+  describe('when not authenticated', () => {
     it('Should be redirected to sign in screen', () => {
       cy.visit('/', { failOnStatusCode: false })
 
@@ -25,9 +25,9 @@ describe('Home screen', () => {
         statusCode: 200,
         body: {
           data: {
-            loadAllBooks: []
-          }
-        }
+            loadAllBooks: [],
+          },
+        },
       })
       cy.visit('/')
 
@@ -41,9 +41,9 @@ describe('Home screen', () => {
         statusCode: 200,
         body: {
           data: {
-            loadAllBooks: fakeBooks
-          }
-        }
+            loadAllBooks: fakeBooks,
+          },
+        },
       })
       cy.visit('/')
 
@@ -51,9 +51,9 @@ describe('Home screen', () => {
         const card = cy.wrap($element)
         const equivalentBookFromApi = fakeBooks[index]
         card.getByTestId('home-book-title').contains(equivalentBookFromApi.title)
-        card.getByTestId('home-book-pages').contains(
-          `${equivalentBookFromApi.currentPage} - ${equivalentBookFromApi.pages}`
-        )
+        card
+          .getByTestId('home-book-pages')
+          .contains(`${equivalentBookFromApi.currentPage} - ${equivalentBookFromApi.pages}`)
         card.getByTestId('home-book-description').contains(equivalentBookFromApi.description)
       })
     })
@@ -65,12 +65,12 @@ describe('Home screen', () => {
         statusCode: 200,
         body: {
           data: {
-            loadAllBooks: [fakeBook]
-          }
-        }
+            loadAllBooks: [fakeBook],
+          },
+        },
       })
       cy.visit('/')
-      
+
       cy.getByTestId('home-book-details-button').click()
 
       cy.url().should('include', `/book/${fakeBook.id}`)
@@ -82,12 +82,12 @@ describe('Home screen', () => {
         statusCode: 200,
         body: {
           data: {
-            loadAllBooks: []
-          }
-        }
+            loadAllBooks: [],
+          },
+        },
       })
       cy.visit('/')
-      
+
       cy.getByTestId('header-add-book-button').click()
 
       cy.url().should('include', '/book/add')
@@ -100,9 +100,9 @@ describe('Home screen', () => {
         statusCode: 200,
         body: {
           data: {
-            loadAllBooks: [fakeBook]
-          }
-        }
+            loadAllBooks: [fakeBook],
+          },
+        },
       })
       cy.visit('/')
 

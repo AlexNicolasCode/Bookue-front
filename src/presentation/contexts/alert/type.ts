@@ -1,14 +1,14 @@
 export enum AlertType {
-    Error = 'error',
-    Warn = 'warn',
-    Succeds = 'succeds',
+  Error = 'error',
+  Warn = 'warn',
+  Succeds = 'succeds',
 }
 
 export enum AlertMessage {
-    GenericError = 'internal error. Please, try again later',
+  GenericError = 'internal error. Please, try again later',
 }
 
 export type AlertProps = {
-    text: AlertMessage | string
-    type: AlertType
+  text: AlertMessage | string
+  type: AlertType
 }

@@ -1,1 +1,1 @@
-export * from "./field.validation.spy"
+export * from './field.validation.spy'

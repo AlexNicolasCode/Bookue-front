@@ -1,7 +1,7 @@
-import { faker } from "@faker-js/faker"
+import { faker } from '@faker-js/faker'
 
-import { GreaterThanFieldError, RequiredFieldError } from "../../../../src/validation/errors"
-import { mockLoadAllBooksEndpoint } from "../utils/start.fake.server"
+import { GreaterThanFieldError, RequiredFieldError } from '../../../../src/validation/errors'
+import { mockLoadAllBooksEndpoint } from '../utils/start.fake.server'
 
 describe('Add Book screen', () => {
   beforeEach(() => {
@@ -10,9 +10,9 @@ describe('Add Book screen', () => {
 
   describe('when not authenticated', () => {
     it('Should redirect to sign in screen', () => {
-        cy.visit('/book/add/', { failOnStatusCode: false })
+      cy.visit('/book/add/', { failOnStatusCode: false })
 
-        cy.url().should('include', '/login')
+      cy.url().should('include', '/login')
     })
   })
 
@@ -77,11 +77,15 @@ describe('Add Book screen', () => {
     it('Should show generic error alert when some problem happen when requests was did', () => {
       mockLoadAllBooksEndpoint()
       const genericError = 'internal error. Please, try again later'
-      cy.intercept(Cypress.env().baseApiURL, {
+      cy.intercept(
+        Cypress.env().baseApiURL,
+        {
           method: 'POST',
-        }, {
-        statusCode: 500,
-      }).as('request')
+        },
+        {
+          statusCode: 500,
+        }
+      ).as('request')
       cy.visit('/book/add/')
 
       cy.getByTestId('title-field').type(fakeBook.title)
@@ -94,11 +98,15 @@ describe('Add Book screen', () => {
 
     it('Should return to home after save book', () => {
       mockLoadAllBooksEndpoint()
-      cy.intercept(Cypress.env().baseApiURL, {
+      cy.intercept(
+        Cypress.env().baseApiURL,
+        {
           method: 'POST',
-        }, {
-        statusCode: 200,
-      }).as('request')
+        },
+        {
+          statusCode: 200,
+        }
+      ).as('request')
       cy.visit('/book/add/')
 
       cy.getByTestId('title-field').type(fakeBook.title)

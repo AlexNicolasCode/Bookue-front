@@ -8,18 +8,10 @@
     "rootDirs": ["src", "tests"],
     "baseUrl": "src",
     "paths": {
-      "@/tests/*": [
-        "../tests/*"
-      ],
-      "@/*": [
-        "*"
-      ]
+      "@/tests/*": ["../tests/*"],
+      "@/*": ["*"]
     },
-    "lib": [
-      "esnext",
-      "dom",
-      "dom.iterable"
-    ],
+    "lib": ["esnext", "dom", "dom.iterable"],
     "allowJs": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
@@ -29,15 +21,6 @@
     "incremental": true,
     "isolatedModules": true
   },
-  "include": [
-    "src",
-    "pages",
-    "tests",
-    "middleware.ts",
-  ],
-  "exclude": [
-    "node_modules",
-    "src/env.ts",
-    "tests/e2e/cypress"
-  ]
+  "include": ["src", "pages", "tests", "middleware.ts"],
+  "exclude": ["node_modules", "src/env.ts", "tests/e2e/cypress"]
 }

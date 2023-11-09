@@ -1,6 +1,6 @@
-import { EmailInUseError, UnexpectedError } from '@/domain/errors';
-import { AddAccount } from '@/domain/usecases';
-import { HttpClient, HttpStatusCode } from '../protocols/http';
+import { EmailInUseError, UnexpectedError } from '@/domain/errors'
+import { AddAccount } from '@/domain/usecases'
+import { HttpClient, HttpStatusCode } from '../protocols/http'
 
 type HttpResponseAddAccount = {
   data: {
@@ -12,8 +12,8 @@ type HttpResponseAddAccount = {
 
 export class RemoteAddAccount implements AddAccount {
   constructor(
-        private readonly url: string,
-        private readonly httpClient: HttpClient<HttpResponseAddAccount>,
+    private readonly url: string,
+    private readonly httpClient: HttpClient<HttpResponseAddAccount>
   ) {}
 
   async add(params: AddAccount.Params): Promise<AddAccount.Result | undefined> {
@@ -29,18 +29,21 @@ export class RemoteAddAccount implements AddAccount {
               }
             }`,
 
-        variables: {  
+        variables: {
           name: params.name,
-          email: params.email,  
+          email: params.email,
           password: params.password,
-          passwordConfirmation: params.passwordConfirmation
+          passwordConfirmation: params.passwordConfirmation,
         },
-      })
-    });
+      }),
+    })
     switch (httpResponse.statusCode) {
-      case HttpStatusCode.ok: return httpResponse.body.data.signUp;
-      case HttpStatusCode.forbidden: throw new EmailInUseError();
-      default: throw new UnexpectedError();
+      case HttpStatusCode.ok:
+        return httpResponse.body.data.signUp
+      case HttpStatusCode.forbidden:
+        throw new EmailInUseError()
+      default:
+        throw new UnexpectedError()
     }
   }
 }

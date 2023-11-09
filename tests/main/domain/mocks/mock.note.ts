@@ -1,13 +1,13 @@
-import { faker } from '@faker-js/faker';
+import { faker } from '@faker-js/faker'
 
-import { AddNote, DeleteNote } from '@/domain/usecases';
+import { AddNote, DeleteNote } from '@/domain/usecases'
 
 export const mockAddNoteParams = (): AddNote.Params => ({
-    bookId: faker.datatype.uuid(),
-    text: faker.random.words(),
-});
+  bookId: faker.datatype.uuid(),
+  text: faker.random.words(),
+})
 
 export const mockDeleteNoteParams = (): DeleteNote.Params => ({
-    bookId: faker.datatype.uuid(),
-    noteId: faker.datatype.uuid(),
-});
+  bookId: faker.datatype.uuid(),
+  noteId: faker.datatype.uuid(),
+})
