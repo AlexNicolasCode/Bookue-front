@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState } from 'react'
+import { ReactNode, useCallback, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 
 import { Alert } from '@/presentation/components'
@@ -23,7 +23,7 @@ export const AlertProvider = ({ children }: AlertProviderProps) => {
     setAlerts([])
   }
 
-  const setNewAlert = (alert: AlertProps): void => {
+  const setNewAlert = useCallback((alert: AlertProps): void => {
     const hasEqualAlert = alerts.some(
       (alertMapped) => alertMapped.text === alert.text && alertMapped.type === alert.type
     )
@@ -31,15 +31,15 @@ export const AlertProvider = ({ children }: AlertProviderProps) => {
       setAlerts([...alerts, alert])
       setAlertTimeout(alert)
     }
-  }
+  }, [alerts])
 
-  const setAlertTimeout = (alert: AlertProps): void => {
+  const setAlertTimeout = useCallback((alert: AlertProps): void => {
     const animationTime = 14500
     setTimeout(() => {
       const filteredAlerts = alerts.filter((alertMapped) => alertMapped != alert)
       setAlerts(filteredAlerts)
     }, animationTime)
-  }
+  }, [alerts])
 
   const renderAlert = (alert: AlertProps, key: number): JSX.Element => {
     if (!alert) return
