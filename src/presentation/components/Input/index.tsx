@@ -1,4 +1,4 @@
-import { Dispatch, memo, useRef, useState } from 'react'
+import { Dispatch, memo, useCallback, useMemo, useRef, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
 
@@ -55,23 +55,23 @@ function InputComponent({
     }
   }
 
-  const isPasswordField = /password/.test(fieldName)
+  const isPasswordField = useMemo(() => /password/.test(fieldName), [fieldName])
 
-  const handlePasswordView = () => {
+  const handlePasswordView = useCallback(() => {
     isShowingPassword ? (fieldType.current = 'password') : (fieldType.current = 'text')
     setIsShowingPassword(!isShowingPassword)
-  }
+  }, [isShowingPassword, fieldType.current])
 
-  const renderLateralIcon = () => {
+  const renderLateralIcon = useCallback(() => {
     const icon = isShowingPassword ? faEyeSlash : faEye
     return (
       <IconStyled onClick={handlePasswordView}>
         <FontAwesomeIcon icon={icon} data-test-id={`${fieldName}-icon-view`} />
       </IconStyled>
     )
-  }
+  }, [isShowingPassword, fieldName])
 
-  const renderPasswordInput = () => (
+  const renderPasswordInput = useCallback(() => (
     <PasswordContainerStyled isWrongFill={isWrongFill}>
       <InputStyled
         type={fieldType.current}
@@ -85,9 +85,9 @@ function InputComponent({
       />
       {renderLateralIcon()}
     </PasswordContainerStyled>
-  )
+  ), [isWrongFill, isPasswordField, value, handleSetState])
 
-  const renderDefaultInput = () => {
+  const renderDefaultInput = useCallback(() => {
     if (style && (style.height || style.width)) {
       return (
         <TextareaStyled
@@ -113,10 +113,9 @@ function InputComponent({
         {...style}
       />
     )
-  }
+  }, [isWrongFill, isPasswordField, value, handleSetState])
 
   return isPasswordField ? renderPasswordInput() : renderDefaultInput()
 }
 
-const Input = memo(InputComponent)
-export { Input }
+export const Input = memo(InputComponent)
