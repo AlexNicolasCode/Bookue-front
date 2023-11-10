@@ -1,3 +1,4 @@
+import { useCallback } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -10,11 +11,11 @@ import { AddBookButtonStyled, BackButtonStyled, HeaderStyled } from './styles'
 export function Header() {
   const router = useRouter()
 
-  const backToLastPage = () => {
+  const backToLastPage = useCallback(() => {
     router.back()
-  }
+  }, [router])
 
-  const renderBackButton = () => {
+  const renderBackButton = useCallback(() => {
     if (router.pathname !== '/') {
       return (
         <BackButtonStyled>
@@ -26,9 +27,9 @@ export function Header() {
         </BackButtonStyled>
       )
     }
-  }
+  }, [router.pathname])
 
-  const renderAddBookButton = () => {
+  const renderAddBookButton = useCallback(() => {
     if (router.pathname === '/') {
       return (
         <Link href={'/book/add'}>
@@ -38,7 +39,7 @@ export function Header() {
         </Link>
       )
     }
-  }
+  }, [router.pathname])
 
   return (
     <HeaderStyled>
