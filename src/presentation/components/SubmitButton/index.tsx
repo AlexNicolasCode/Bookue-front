@@ -1,3 +1,5 @@
+import { useCallback, useMemo } from 'react'
+
 import { ButtonBorderStyled, ButtonStyled, OptionsStyled } from './styles'
 
 type ButtonProps = {
@@ -8,25 +10,25 @@ type ButtonProps = {
 }
 
 export function SubmitButton({ text, borded, align, testId }: ButtonProps) {
-  const renderDefaultButton = () => {
+  const renderDefaultButton = useCallback(() => {
     return (
       <ButtonStyled type='submit' data-test-id={testId}>
         {text}
       </ButtonStyled>
     )
-  }
+  }, [text, testId])
 
-  const renderBorderButton = () => {
+  const renderBorderButton = useCallback(() => {
     return (
       <ButtonBorderStyled type='submit' data-test-id={testId}>
         {text}
       </ButtonBorderStyled>
     )
-  }
+  }, [text, testId])
 
-  const renderButton = () => (borded ? renderBorderButton() : renderDefaultButton())
+  const renderButton = useCallback(() => (borded ? renderBorderButton() : renderDefaultButton()), [borded])
 
   const renderOptions = () => <OptionsStyled>{renderButton()}</OptionsStyled>
 
-  return align ? renderOptions() : renderButton()
+  return useMemo(() => align ? renderOptions() : renderButton(), [align])
 }
