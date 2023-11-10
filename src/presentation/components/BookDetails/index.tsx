@@ -34,7 +34,7 @@ type BookField = {
   testId: string
 }
 
-const fieldNames = ['id', 'title', 'author', 'description', 'currentPage', 'pages', 'createdAt']
+const fieldNames = ['title', 'author', 'description', 'currentPage', 'pages']
 
 export function BookDetails({ book }: BookDetailsProps) {
   const { normalizeContent } = useTextConverter()
