@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState } from 'react'
+import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/router'
 
 import { NoteContext } from './context'
@@ -11,19 +11,21 @@ type NoteProviderProps = {
   children: ReactNode
 }
 
+const remoteAddNote = makeAddNote()
+const remoteDeleteNote = makeDeleteNote()
+
 export const NoteProvider = ({ children }: NoteProviderProps) => {
   const router = useRouter()
   const [notes, setNotes] = useState<NoteModel[]>([])
   const [newNote, setNewNote] = useState<string>('')
   const { mode, lastMode } = useModeController()
-  const remoteAddNote = makeAddNote()
-  const remoteDeleteNote = makeDeleteNote()
 
-  const shouldAddNoteInList =
+  const shouldAddNoteInList = useMemo(() => 
     newNote &&
     newNote.trim() !== '' &&
     lastMode.current === Modes.AddMode &&
     mode === Modes.DefaultMode
+  , [newNote, lastMode.current, mode])
 
   useEffect(() => {
     if (shouldAddNoteInList) {
@@ -31,7 +33,7 @@ export const NoteProvider = ({ children }: NoteProviderProps) => {
     }
   }, [mode])
 
-  const addNote = async () => {
+  const addNote = useCallback(async () => {
     const bookId = router.query.id.toString()
     const createdNote = await remoteAddNote.add({
       bookId,
@@ -45,13 +47,13 @@ export const NoteProvider = ({ children }: NoteProviderProps) => {
       ...notes,
     ])
     setNewNote('')
-  }
+  }, [router.query.id, newNote, notes])
 
-  const deleteNote = (noteId: string) => {
+  const deleteNote = useCallback((noteId: string) => {
     const updatedNotes = notes.filter((note) => note.id !== noteId)
     remoteDeleteNote.delete({ noteId, bookId: String(router.query['id']) })
     setNotes(updatedNotes)
-  }
+  }, [notes])
 
   return (
     <NoteContext.Provider
