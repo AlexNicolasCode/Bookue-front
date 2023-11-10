@@ -29,7 +29,7 @@ export class RemoteAddBook implements AddBook {
       },
       body: JSON.stringify({
         query: `
-              mutation AddBook($title: String!, $author: String, $description: String!, $currentPage: Int! $pages: Int!) {
+              mutation AddBook($title: String!, $author: String, $description: String!, $currentPage: Int, $pages: Int!) {
                   addBook(title: $title, author: $author, description: $description, currentPage: $currentPage, pages: $pages) {
                       title
                   }

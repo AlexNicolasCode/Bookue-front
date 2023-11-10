@@ -23,7 +23,7 @@ export function Card({ book }: CardProps) {
       <HeaderStyled>
         <TitleStyled data-test-id='home-book-title'>{book.title}</TitleStyled>
         <CountPageStyled data-test-id='home-book-pages'>
-          {book.currentPage} - {book.pages}
+          {book.currentPage ?? 0} - {book.pages}
         </CountPageStyled>
       </HeaderStyled>
 
