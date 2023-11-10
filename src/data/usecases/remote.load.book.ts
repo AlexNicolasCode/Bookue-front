@@ -18,21 +18,25 @@ export class RemoteLoadBook implements LoadBook {
       },
       body: JSON.stringify({
         query: `
-                query LoadBook {
-                    loadBook {
-                        title
-                        author
-                        description
-                        currentPage
-                        pages
-                    }
-                }
-            `,
+          query LoadOneBook($bookId: String!) {
+            loadOneBook(bookId: $bookId) {
+              title
+              author
+              description
+              currentPage
+              pages
+            }
+          }
+        `,
+
+        variables: {
+          bookId: params.bookId,
+        }
       }),
     })
     switch (httpResponse.statusCode) {
       case HttpStatusCode.ok:
-        return httpResponse.body.data.loadBook
+        return httpResponse.body.data.loadOneBook
       case HttpStatusCode.forbidden:
         throw new InvalidUserError()
       default:
@@ -43,6 +47,6 @@ export class RemoteLoadBook implements LoadBook {
 
 export type HttpResponseLoadBook = {
   data: {
-    loadBook: LoadBook.Result
+    loadOneBook: LoadBook.Result
   }
 }
