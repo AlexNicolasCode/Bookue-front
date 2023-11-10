@@ -1,4 +1,4 @@
-import { ReactNode, useRef, useState } from 'react'
+import { ReactNode, useCallback, useRef, useState } from 'react'
 
 import { ModeContext } from './context'
 import { Modes } from './type'
@@ -11,10 +11,10 @@ export const ModeProvider = ({ children }: AlertProviderProps) => {
   const [mode, setMode] = useState<Modes>(Modes.DefaultMode)
   const lastMode = useRef<Modes>()
 
-  const changeMode = (targetMode: Modes) => {
+  const changeMode = useCallback((targetMode: Modes) => {
     lastMode.current = mode
     setMode(mode !== targetMode ? targetMode : Modes.DefaultMode)
-  }
+  }, [mode])
 
   return (
     <ModeContext.Provider

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { faMinus, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
@@ -45,7 +45,7 @@ export function Options({ options, config }: OptionsProps) {
     return optionsMapper[mode]
   }, [mode])
 
-  const getOptionConfig = (option: Option) => {
+  const getOptionConfig = useCallback((option: Option) => {
     const optionConfigs = {
       [Option.DeleteNote]: {
         IconSupport: DeleteOptionStyled,
@@ -67,7 +67,7 @@ export function Options({ options, config }: OptionsProps) {
       },
     }
     return optionConfigs[option]
-  }
+  }, [mode])
 
   const handleMode = (option: Option) => {
     const modeMapper = {
@@ -78,7 +78,7 @@ export function Options({ options, config }: OptionsProps) {
     modeMapper[option]()
   }
 
-  const renderActivetedOptions = () => {
+  const renderActivetedOptions = useCallback(() => {
     return activetedOptions.map((option, index) => {
       const { icon, IconSupport, isActive, testId } = getOptionConfig(option)
       return (
@@ -92,7 +92,7 @@ export function Options({ options, config }: OptionsProps) {
         </IconSupport>
       )
     })
-  }
+  }, [activetedOptions])
 
   const renderOptions = () => <OptionsStyled>{renderActivetedOptions()}</OptionsStyled>
 

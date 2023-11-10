@@ -1,4 +1,4 @@
-import { ReactNode, useState } from 'react'
+import { ReactNode, useCallback, useState } from 'react'
 
 import { BookFormContext } from './context'
 import { BookForm } from './types'
@@ -32,16 +32,16 @@ export function BookFormContextProvider({ children }: BookFormContextProviderPro
   }
   const [bookForm, setBookForm] = useState<BookForm>(defaultBookForm)
 
-  const setField = (field: string, text: string): void =>
+  const setField = useCallback((field: string, text: string): void =>
     setBookForm({
       ...bookForm,
       [field]: {
         isWrongFill: false,
         text: text,
       },
-    })
+    }), [bookForm])
 
-  const setWrongFillField = (field: string): void => {
+  const setWrongFillField = useCallback((field: string): void => {
     setBookForm({
       ...bookForm,
       [field]: {
@@ -49,7 +49,7 @@ export function BookFormContextProvider({ children }: BookFormContextProviderPro
         text: bookForm[field].text,
       },
     })
-  }
+  }, [bookForm])
 
   return (
     <BookFormContext.Provider

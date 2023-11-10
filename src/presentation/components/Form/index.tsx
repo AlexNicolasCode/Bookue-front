@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useState } from 'react'
+import { FormEvent, memo, useCallback, useEffect, useState } from 'react'
 
 import { Input, SubmitButton } from '@/presentation/components'
 
@@ -25,7 +25,7 @@ type FormComponentProps = {
       }
 }
 
-export const Form = ({
+const FormComponet = ({
   handleSubmit,
   fields,
   wrongField,
@@ -79,15 +79,15 @@ export const Form = ({
     return 'text'
   }
 
-  const cleanwrongFields = () => {
+  const cleanwrongFields = useCallback(() => {
     const updatedFields = formFields.map((field) => ({
       ...field,
       isWrongFill: false,
     }))
     setFormFields(updatedFields)
-  }
+  }, [formFields])
 
-  const getUpdatedFields = (fieldName: string, targetField: string, value: string | boolean) => {
+  const getUpdatedFields = useCallback((fieldName: string, targetField: string, value: string | boolean) => {
     return formFields.map((field, index) => {
       if (field.fieldName === fieldName) {
         formFields[index][targetField] = value
@@ -95,27 +95,29 @@ export const Form = ({
       }
       return formFields[index]
     })
-  }
+  }, [formFields])
 
   const activeFieldIsWrongFill = (fieldName: string): void => {
     const updatedForm = getUpdatedFields(fieldName, 'isWrongFill', true)
     setFormFields(updatedForm)
   }
 
-  const setFieldValue = ({ fieldName, text }: SetFieldValueParams): void => {
+  const setFieldValue = useCallback(({ fieldName, text }: SetFieldValueParams): void => {
     setForm({
       ...form,
       [fieldName]: text,
     })
-  }
+  }, [form])
 
-  const getSubmitButtonText = () =>
+  const getSubmitButtonText = useCallback(() =>
     typeof submitButtonText === 'string' ? submitButtonText : submitButtonText.text
+  , [submitButtonText])
 
-  const getSubmitButtonAlign = () =>
+  const getSubmitButtonAlign = useCallback(() =>
     typeof submitButtonText !== 'string' ? submitButtonText.align : null
+  , [submitButtonText])
 
-  const renderFields = (): JSX.Element => {
+  const renderFields = useCallback((): JSX.Element => {
     const inputFields = formFields.map(({ fieldName, isWrongFill }, index) => {
       const fieldType = getFieldType(fieldName)
       const fieldPlaceholder = getFieldPlaceholder(fieldName)
@@ -135,7 +137,7 @@ export const Form = ({
       )
     })
     return <>{inputFields}</>
-  }
+  }, [form, formFields])
 
   const renderSubmit = () => (
     <SubmitButton
@@ -152,3 +154,5 @@ export const Form = ({
     </FormStyled>
   )
 }
+
+export const Form = memo(FormComponet)

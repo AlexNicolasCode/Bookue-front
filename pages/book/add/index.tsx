@@ -1,4 +1,4 @@
-import { FormEvent, useState } from 'react'
+import { FormEvent, useCallback, useRef, useState } from 'react'
 import { useRouter } from 'next/router'
 
 import { Form, Header } from '@/presentation/components'
@@ -20,11 +20,10 @@ export default function AddBookPage() {
   const router = useRouter()
   const { setNewAlert } = useAlert()
   const [wrongField, setWrongField] = useState<string>()
+  const formFields = useRef(['title', 'author', 'currentPage', 'pages', 'description']);
 
-  const formFields = ['title', 'author', 'currentPage', 'pages', 'description']
-
-  const validateForm = (form: Form) => {
-    const errors = formFields.map((fieldName) => {
+  const validateForm = useCallback((form: Form) => {
+    const errors = formFields.current.map((fieldName) => {
       const validator = makeAddBookValidation()
       const error = validator.validate(fieldName, form)
       if (error) {
@@ -33,9 +32,9 @@ export default function AddBookPage() {
     })
     const firstError = errors.find((error) => error)
     return firstError
-  }
+  }, [formFields.current])
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>, form: Form) => {
+  const handleSubmit = useCallback(async (event: FormEvent<HTMLFormElement>, form: Form) => {
     event.preventDefault()
     try {
       const error = validateForm(form)
@@ -53,7 +52,7 @@ export default function AddBookPage() {
       }
       setNewAlert({ text: AlertMessage.GenericError, type: AlertType.Error })
     }
-  }
+  }, [router])
 
   return (
     <>
@@ -61,7 +60,7 @@ export default function AddBookPage() {
       <MainContent>
         <Form
           handleSubmit={handleSubmit}
-          fields={formFields}
+          fields={formFields.current}
           wrongField={wrongField}
           submitButtonText={{
             align: 'right',

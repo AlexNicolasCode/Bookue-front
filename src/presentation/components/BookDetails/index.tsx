@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 
 import { BookModel } from '@/domain/models'
 import { makeEditBookValidation } from '@/main/factory/validation'
@@ -56,7 +56,7 @@ export function BookDetails({ book }: BookDetailsProps) {
     return `${percentage.substring(0, 4)}%`
   }, [editableBook.currentPage, editableBook.pages])
 
-  const setBookFieldByFieldName = (
+  const setBookFieldByFieldName = useCallback((
     fieldName: string,
     targetKey: string,
     value: string | boolean
@@ -71,17 +71,17 @@ export function BookDetails({ book }: BookDetailsProps) {
       return bookField
     })
     setBookFields(bookFiedlsEditted)
-  }
+  }, [bookFields])
 
-  const setEditableBookContentByFieldName = (fieldName: string, value: string): void => {
+  const setEditableBookContentByFieldName = useCallback((fieldName: string, value: string): void => {
     setEditableBook({
       ...editableBook,
       [fieldName]: value,
     })
     setBookFieldByFieldName(fieldName, 'value', value)
-  }
+  }, [editableBook])
 
-  const validateEditableField = (fieldName: string): string | undefined => {
+  const validateEditableField = useCallback((fieldName: string): string | undefined => {
     const fieldTexts = {}
     fieldNames.forEach(
       (fieldName: string) =>
@@ -90,9 +90,9 @@ export function BookDetails({ book }: BookDetailsProps) {
     const validator = makeEditBookValidation()
     const error = validator.validate(fieldName, fieldTexts)
     return error
-  }
+  }, [bookFields])
 
-  const handleEditModeByFieldName = (fieldName: string) => {
+  const handleEditModeByFieldName = useCallback((fieldName: string) => {
     const bookField = bookFields.find((field) => field.fieldName === fieldName)
     const isSaveFieldFlow = bookField.isEditing
     if (isSaveFieldFlow) {
@@ -106,9 +106,9 @@ export function BookDetails({ book }: BookDetailsProps) {
       }
     }
     setBookFieldByFieldName(fieldName, 'isEditing', !bookField.isEditing)
-  }
+  }, [bookFields])
 
-  const renderHeader = (): JSX.Element => (
+  const renderHeader = useCallback((): JSX.Element => (
     <HeaderStyled>
       <TitleStyled data-test-id='book-details-title'>{book.title}</TitleStyled>
       <LateralContainerStyled>
@@ -118,9 +118,9 @@ export function BookDetails({ book }: BookDetailsProps) {
         </ProgressBarStyled>
       </LateralContainerStyled>
     </HeaderStyled>
-  )
+  ), [bookProgressPercentage])
 
-  const renderFields = (): JSX.Element[] =>
+  const renderFields = useCallback((): JSX.Element[] =>
     bookFields.map((book, index) => (
       <FieldContainerStyled key={index}>
         {book.isEditing ? (
@@ -148,7 +148,7 @@ export function BookDetails({ book }: BookDetailsProps) {
           Edit
         </EditButtonStyled>
       </FieldContainerStyled>
-    ))
+  )), [bookFields])
 
   return (
     <ContainerStyled>

@@ -1,8 +1,6 @@
-import { GetServerSideProps } from 'next'
-
 import { UnloggedHeader, Register } from '@/presentation/components'
 
-function SignUpPage() {
+export default function SignUpPage() {
   return (
     <>
       <UnloggedHeader />
@@ -10,11 +8,3 @@ function SignUpPage() {
     </>
   )
 }
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  return {
-    props: {},
-  }
-}
-
-export default SignUpPage

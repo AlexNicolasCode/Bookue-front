@@ -31,11 +31,11 @@ export function Login() {
     await cookieManager.set('bookue-user', accessToken)
   }
 
-  const goToFeedPage = () => {
+  const goToFeedPage = useCallback(() => {
     router.push('/')
-  }
+  }, [router])
 
-  const validateForm = (form: Form): string => {
+  const validateForm = useCallback((form: Form): string => {
     const validator = makeLoginValidation()
     const errorList = formFields.map((fieldName) => {
       const error = validator.validate(fieldName, form)
@@ -46,7 +46,7 @@ export function Login() {
       setWrongField(firstError.fieldName)
       return firstError.error
     }
-  }
+  }, [formFields])
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>, form: Form) => {
     event.preventDefault()

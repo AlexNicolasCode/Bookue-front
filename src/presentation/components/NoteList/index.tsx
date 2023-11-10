@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import { useRouter } from 'next/router'
 
 import { NoteModel } from '@/domain/models'
@@ -25,17 +25,16 @@ export function NoteList({ ssrNotes }: NoteListProps) {
   const { truncateText } = useTextConverter()
   const { mode } = useModeController()
   const { notes, setNotes, deleteNote } = useNote()
+  const maxCharTruncate = useRef(750);
 
   useEffect(() => {
     setNotes(ssrNotes)
   }, [router.pathname])
 
-  const maxCharTruncate = 750
-
-  const renderNoteList = () => (
+  const renderNoteList = useCallback(() => (
     <NoteListDefault>
       {notes.map((note, index) => {
-        const text = truncateText(note.text, maxCharTruncate)
+        const text = truncateText(note.text, maxCharTruncate.current)
         return (
           <Note id={note.id} data-test-id={'notes-note-card'} key={index}>
             <NoteText>{text}</NoteText>
@@ -43,14 +42,14 @@ export function NoteList({ ssrNotes }: NoteListProps) {
         )
       })}
     </NoteListDefault>
-  )
+  ), [notes])
 
-  const renderNotesListDeleteMode = () => (
+  const renderNotesListDeleteMode = useCallback(() => (
     <NoteListDefault>
       {notes.map((note, index) => (
         <DeleteModeContainer key={index}>
           <NoteDelete id={note.id} data-test-id={'notes-note-card-delete-mode'}>
-            {truncateText(note.text, maxCharTruncate)}
+            {truncateText(note.text, maxCharTruncate.current)}
           </NoteDelete>
           <DeleteModeOptionsContainer onClick={() => deleteNote(note.id)}>
             <Options
@@ -63,12 +62,12 @@ export function NoteList({ ssrNotes }: NoteListProps) {
         </DeleteModeContainer>
       ))}
     </NoteListDefault>
-  )
+  ), [notes])
 
-  const renderNotesListAddMode = () => (
+  const renderNotesListAddMode = useCallback(() => (
     <NoteListAddMode>
       {notes.map((note, index) => {
-        const text = truncateText(note.text, maxCharTruncate)
+        const text = truncateText(note.text, maxCharTruncate.current)
         return (
           <Note id={note.id} data-test-id={'notes-note-card'} key={index}>
             <NoteText>{text}</NoteText>
@@ -76,16 +75,16 @@ export function NoteList({ ssrNotes }: NoteListProps) {
         )
       })}
     </NoteListAddMode>
-  )
+  ), [notes])
 
-  const renderNoteListByMode = () => {
+  const renderNoteListByMode = useCallback(() => {
     const modeMapper = {
       [Modes.AddMode]: renderNotesListAddMode,
       [Modes.DeleteMode]: renderNotesListDeleteMode,
       [Modes.DefaultMode]: renderNoteList,
     }
     return modeMapper[mode]()
-  }
+  }, [mode, renderNoteList])
 
   return renderNoteListByMode()
 }

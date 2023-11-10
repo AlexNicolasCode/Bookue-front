@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router'
-import { FormEvent, useState } from 'react'
+import { FormEvent, useCallback, useRef, useState } from 'react'
 
 import { makeAddAccount } from '@/main/factory/usecases'
 import { makeCookieManagerAdapter } from '@/main/factory/cookie'
@@ -22,11 +22,11 @@ export function Register() {
   const { setNewAlert } = useAlert()
   const [wrongField, setWrongField] = useState<string>()
 
-  const formFields = ['name', 'email', 'password', 'passwordConfirmation']
+  const formFields = useRef(['name', 'email', 'password', 'passwordConfirmation'])
 
-  const validateForm = (form: Form): string => {
+  const validateForm = useCallback((form: Form): string => {
     const validator = makeRegisterValidation()
-    const errorList = formFields.map((fieldName) => {
+    const errorList = formFields.current.map((fieldName) => {
       const error = validator.validate(fieldName, form)
       return { fieldName, error }
     })
@@ -35,7 +35,7 @@ export function Register() {
       setWrongField(firstError.fieldName)
       return firstError.error
     }
-  }
+  }, [formFields.current])
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>, form: Form): Promise<void> => {
     event.preventDefault()
@@ -62,16 +62,16 @@ export function Register() {
     await cookieManager.set('bookue-user', accessToken)
   }
 
-  const goToFeedPage = () => {
+  const goToFeedPage = useCallback(() => {
     router.push('/')
-  }
+  }, [router])
 
   return (
     <RegisterStyled>
       <Logo />
       <Form
         handleSubmit={handleSubmit}
-        fields={formFields}
+        fields={formFields.current}
         wrongField={wrongField}
         submitButtonText='Sign up'
       />
