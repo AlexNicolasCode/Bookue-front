@@ -1,18 +1,18 @@
 import { useRouter } from 'next/router'
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 
 import { ButtonBorderStyled, HeaderStyled } from './styles'
 
 function UnloggedHeader() {
   const router = useRouter()
 
-  const goToLoginPage = () => {
+  const goToLoginPage = useCallback(() => {
     router.push('/login')
-  }
+  }, [router])
 
-  const goToSignUpPage = () => {
+  const goToSignUpPage = useCallback(() => {
     router.push('/sign-up')
-  }
+  }, [router])
 
   const unloggedHeaderConfig = useMemo(() => {
     if (router.pathname === '/sign-up') {
