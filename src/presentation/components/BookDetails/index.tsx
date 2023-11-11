@@ -28,7 +28,6 @@ type BookDetailsProps = {
 type BookField = {
   fieldName: string
   label: string
-  value: string | number
   isEditing: boolean
   fieldType: string
   testId: string
@@ -44,7 +43,6 @@ export function BookDetails({ book }: BookDetailsProps) {
     fieldNames.map((fieldName: string) => ({
       fieldName: fieldName,
       label: normalizeContent(fieldName),
-      value: editableBook[fieldName],
       isEditing: false,
       fieldType: 'text',
       testId: `book-details-${fieldName}-field`,
@@ -79,13 +77,13 @@ export function BookDetails({ book }: BookDetailsProps) {
       [fieldName]: value,
     })
     setBookFieldByFieldName(fieldName, 'value', value)
-  }, [editableBook])
+  }, [editableBook, bookFields])
 
   const validateEditableField = useCallback((fieldName: string): string | undefined => {
     const fieldTexts = {}
     fieldNames.forEach(
       (fieldName: string) =>
-        (fieldTexts[fieldName] = bookFields.find((field) => field.fieldName === fieldName).value)
+        (fieldTexts[fieldName] = editableBook[fieldName])
     )
     const validator = makeEditBookValidation()
     const error = validator.validate(fieldName, fieldTexts)
@@ -131,14 +129,14 @@ export function BookDetails({ book }: BookDetailsProps) {
                 setEditableBookContentByFieldName(book.fieldName, event.target.value)
               }
               type={book.fieldType}
-              value={book.value}
+              value={editableBook[book.fieldName]}
               data-test-id={`${book.testId}-edit-mode`}
             />
           </FieldStyled>
         ) : (
           <FieldStyled>
             <FieldLabelStyled data-test-id={`${book.testId}-label`}>{book.label}</FieldLabelStyled>
-            <FieldContentStyled data-test-id={book.testId}>{book.value}</FieldContentStyled>
+            <FieldContentStyled data-test-id={book.testId}>{editableBook[book.fieldName]}</FieldContentStyled>
           </FieldStyled>
         )}
         <EditButtonStyled
