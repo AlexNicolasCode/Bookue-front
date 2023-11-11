@@ -41,20 +41,32 @@ const OptionsStyled = styled.article`
   }
 `
 
-const NotesButtonStyled = styled.button`
+const buttonStyles = `
+  width: 10rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 2.5rem;
+  text-decoration: none;
+  font-size: 1rem;
+`
+
+const NotesOptionStyled = styled.a`
   background-color: ${globalColors.primary};
   border-radius: 2.5px;
   color: ${globalColors.white};
+  ${buttonStyles}
 `
 
-const DetailsButtonStyled = styled.button`
+const DetailsOptionStyled = styled.a`
   color: ${globalColors.primary};
+  ${buttonStyles}
 `
 
 export {
   CardStyled,
-  NotesButtonStyled,
-  DetailsButtonStyled,
+  NotesOptionStyled,
+  DetailsOptionStyled,
   OptionsStyled,
   TitleStyled,
   CountPageStyled,
