@@ -1,5 +1,7 @@
 # Bookue-front
 
+Please, use mobile screen on browser to see correct stylization.
+
 ## Requirements
 - Node.js
 - Docker (with docker compose)
