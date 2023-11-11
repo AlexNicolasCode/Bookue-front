@@ -8,6 +8,7 @@ const ContainerStyled = styled.section`
 
 const HeaderStyled = styled.section`
   display: flex;
+  justify-content: space-between;
   align-items: center;
   margin-bottom: 15px;
 `
