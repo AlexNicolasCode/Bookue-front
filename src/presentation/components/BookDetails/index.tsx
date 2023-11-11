@@ -77,7 +77,7 @@ export function BookDetails({ book }: BookDetailsProps) {
       [fieldName]: value,
     })
     setBookFieldByFieldName(fieldName, 'value', value)
-  }, [editableBook])
+  }, [editableBook, bookFields])
 
   const validateEditableField = useCallback((fieldName: string): string | undefined => {
     const fieldTexts = {}
