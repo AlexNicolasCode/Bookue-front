@@ -5,10 +5,10 @@ import { AlertType } from "@/presentation/contexts"
 
 import {
     EditButtonStyled,
-    FieldContainerStyled,
-    FieldContentStyled,
-    FieldContentEditingModeStyled,
-    FieldLabelStyled,
+    ContainerStyled,
+    TextStyled,
+    TextEditModeStyled,
+    LabelStyled,
     FieldStyled,
 } from "./styles"
 
@@ -31,8 +31,8 @@ export const FieldComponent = ({ fieldName, text, validateField, test }: FieldPr
 
     const renderEditModeField = useCallback(() => (
         <FieldStyled>
-            <FieldLabelStyled>{label.current}</FieldLabelStyled>
-            <FieldContentEditingModeStyled
+            <LabelStyled>{label.current}</LabelStyled>
+            <TextEditModeStyled
               onChange={($event) => setValue($event.target.value)}
               type={type}
               value={value}
@@ -43,8 +43,8 @@ export const FieldComponent = ({ fieldName, text, validateField, test }: FieldPr
 
     const renderDefaultField = useCallback(() => (
         <FieldStyled>
-            <FieldLabelStyled data-test-id={`${test.prefix}-${fieldName}-label`}>{label.current}</FieldLabelStyled>
-            <FieldContentStyled data-test-id={`${test.prefix}-${fieldName}`}>{value}</FieldContentStyled>
+            <LabelStyled data-test-id={`${test.prefix}-${fieldName}-label`}>{label.current}</LabelStyled>
+            <TextStyled data-test-id={`${test.prefix}-${fieldName}`}>{value}</TextStyled>
         </FieldStyled>
     ), [value])
 
@@ -63,7 +63,7 @@ export const FieldComponent = ({ fieldName, text, validateField, test }: FieldPr
     }, [value, isEditing])
 
     return (
-        <FieldContainerStyled>
+        <ContainerStyled>
             {renderFieldAccordingEditMode()}
             <EditButtonStyled
                 onClick={toggleEdit}
@@ -71,7 +71,7 @@ export const FieldComponent = ({ fieldName, text, validateField, test }: FieldPr
             >
                 Edit
             </EditButtonStyled>
-        </FieldContainerStyled>
+        </ContainerStyled>
     )
 }
 

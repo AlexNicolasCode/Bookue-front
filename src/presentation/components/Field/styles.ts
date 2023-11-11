@@ -7,20 +7,20 @@ const FieldStyled = styled.article`
   font-size: 12px;
 `
 
-const FieldLabelStyled = styled.p`
+const LabelStyled = styled.p`
   color: ${globalColors.gray};
   font-size: 12px;
 `
 
-const FieldContentStyled = styled.p`
+const TextStyled = styled.p`
   font-weight: bold;
 `
 
-const FieldContentEditingModeStyled = styled.input`
+const TextEditModeStyled = styled.input`
   font-weight: bold;
 `
 
-const FieldContainerStyled = styled.article`
+const ContainerStyled = styled.article`
   display: flex;
   justify-content: space-between;
   align-content: space-between;
@@ -35,10 +35,10 @@ const EditButtonStyled = styled.button`
 `
 
 export {
-    EditButtonStyled,
-    FieldContainerStyled,
-    FieldContentStyled,
-    FieldContentEditingModeStyled,
-    FieldLabelStyled,
-    FieldStyled,
+  EditButtonStyled,
+  ContainerStyled,
+  TextStyled,
+  TextEditModeStyled,
+  LabelStyled,
+  FieldStyled,
 }
