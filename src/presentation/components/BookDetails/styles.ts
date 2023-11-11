@@ -8,6 +8,7 @@ const ContainerStyled = styled.section`
 
 const HeaderStyled = styled.section`
   display: flex;
+  justify-content: space-between;
   align-items: center;
   margin-bottom: 15px;
 `
@@ -35,37 +36,6 @@ const DetailsContainerStyled = styled.section`
   justify-content: space-between;
 `
 
-const FieldContainerStyled = styled.article`
-  display: flex;
-  justify-content: space-between;
-  align-content: space-between;
-`
-
-const FieldStyled = styled.article`
-  color: ${globalColors.dark};
-  font-size: 12px;
-`
-
-const FieldLabelStyled = styled.p`
-  color: ${globalColors.gray};
-  font-size: 12px;
-`
-
-const FieldContentStyled = styled.p`
-  font-weight: bold;
-`
-
-const FieldContentEditingModeStyled = styled.input`
-  font-weight: bold;
-`
-
-const EditButtonStyled = styled.button`
-  color: ${globalColors.primary};
-  font-size: 12px;
-  font-weight: bold;
-  height: 50px;
-  width: 20px;
-`
 
 export {
   ContainerStyled,
@@ -75,10 +45,4 @@ export {
   TextStyled,
   ProgressBarStyled,
   DetailsContainerStyled,
-  FieldContainerStyled,
-  FieldStyled,
-  FieldLabelStyled,
-  FieldContentStyled,
-  FieldContentEditingModeStyled,
-  EditButtonStyled,
 }
