@@ -6,9 +6,9 @@ import {
   CardStyled,
   CountPageStyled,
   DescriptionStyled,
-  DetailsButtonStyled,
+  DetailsOptionStyled,
   HeaderStyled,
-  NotesButtonStyled,
+  NotesOptionStyled,
   OptionsStyled,
   TitleStyled,
 } from './styles'
@@ -30,11 +30,11 @@ export function Card({ book }: CardProps) {
       <DescriptionStyled data-test-id='home-book-description'>{book.description}</DescriptionStyled>
 
       <OptionsStyled>
-        <Link href={`/book/${book.id}/notes`}>
-          <NotesButtonStyled data-test-id='home-book-notes-button'>Notes</NotesButtonStyled>
+        <Link href={`/book/${book.id}/notes`} passHref>
+          <NotesOptionStyled data-test-id='home-book-notes-button'>Notes</NotesOptionStyled>
         </Link>
-        <Link href={`/book/${book.id}`}>
-          <DetailsButtonStyled data-test-id='home-book-details-button'>Details</DetailsButtonStyled>
+        <Link href={`/book/${book.id}`} passHref>
+          <DetailsOptionStyled data-test-id='home-book-details-button'>Details</DetailsOptionStyled>
         </Link>
       </OptionsStyled>
     </CardStyled>
