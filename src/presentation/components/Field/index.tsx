@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from "react"
+import { memo, useCallback, useMemo, useRef, useState } from "react"
 
 import { useAlert, useTextConverter } from "@/presentation/hook"
 import { AlertType } from "@/presentation/contexts"
@@ -21,7 +21,7 @@ type FieldProps = {
     }
 }
 
-export const Field = ({ fieldName, text, validateField, test }: FieldProps) => {
+export const FieldComponent = ({ fieldName, text, validateField, test }: FieldProps) => {
     const { normalizeContent } = useTextConverter();
     const { setNewAlert } = useAlert();
     const [value, setValue] = useState<string>(text);
@@ -74,3 +74,5 @@ export const Field = ({ fieldName, text, validateField, test }: FieldProps) => {
         </FieldContainerStyled>
     )
 }
+
+export const Field = memo(FieldComponent)
