@@ -4,10 +4,16 @@ services:
     image: bookue-frontend
     container_name: front
     command: yarn start:dev
-    environment:
-      NEXT_PUBLIC_BOOKUE_API_URL: http://host.docker.internal:8000/graphql
     ports:
       - 3000:3000
+    environment:
+      - NEXT_PUBLIC_BOOKUE_API_URL=http://host.docker.internal:8000/graphql
+      - NEXT_PUBLIC_DETAILS_SCREEN=enable
+      - NEXT_PUBLIC_NOTES_SCREEN=enable
+      - NEXT_PUBLIC_ADD_BOOK_SCREEN=enable
+      - NEXT_PUBLIC_HOME_SCREEN=enable
+      - NEXT_PUBLIC_SIGN_UP_SCREEN=enable
+      - NEXT_PUBLIC_SIGN_IN_SCREEN=enable
     volumes:
       - ./:/usr/local/apps/bookue-front/
       - nodemodules-front:/usr/local/apps/bookue-front/node_modules/
