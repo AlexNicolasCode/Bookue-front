@@ -1,5 +1,6 @@
-import { globalColors } from '@/presentation/styles/colors'
 import styled from 'styled-components'
+
+import { globalColors } from '@/presentation/styles/colors'
 
 const CardStyled = styled.article`
   display: flex;
@@ -33,15 +34,16 @@ const OptionsStyled = styled.article`
   display: flex;
   width: 150px;
   height: 40px;
-
-  button {
-    width: 150px;
-    height: 40px;
-    font-size: 0.8rem;
-  }
 `
 
-const buttonStyles = `
+type OptionProps = {
+  isBorded?: boolean
+}
+
+const OptionStyled = styled.a<OptionProps>`
+  background-color: ${({ isBorded }) => isBorded && globalColors.primary};
+  border-radius: ${({ isBorded }) => isBorded && '2.5px'};
+  color: ${({ isBorded }) => isBorded ? globalColors.white : globalColors.primary};
   width: 10rem;
   display: flex;
   justify-content: center;
@@ -51,22 +53,9 @@ const buttonStyles = `
   font-size: 1rem;
 `
 
-const NotesOptionStyled = styled.a`
-  background-color: ${globalColors.primary};
-  border-radius: 2.5px;
-  color: ${globalColors.white};
-  ${buttonStyles}
-`
-
-const DetailsOptionStyled = styled.a`
-  color: ${globalColors.primary};
-  ${buttonStyles}
-`
-
 export {
   CardStyled,
-  NotesOptionStyled,
-  DetailsOptionStyled,
+  OptionStyled,
   OptionsStyled,
   TitleStyled,
   CountPageStyled,

@@ -7,9 +7,8 @@ import {
   CardStyled,
   CountPageStyled,
   DescriptionStyled,
-  DetailsOptionStyled,
+  OptionStyled,
   HeaderStyled,
-  NotesOptionStyled,
   OptionsStyled,
   TitleStyled,
 } from './styles'
@@ -23,12 +22,17 @@ export function Card({ book }: CardProps) {
     <OptionsStyled>
       {env.SCREEN.NOTES &&
         <Link href={`/book/${book.id}/notes`} passHref>
-          <NotesOptionStyled data-test-id='home-book-notes-button'>Notes</NotesOptionStyled>
+          <OptionStyled isBorded data-test-id='home-book-notes-button'>Notes</OptionStyled>
         </Link>
       }
       {env.SCREEN.DETAILS &&
         <Link href={`/book/${book.id}`} passHref>
-          <DetailsOptionStyled data-test-id='home-book-details-button'>Details</DetailsOptionStyled>
+          <OptionStyled
+            isBorded={!env.SCREEN.NOTES}
+            data-test-id='home-book-details-button'
+          >
+            Details
+          </OptionStyled>
         </Link>
       }
     </OptionsStyled>
